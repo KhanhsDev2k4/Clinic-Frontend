@@ -20,3 +20,5 @@ export type ApiPagedResponse<T> = {
   size: number;
   totalPages: number;
 };
+
+export const FILTER_ALL_VALUE = "__all__";

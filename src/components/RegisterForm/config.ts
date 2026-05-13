@@ -4,43 +4,50 @@ import * as yup from "yup";
 export const registerSchema = yup.object({
   email: yup
     .string()
-    .required("Email là bắt buộc")
-    .email("Email không hợp lệ")
-    .max(255, "Email không được vượt quá 255 ký tự"),
+    .required("Email is required")
+    .email("Invalid email address")
+    .max(255, "Email must not exceed 255 characters"),
 
   name: yup
     .string()
-    .required("Họ tên là bắt buộc")
-    .max(255, "Họ tên không được vượt quá 255 ký tự"),
+    .required("Full name is required")
+    .max(255, "Full name must not exceed 255 characters"),
 
   phone: yup
     .string()
-    .required("Số điện thoại là bắt buộc")
-    .matches(/^(\+84|0)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại Việt Nam không hợp lệ"),
+    .required("Phone number is required")
+    .matches(/^(\+84|0)[3|5|7|8|9][0-9]{8}$/, "Invalid Vietnamese phone number"),
 
   password: yup
     .string()
-    .required("Mật khẩu là bắt buộc")
-    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-    .max(128, "Mật khẩu tối đa 128 ký tự")
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must not exceed 128 characters")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-      "Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt"
+      "Password must contain uppercase, lowercase, number, and special character"
     ),
 
-  dateOfBirth: yup
+  confirmPassword: yup
     .string()
-    .required("Ngày sinh là bắt buộc")
-    .matches(/^\d{2}\/\d{2}\/\d{4}$/, "Ngày sinh phải đúng định dạng DD/MM/YYYY"),
+    .required("Confirm password is required")
+    .oneOf([yup.ref("password")], "Passwords do not match"),
+
+  dateOfBirth: yup
+    .date()
+    .required("Date of birth is required")
+    .max(new Date(), "Date of birth cannot be in the future")
+    .typeError("Invalid date of birth"),
 
   gender: yup
     .mixed<GENDER>()
-    .oneOf(Object.values(GENDER), "Giới tính không hợp lệ")
-    .required("Giới tính là bắt buộc"),
+    .oneOf(Object.values(GENDER), "Invalid gender")
+    .required("Gender is required"),
 
   role: yup
     .mixed<ROLE_NAME>()
-    .oneOf(Object.values(ROLE_NAME), "Vai trò không hợp lệ")
-    .required("Vai trò là bắt buộc"),
+    .oneOf(Object.values(ROLE_NAME), "Invalid role")
+    .required("Role is required"),
 });
+
 export type RegisterFormValues = yup.InferType<typeof registerSchema>;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { METHOD } from "./global";
+import axiosInstance from "@/lib/axiosInstance";
 
 export const replacePlaceholder = (s: string, data: Record<string, unknown>) => {
   const parts = s.split(/{(.*?)}/g).map((v) => {
@@ -16,54 +16,29 @@ export const replacePlaceholder = (s: string, data: Record<string, unknown>) => 
   return parts.join("");
 };
 
-const runsOnServerSide = typeof window === "undefined";
-
 export const fetcher = async <T = any>(
   url: string,
   method: METHOD,
   body?: Record<string, unknown> | FormData,
-  headers?: HeadersInit,
+  headers?: Record<string, string>,
   noEndPoint?: boolean
-) => {
-  let parsedUri = `${noEndPoint ? "" : "http://localhost:8080"}${url}${
-    method === METHOD.GET && body
-      ? `?${new URLSearchParams(body as unknown as Record<string, string>)}`
-      : ""
-  }`;
+): Promise<T> => {
+  let parsedUrl = `${noEndPoint ? "" : ""}${url}`;
+  parsedUrl = replacePlaceholder(parsedUrl, (body as unknown as Record<string, unknown>) || {});
 
-  parsedUri = replacePlaceholder(parsedUri, (body as unknown as Record<string, unknown>) || {});
+  const isFormData = body instanceof FormData;
 
-  const reqHeaders = {
-    ...headers,
-    ...(!(body instanceof FormData) && {
-      "Content-Type": "application/json; charset=UTF-8",
-    }),
-  };
-
-  if (runsOnServerSide) {
-  }
-  const res = await fetch(parsedUri, {
+  const response = await axiosInstance.request<T>({
+    url: parsedUrl,
     method,
-    headers: reqHeaders,
-    ...(method !== METHOD.GET && {
-      body: body instanceof FormData ? body : JSON.stringify(body),
-    }),
+    baseURL: noEndPoint ? "" : undefined,
+    params: method === METHOD.GET && body ? body : undefined,
+    data: method !== METHOD.GET ? body : undefined,
+    headers: {
+      ...headers,
+      ...(!isFormData && { "Content-Type": "application/json; charset=UTF-8" }),
+    },
   });
 
-  if (!res.ok) {
-    let error: any = {};
-    const errorText = await res.text();
-
-    try {
-      error = JSON.parse(errorText);
-    } catch {
-      error.message = errorText;
-    }
-    error.status = res.status;
-    if (runsOnServerSide) {
-    }
-    throw error;
-  }
-
-  return res.json() as Promise<T>;
+  return response.data;
 };

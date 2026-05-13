@@ -6,7 +6,8 @@ import useSWRMutation from "swr/mutation";
 
 import type { SWRMutationConfiguration } from "swr/mutation";
 import { ApiResponse, METHOD } from "./global";
-import { useAuth } from "./useAuth";
+import { useSession } from "./useSession";
+import axios from "axios";
 
 interface WrapperConfig<T> extends Partial<PublicConfiguration<T, any, (arg: string) => any>> {
   url?: string | (() => string);
@@ -44,11 +45,11 @@ export function useSWRWrapper<T = Record<string, unknown>>(
 ) {
   auth = auth ?? true;
 
+  const { accessToken } = useSession();
+
   return useSWR<ApiResponse<T>>(
     enable ? (key ?? "") : null,
     () => {
-      const { accessToken } = useAuth();
-
       const extraHeader = (body as Record<string, unknown>)?.extraHeader as Record<string, string>;
 
       if (!(body instanceof FormData) && body?.extraHeader) {
@@ -91,13 +92,10 @@ export function useSWRWrapper<T = Record<string, unknown>>(
     {
       ...config,
       onError(err, swrKey) {
-        const error: ApiResponse<string> = err as any;
-
-        // Bỏ qua error nếu là abort
         config?.onError?.(err, swrKey, config as never);
         if (notification?.notifyOnErr && notification?.title) {
           toast.error(notification.title, {
-            description: error?.body || "Đã có lỗi xảy ra",
+            description: extractErrorMessage(err),
           });
         }
       },
@@ -141,6 +139,8 @@ export const useMutation = <T = Record<string, unknown>,>(
     ...config
   }: MutationConfig
 ) => {
+  const { accessToken } = useSession();
+
   return useSWRMutation(
     key,
     (
@@ -166,8 +166,6 @@ export const useMutation = <T = Record<string, unknown>,>(
         }
 
         const urlKey = typeof url === "function" ? url() : (url ?? key);
-
-        const { accessToken } = useAuth();
 
         fetcher<ApiResponse<T>>(
           urlKey ?? swrKey,
@@ -199,23 +197,20 @@ export const useMutation = <T = Record<string, unknown>,>(
           .catch((err) => {
             // if (!signal?.aborted) {
             reject(err as Error);
-            // if (resultKey) {
-            //   mutate(resultKey, {
-            //     success: false,
-            //   });
-            // }
-            // }
+            if (resultKey) {
+              mutate(resultKey, {
+                success: false,
+              });
+            }
           })
           .finally(() => {});
       }),
     {
       onError(err, swrKey) {
-        const error: ApiResponse<string> = err as any;
-
         config?.onError?.(err, swrKey, config as never);
         if (notification) {
           toast.error(notification.title, {
-            description: error?.body || "Đã có lỗi xảy ra",
+            description: extractErrorMessage(err),
           });
         }
       },
@@ -229,4 +224,18 @@ export const useMutation = <T = Record<string, unknown>,>(
       },
     }
   );
+};
+
+const extractErrorMessage = (err: unknown): string => {
+  if (axios.isAxiosError(err)) {
+    return (
+      err.response?.data?.message ||
+      err.response?.data?.error ||
+      err.response?.data?.body ||
+      err.message ||
+      "Something went wrong"
+    );
+  }
+  const error = err as ApiResponse<string>;
+  return error?.body || "Something went wrong";
 };

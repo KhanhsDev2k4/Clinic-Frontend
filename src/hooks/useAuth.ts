@@ -1,26 +1,13 @@
-import { UserResponse } from "@/interface/response";
-import useSWR, { mutate } from "swr";
-import { useRouter } from "next/navigation";
-import { ROLE_NAME } from "@/common";
-import { AUTH_SWR_KEY } from ".";
+"use client";
 import { LoginFormValues } from "@/components/LoginForm/config";
 import { RegisterFormValues } from "@/components/RegisterForm/config";
+import { ROLE_NAME } from "@/common";
 import { useMutation } from "./swr";
 import { METHOD } from "./global";
+import { AuthState, clearAuthState, setAuthState } from "./useSession";
+import _ from "lodash";
+import { formatDateToApi } from "@/lib/utils";
 
-export type AuthState = {
-  accessToken: string;
-  refreshToken: string;
-  user: UserResponse | null;
-};
-
-export const AUTH_INITIAL_STATE: AuthState = {
-  accessToken: "",
-  refreshToken: "",
-  user: null,
-};
-
-// Map role → default path sau khi login
 export const ROLE_DEFAULT_PATHS: Record<ROLE_NAME, string> = {
   [ROLE_NAME.PATIENT]: "/patient",
   [ROLE_NAME.DOCTOR]: "/doctor",
@@ -28,33 +15,17 @@ export const ROLE_DEFAULT_PATHS: Record<ROLE_NAME, string> = {
   [ROLE_NAME.STAFF]: "/staff",
 };
 
-function _set(state: AuthState) {
-  mutate(AUTH_SWR_KEY, state, { revalidate: false });
-}
-
-export const useAuth = () => {
-  const router = useRouter();
-
-  const { data = AUTH_INITIAL_STATE } = useSWR<AuthState>(AUTH_SWR_KEY, null, {
-    fallbackData: AUTH_INITIAL_STATE,
-  });
-
+export function useAuth() {
   const loginMutation = useMutation<AuthState>("/api/v1/auth/login", {
     url: "/api/v1/auth/login",
     method: METHOD.POST,
-    notification: {
-      message: "You have successfully logged in",
-      title: "Authentication",
-    },
+    notification: { title: "Authentication", message: "You have successfully logged in" },
   });
 
   const registerMutation = useMutation<AuthState>("/api/v1/auth/register", {
     url: "/api/v1/auth/register",
     method: METHOD.POST,
-    notification: {
-      message: "You have successfully registered",
-      title: "Authentication",
-    },
+    notification: { title: "Authentication", message: "You have successfully registered" },
   });
 
   const refreshMutation = useMutation<AuthState>("/api/v1/auth/refresh", {
@@ -69,49 +40,43 @@ export const useAuth = () => {
 
   const login = async (formValues: LoginFormValues) => {
     const response = await loginMutation.trigger(formValues);
-
-    _set(response?.body);
+    setAuthState(response?.body);
     localStorage.setItem("refreshToken", response?.body.refreshToken);
-
-    const redirectPath = getRedirectPath();
-    const defaultPath = response?.body.user ? ROLE_DEFAULT_PATHS[response?.body?.user?.role] : "/";
-    router.push(redirectPath ?? defaultPath);
   };
 
   const register = async (formValues: RegisterFormValues) => {
-    const response = await registerMutation.trigger(formValues);
-
-    _set(response?.body);
+    // copy
+    const payload = _.cloneDeep(formValues);
+    payload.dateOfBirth = formatDateToApi(payload.dateOfBirth) as any;
+    const response = await registerMutation.trigger(payload);
+    setAuthState(response?.body);
     localStorage.setItem("refreshToken", response?.body.refreshToken);
-
-    router.push("/");
   };
 
-  const refresh = async () => {
-    if (data.accessToken) return;
+  const refresh = async (currentAccessToken?: string) => {
+    if (currentAccessToken) return;
 
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) return;
 
     try {
       const response = await refreshMutation.trigger({ refreshToken });
-      _set(response?.body);
+      setAuthState(response?.body);
       localStorage.setItem("refreshToken", response?.body.refreshToken);
     } catch {
-      _set(AUTH_INITIAL_STATE);
+      clearAuthState();
       localStorage.removeItem("refreshToken");
     }
   };
 
   const logout = async () => {
-    _set(AUTH_INITIAL_STATE);
+    clearAuthState();
     try {
       const refreshToken = localStorage.getItem("refreshToken");
       await logoutMutation.trigger({ refreshToken });
     } catch {}
     localStorage.removeItem("refreshToken");
     sessionStorage.removeItem("auth-redirect");
-    router.push("/auth/login");
   };
 
   const saveRedirectPath = (path: string) => {
@@ -125,15 +90,14 @@ export const useAuth = () => {
   };
 
   return {
-    user: data.user,
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
-    isAuthenticated: !!data.accessToken,
     login,
     register,
     refresh,
     logout,
     saveRedirectPath,
     getRedirectPath,
+    isLoggingIn: loginMutation.isMutating,
+    isRegistering: registerMutation.isMutating,
+    isLoggingOut: logoutMutation.isMutating,
   };
-};
+}

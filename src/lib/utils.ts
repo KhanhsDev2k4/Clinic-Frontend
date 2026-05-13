@@ -1,6 +1,171 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+// lib/utils.ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import {
+  format,
+  formatDistanceToNow,
+  formatDuration,
+  intervalToDuration,
+  isValid,
+  parseISO,
+} from "date-fns";
+import { enUS } from "date-fns/locale";
+import { FILTER_ALL_VALUE } from "@/hooks/global";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
+
+// ─── DATE / TIME ─────────────────────────────────────────────────
+
+/**
+ * Format date → "Jan 15, 2025"
+ */
+export function formatDate(date: Date | string | null | undefined): string {
+  if (!date) return "—";
+  const d = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(d)) return "Invalid date";
+  return format(d, "MMM dd, yyyy", { locale: enUS });
+}
+
+/**
+ * Format date → "Jan 15, 2025 · 08:30 AM"
+ */
+export function formatDateTime(date: Date | string | null | undefined): string {
+  if (!date) return "—";
+  const d = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(d)) return "Invalid date";
+  return format(d, "MMM dd, yyyy · hh:mm a", { locale: enUS });
+}
+
+/**
+ * Format time only → "08:30 AM"
+ */
+export function formatTime(date: Date | string | null | undefined): string {
+  if (!date) return "—";
+  const d = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(d)) return "Invalid date";
+  return format(d, "hh:mm a", { locale: enUS });
+}
+
+/**
+ * Relative time → "3 hours ago", "in 2 days"
+ */
+export function formatRelativeTime(date: Date | string | null | undefined): string {
+  if (!date) return "—";
+  const d = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(d)) return "Invalid date";
+  return formatDistanceToNow(d, { addSuffix: true, locale: enUS });
+}
+
+/**
+ * Format duration từ seconds → "1h 23m 45s"
+ */
+export function formatDurationFromSeconds(seconds: number): string {
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
+  return formatDuration(duration, {
+    format: ["hours", "minutes", "seconds"],
+    locale: enUS,
+  });
+}
+
+/**
+ * Format date → "YYYY-MM-DD" để gửi lên API
+ */
+export function toApiDate(date: Date | null | undefined): string {
+  if (!date || !isValid(date)) return "";
+  return format(date, "yyyy-MM-dd");
+}
+
+// ─── CURRENCY ────────────────────────────────────────────────────
+
+/**
+ * Format VND → "1.500.000 ₫"
+ */
+export function formatVND(amount: number | null | undefined): string {
+  if (amount === null || amount === undefined) return "—";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+}
+
+/**
+ * Format USD → "$1,500.00"
+ */
+export function formatUSD(amount: number | null | undefined): string {
+  if (amount === null || amount === undefined) return "—";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
+
+/**
+ * Format currency linh hoạt
+ * formatCurrency(1500000, "VND") → "1.500.000 ₫"
+ * formatCurrency(1500, "USD")    → "$1,500.00"
+ */
+export function formatCurrency(
+  amount: number | null | undefined,
+  currency: "VND" | "USD" = "VND"
+): string {
+  if (amount === null || amount === undefined) return "—";
+  const locale = currency === "VND" ? "vi-VN" : "en-US";
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  }).format(amount);
+}
+
+/**
+ * Compact number → "1.5M", "3.2K"
+ */
+export function formatCompactNumber(value: number | null | undefined): string {
+  if (value === null || value === undefined) return "—";
+  return new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+export function buildQueryParams(params?: Record<string, any>): string {
+  if (!params) return "";
+
+  const parts: string[] = [];
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      value === false ||
+      value === FILTER_ALL_VALUE ||
+      Number.isNaN(value)
+    )
+      return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        if (v !== undefined && v !== null && v !== "" && v !== FILTER_ALL_VALUE) {
+          parts.push(`${key}=${v}`);
+        }
+      });
+      return;
+    }
+
+    parts.push(`${key}=${value}`);
+  });
+
+  return parts.join("&");
+}
+
+export const formatDateToApi = (
+  date: Date | string | null | undefined,
+  pattern: "dd/MM/yyyy" | "HH:mm dd/MM/yyyy" = "dd/MM/yyyy"
+): string => {
+  if (!date) return "";
+  const d = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(d)) return "";
+  return format(d, pattern);
+};
