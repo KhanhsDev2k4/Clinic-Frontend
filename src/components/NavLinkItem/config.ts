@@ -1,0 +1,33 @@
+import {
+  LayoutDashboard,
+  Calendar,
+  ClipboardList,
+  MessageSquare,
+  User,
+  Wrench,
+  BarChart2,
+  UserCheck,
+  Package,
+  Home,
+  Stethoscope,
+  LayoutGrid,
+  CircleHelp,
+  Users,
+} from "lucide-react";
+
+export const ICON_MAP: Record<string, React.ElementType> = {
+  LayoutDashboard,
+  Calendar,
+  ClipboardList,
+  MessageSquare,
+  User,
+  Wrench,
+  BarChart2,
+  UserCheck,
+  Package,
+  Home,
+  Stethoscope,
+  LayoutGrid,
+  CircleHelp,
+  Users,
+};

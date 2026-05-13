@@ -1,7 +1,6 @@
 "use client";
 import { LoginFormValues } from "@/components/LoginForm/config";
 import { RegisterFormValues } from "@/components/RegisterForm/config";
-import { ROLE_NAME } from "@/common";
 import { useMutation } from "./swr";
 import { METHOD } from "./global";
 import { AuthState, clearAuthState, setAuthState } from "./useSession";
@@ -12,13 +11,6 @@ import {
   OtpFormValues,
   ResetFormValues,
 } from "@/components/ForgotPasswordForm/config";
-
-export const ROLE_DEFAULT_PATHS: Record<ROLE_NAME, string> = {
-  [ROLE_NAME.PATIENT]: "/patient",
-  [ROLE_NAME.DOCTOR]: "/doctor",
-  [ROLE_NAME.ADMIN]: "/admin",
-  [ROLE_NAME.STAFF]: "/staff",
-};
 
 export function useAuth() {
   const loginMutation = useMutation<AuthState>("/api/v1/auth/login", {
@@ -50,6 +42,10 @@ export function useAuth() {
   const logoutMutation = useMutation("/api/v1/auth/logout", {
     url: "/api/v1/auth/logout",
     method: METHOD.POST,
+    notification: {
+      title: "Authentication",
+      message: "You have successfully logged out",
+    },
   });
 
   const verifyOtpMutation = useMutation<{ resetToken: string }>("/api/v1/auth/verify-otp", {

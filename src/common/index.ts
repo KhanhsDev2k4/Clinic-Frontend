@@ -3,6 +3,7 @@ export enum ROLE_NAME {
   DOCTOR = "DOCTOR",
   PATIENT = "PATIENT",
   STAFF = "STAFF",
+  GUEST = "GUEST",
 }
 
 export enum GENDER {

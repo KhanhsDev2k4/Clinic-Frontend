@@ -1,4 +1,3 @@
-// app/auth/layout.tsx — đã login thì đẩy ra
 "use client";
 
 import { useEffect } from "react";

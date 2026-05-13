@@ -1,0 +1,26 @@
+import { useSWRWrapper } from "../swr";
+import { ApiPagedResponse, METHOD } from "../global";
+import { BaseFilter, SpecialtyResponse } from "@/interface/response";
+import { buildQueryParams } from "@/lib/utils";
+
+export const usePublicSpecialtyStatistics = () => {
+  return useSWRWrapper<{
+    totalSpecialties: number;
+  }>("/api/v1/public/specialty/statistics", {
+    url: "/api/v1/public/specialty/statistics",
+    method: METHOD.GET,
+  });
+};
+
+export const usePublicSpecialtyList = (
+  filter?: BaseFilter & {
+    isActive?: boolean;
+  }
+) => {
+  const query = buildQueryParams(filter);
+
+  return useSWRWrapper<ApiPagedResponse<SpecialtyResponse>>(`/api/v1/public/specialty?${query}`, {
+    url: `/api/v1/public/specialty?${query}`,
+    method: METHOD.GET,
+  });
+};

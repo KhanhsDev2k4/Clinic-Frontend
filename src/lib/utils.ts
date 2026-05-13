@@ -169,3 +169,25 @@ export const formatDateToApi = (
   if (!isValid(d)) return "";
   return format(d, pattern);
 };
+
+/**
+ * Format number → "1,500", "25,000", ...
+ */
+export function formatNumber(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) return "—";
+
+  return new Intl.NumberFormat("en-US").format(value);
+}
+
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200&auto=format&fit=crop";
+
+export const getImageUrl = (path: string | null | undefined): string => {
+  if (!path) return FALLBACK_IMAGE;
+
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  return `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`;
+};
