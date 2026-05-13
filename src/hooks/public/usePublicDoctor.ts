@@ -20,3 +20,10 @@ export const usePublicDoctorList = (
     }
   );
 };
+
+export const usePublicDoctorById = (id: string) => {
+  return useSWRWrapper<DoctorProfileResponse>(`/api/v1/public/doctor-profile/${id}`, {
+    url: `/api/v1/public/doctor-profile/${id}`,
+    method: METHOD.GET,
+  });
+};

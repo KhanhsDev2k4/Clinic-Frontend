@@ -1,6 +1,6 @@
 import { useSWRWrapper } from "../swr";
 import { ApiPagedResponse, METHOD } from "../global";
-import { BaseFilter, SpecialtyResponse } from "@/interface/response";
+import { BaseFilter, DoctorProfileResponse, SpecialtyResponse } from "@/interface/response";
 import { buildQueryParams } from "@/lib/utils";
 
 export const usePublicSpecialtyStatistics = () => {
@@ -21,6 +21,13 @@ export const usePublicSpecialtyList = (
 
   return useSWRWrapper<ApiPagedResponse<SpecialtyResponse>>(`/api/v1/public/specialty?${query}`, {
     url: `/api/v1/public/specialty?${query}`,
+    method: METHOD.GET,
+  });
+};
+
+export const usePublicSpecialtyById = (id: string) => {
+  return useSWRWrapper<SpecialtyResponse>(`/api/v1/public/specialty/${id}`, {
+    url: `/api/v1/public/specialty/${id}`,
     method: METHOD.GET,
   });
 };

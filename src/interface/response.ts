@@ -1,4 +1,4 @@
-import { GENDER, ROLE_NAME, USER_STATUS } from "@/common";
+import { GENDER, ROLE_NAME, SPECIALTY_TYPE, USER_STATUS } from "@/common";
 
 export type BaseFilter = {
   sortDir?: "asc" | "desc";
@@ -31,20 +31,22 @@ export type SpecialtyResponse = {
   description: string;
   image: string;
   displayOrder: number;
+  specialtyType: SPECIALTY_TYPE;
   isActive: boolean;
 };
 
-export type DoctorProfileResponse = {
-  id: string;
+export type DoctorProfileResponse = BaseEntityResponse & {
+  user: UserResponse;
   doctorCode: string;
+  specialty: SpecialtyResponse;
   degree: string;
   experienceYears: number;
+  education: string;
+  bio: string;
   consultationFee: number;
   averageRating: number;
   totalReviews: number;
   totalPatients: number;
   isFeatured: boolean;
-  serviceCount: number;
-  specialty: SpecialtyResponse;
-  user: UserResponse;
+  deleted: boolean;
 };
