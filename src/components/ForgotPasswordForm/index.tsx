@@ -136,7 +136,6 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
   const otpFormik = useFormik<OtpFormValues>({
     initialValues: { email, otp: "" },
     validationSchema: otpSchema,
-    enableReinitialize: true,
     onSubmit: async (values) => {
       setApiError("");
       try {

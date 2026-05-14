@@ -12,5 +12,5 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     if (isAuthenticated) router.replace("/");
   }, [isAuthenticated]);
 
-  return <>{children}</>;
+  return children;
 }

@@ -12,6 +12,8 @@ const HeroSection = () => {
   const publicUserStatistics = usePublicUserStatistics();
   const publicSpecialtyStatistics = usePublicSpecialtyStatistics();
 
+  const rating = 4.9;
+
   const statistics = [
     { icon: Users, value: publicUserStatistics?.data?.body?.patientsCount, label: "Patients" },
     { icon: Stethoscope, value: publicUserStatistics?.data?.body?.doctorsCount, label: "Doctors" },
@@ -82,7 +84,7 @@ const HeroSection = () => {
               {statistics.map(({ icon: Icon, value, label }) => (
                 <div key={label} className="flex flex-col gap-1">
                   <p className="text-2xl font-bold text-white">
-                    <NumberFlow value={Number(value)} />
+                    <NumberFlow value={Number(value ?? 0)} />
                   </p>
                   <p className="text-blue-200 text-sm flex items-center gap-1">
                     <Icon className="w-4 h-4 text-blue-200 mb-0.5" />
@@ -119,7 +121,9 @@ const HeroSection = () => {
               <Card className="absolute -top-4 -right-4 shadow-xl border-0">
                 <CardContent className="p-3 flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <span className="text-sm font-semibold text-gray-800">4.9 / 5.0</span>
+                  <span className="text-sm font-semibold text-gray-800">
+                    <NumberFlow value={rating} /> / 5.0
+                  </span>
                 </CardContent>
               </Card>
             </div>

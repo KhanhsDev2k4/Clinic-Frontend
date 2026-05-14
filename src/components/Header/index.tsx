@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { getInitials } from "@/lib/utils";
+import { getImageUrl, getInitials } from "@/lib/utils";
 
 const Header = () => {
   const { user } = useSession();
@@ -93,7 +93,10 @@ const Header = () => {
                       className="flex items-center gap-2 px-2 rounded-full h-9"
                     >
                       <Avatar className="w-7 h-7">
-                        <AvatarImage src={user?.pathAvatar!} alt={user?.fullName} />
+                        <AvatarImage
+                          alt={user.fullName}
+                          src={user.pathAvatar ? getImageUrl(user.pathAvatar) : undefined}
+                        />
                         <AvatarFallback className="bg-blue-50 text-blue-600 font-semibold text-sm">
                           {getInitials(user.fullName)}
                         </AvatarFallback>

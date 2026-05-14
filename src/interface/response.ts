@@ -1,4 +1,13 @@
-import { GENDER, ROLE_NAME, SPECIALTY_TYPE, USER_STATUS } from "@/common";
+import {
+  APPOINTMENT_STATUS,
+  BLOOD_TYPE,
+  BOOKING_TYPE,
+  GENDER,
+  REVIEW_STATUS,
+  ROLE_NAME,
+  SPECIALTY_TYPE,
+  USER_STATUS,
+} from "@/common";
 
 export type BaseFilter = {
   sortDir?: "asc" | "desc";
@@ -49,4 +58,41 @@ export type DoctorProfileResponse = BaseEntityResponse & {
   totalPatients: number;
   isFeatured: boolean;
   deleted: boolean;
+};
+
+export type PatientProfileResponse = BaseEntityResponse & {
+  user: UserResponse;
+  patientCode: string;
+  address: string;
+  insuranceNumber: string;
+  bloodType: BLOOD_TYPE;
+  allergies: string;
+  chronicDiseases: string;
+  loyaltyPoints: string;
+  totalVisits: number;
+};
+
+export type AppointmentResponse = BaseEntityResponse & {
+  appointmentCode: string;
+  patientProfile: PatientProfileResponse;
+  doctorProfile: DoctorProfileResponse;
+  specialty: SpecialtyResponse;
+  appointmentDate: string;
+  appointmentTime: string;
+  status: APPOINTMENT_STATUS;
+  bookingType: BOOKING_TYPE;
+  reason: string;
+  symptoms: string;
+  notes: string;
+  queueNumber: number;
+};
+
+export type ReviewResponse = BaseEntityResponse & {
+  patientProfile: PatientProfileResponse;
+  doctorProfile: DoctorProfileResponse;
+  appointment: AppointmentResponse;
+  rating: number;
+  title: string;
+  content: string;
+  status: REVIEW_STATUS;
 };
