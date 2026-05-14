@@ -33,6 +33,8 @@ export type UserResponse = BaseEntityResponse & {
   pathAvatar: string;
   emailVerified: boolean;
   phoneVerified: boolean;
+
+  patient?: PatientProfileResponse;
 };
 
 export type SpecialtyResponse = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormik, FormikHelpers } from "formik";
 import { Pencil, Save, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,13 +18,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { BLOOD_TYPE } from "@/common";
 import { MedicalInfoFormValues, medicalInfoSchema } from "./config";
+import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+import { usePatientProfile } from "@/hooks/patient/usePatientProfile";
 
 export function MedicalInfoForm() {
+  const currentProfile = useCurrentProfile();
+
+  const { updatePatientProfile, createPatientProfile } = usePatientProfile();
+
   const [isEditing, setIsEditing] = useState(false);
   const FIELD_TRANSITION = useRef("transition-all duration-200 ease-in-out");
 
   const initialValues = useRef<MedicalInfoFormValues>({
-    userId: "",
     bloodType: BLOOD_TYPE.O_POSITIVE,
     address: "",
     insuranceNumber: "",
@@ -32,13 +37,33 @@ export function MedicalInfoForm() {
     chronicDiseases: "",
   });
 
+  const isUpdateMode = !!currentProfile.data?.body?.patient;
+
+  useEffect(() => {
+    setIsEditing(!isUpdateMode);
+  }, [isUpdateMode]);
+
+  useEffect(() => {
+    if (currentProfile?.data?.body?.patient) {
+      initialValues.current = {
+        bloodType: currentProfile.data.body.patient.bloodType,
+        address: currentProfile.data.body.patient.address,
+        insuranceNumber: currentProfile.data.body.patient.insuranceNumber,
+        allergies: currentProfile.data.body.patient.allergies,
+        chronicDiseases: currentProfile.data.body.patient.chronicDiseases,
+      };
+      formik.setValues(initialValues.current);
+    }
+  }, [currentProfile?.data?.body?.patient]);
+
   const onSubmit = async (
     values: MedicalInfoFormValues,
     helpers: FormikHelpers<MedicalInfoFormValues>
   ) => {
     try {
-      console.log("MedicalInfo submit →", values);
+      isUpdateMode ? await updatePatientProfile(values) : await createPatientProfile(values);
       setIsEditing(false);
+      currentProfile.mutate();
     } catch (error) {
       console.error(error);
     } finally {
@@ -124,7 +149,7 @@ export function MedicalInfoForm() {
                     onValueChange={(v) => formik.setFieldValue("bloodType", v)}
                     disabled={!isEditing}
                   >
-                    <SelectTrigger id="bloodType">
+                    <SelectTrigger id="bloodType" className={cn(editableInputCn, "w-full")}>
                       <SelectValue placeholder="Select blood type" />
                     </SelectTrigger>
                     <SelectContent>

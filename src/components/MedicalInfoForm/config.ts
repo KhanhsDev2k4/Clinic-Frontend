@@ -2,8 +2,6 @@ import { BLOOD_TYPE } from "@/common";
 import * as yup from "yup";
 
 export const medicalInfoSchema = yup.object({
-  userId: yup.string().required("User ID is required"),
-
   bloodType: yup
     .mixed<BLOOD_TYPE>()
     .oneOf(Object.values(BLOOD_TYPE), "Invalid blood type")
