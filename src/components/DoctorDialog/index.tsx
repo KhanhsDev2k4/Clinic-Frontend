@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { cn, formatCurrency, formatNumber, getImageUrl } from "@/lib/utils";
+import { cn, formatCurrency, formatNumber, getImageUrl, getInitials } from "@/lib/utils";
 import { usePublicDoctorById } from "@/hooks/public/usePublicDoctor";
 import { DoctorProfileResponse } from "@/interface/response";
 import {
@@ -26,11 +25,9 @@ import {
   Star,
   Stethoscope,
   Users,
-  BookOpen,
   FileText,
 } from "lucide-react";
-
-// ── Stat Item ─────────────────────────────────────────────────────────────────
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function StatItem({
   icon,
@@ -95,12 +92,11 @@ function DoctorDialogSkeleton() {
 // ── Main Dialog ───────────────────────────────────────────────────────────────
 
 interface DoctorDialogProps {
-  doctorId: string | null;
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
+  doctorId?: string;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const DoctorDialog = ({ doctorId, open, onOpenChange }: DoctorDialogProps) => {
+const DoctorDialog = ({ doctorId, onOpenChange }: DoctorDialogProps) => {
   const router = useRouter();
 
   const { data, isLoading } = usePublicDoctorById(doctorId ?? "");
@@ -109,49 +105,44 @@ const DoctorDialog = ({ doctorId, open, onOpenChange }: DoctorDialogProps) => {
 
   const handleBook = () => {
     router.push(`/booking?doctorId=${doctorId}`);
-    onOpenChange(false);
+    onOpenChange?.(false);
   };
 
   const handleMessage = () => {
     router.push(`/messages?doctorId=${doctorId}`);
-    onOpenChange(false);
+    onOpenChange?.(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl w-full p-0 gap-0 overflow-hidden rounded-2xl">
-        {/* sr-only header — required by shadcn for a11y */}
-        <DialogHeader className="sr-only">
-          <DialogTitle>{user?.fullName ?? "Doctor details"}</DialogTitle>
-          <DialogDescription>Doctor profile, experience, and booking options</DialogDescription>
-        </DialogHeader>
+    <DialogContent className="max-w-xl! w-full p-0 gap-0 overflow-hidden rounded-2xl">
+      {/* sr-only header — required by shadcn for a11y */}
+      <DialogHeader className="sr-only">
+        <DialogTitle>{user?.fullName ?? "Doctor details"}</DialogTitle>
+        <DialogDescription>Doctor profile, experience, and booking options</DialogDescription>
+      </DialogHeader>
 
-        {/* Hero banner */}
-        <div className="relative h-28 bg-gradient-to-br from-blue-500 to-teal-400">
-          <div className="absolute -top-4 -right-4 w-32 h-32 rounded-full bg-white/10" />
-          <div className="absolute top-6 -right-2 w-16 h-16 rounded-full bg-white/10" />
-        </div>
-
-        {/* Scrollable body */}
-        <div className="overflow-y-auto max-h-[65vh]">
-          {isLoading ? (
-            <DoctorDialogSkeleton />
-          ) : doctor && user ? (
-            <div className="p-5 space-y-5">
-              {/* Avatar + name row — overlaps the hero banner */}
-              <div className="flex gap-4 -mt-14">
+      {/* Scrollable body */}
+      <div className="overflow-y-auto max-h-[65vh]">
+        {isLoading ? (
+          <DoctorDialogSkeleton />
+        ) : doctor && user ? (
+          <div className="p-5 space-y-5">
+            {/* Avatar + name row — overlaps the hero banner */}
+            <div className="no-scrollbar max-h-[50vh] overflow-y-auto">
+              <div className="flex gap-4">
                 {/* Avatar */}
-                <div className="relative h-20 w-20 shrink-0 rounded-full overflow-hidden ring-4 ring-white bg-blue-50 shadow-md">
-                  <Image
-                    src={getImageUrl(user.pathAvatar)}
+                <Avatar className="relative h-20 w-20 shrink-0 rounded-full overflow-hidden ring-4 ring-white bg-blue-50 shadow-md">
+                  <AvatarImage
+                    src={user.pathAvatar ? getImageUrl(user.pathAvatar) : undefined}
                     alt={user.fullName}
-                    fill
-                    className="object-cover"
                   />
-                </div>
+                  <AvatarFallback className="bg-blue-50 text-blue-600 font-semibold text-sm">
+                    {getInitials(user.fullName)}
+                  </AvatarFallback>
+                </Avatar>
 
                 {/* Name + meta */}
-                <div className="pt-8 min-w-0">
+                <div className="min-w-0">
                   <p className="font-bold text-gray-900 text-base leading-snug">
                     {doctor.degree}. {user.fullName}
                   </p>
@@ -194,7 +185,7 @@ const DoctorDialog = ({ doctorId, open, onOpenChange }: DoctorDialogProps) => {
                 <StatItem
                   icon={<Briefcase className="w-4 h-4" />}
                   label="Experience"
-                  value={`${doctor.experienceYears} yrs`}
+                  value={`${formatNumber(doctor.experienceYears)} yrs`}
                 />
                 <StatItem
                   icon={<BadgeDollarSign className="w-4 h-4" />}
@@ -225,32 +216,32 @@ const DoctorDialog = ({ doctorId, open, onOpenChange }: DoctorDialogProps) => {
                   />
                 )}
               </div>
-
-              <Separator />
-
-              {/* Action buttons */}
-              <div className="flex gap-3 pb-1">
-                <Button
-                  variant="outline"
-                  className="flex-1 rounded-xl border-gray-200 text-gray-600 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50"
-                  onClick={handleMessage}
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Message
-                </Button>
-                <Button
-                  className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
-                  onClick={handleBook}
-                >
-                  <CalendarDays className="w-4 h-4 mr-2" />
-                  Book
-                </Button>
-              </div>
             </div>
-          ) : null}
-        </div>
-      </DialogContent>
-    </Dialog>
+
+            <Separator />
+
+            {/* Action buttons */}
+            <div className="flex gap-3 pb-1">
+              <Button
+                variant="outline"
+                className="flex-1 rounded-xl border-gray-200 text-gray-600 hover:border-blue-200 hover:text-blue-600 hover:bg-blue-50"
+                onClick={handleMessage}
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Message
+              </Button>
+              <Button
+                className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={handleBook}
+              >
+                <CalendarDays className="w-4 h-4 mr-2" />
+                Book
+              </Button>
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </DialogContent>
   );
 };
 

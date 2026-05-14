@@ -108,7 +108,7 @@ export function formatUSD(amount: number | null | undefined): string {
  */
 export function formatCurrency(
   amount: number | null | undefined,
-  currency: "VND" | "USD" = "VND"
+  currency: "VND" | "USD" = "USD"
 ): string {
   if (amount === null || amount === undefined) return "—";
   const locale = currency === "VND" ? "vi-VN" : "en-US";

@@ -196,12 +196,11 @@ function VirtualDoctorList({
 }
 
 interface SpecialtyDialogProps {
-  specialtyId: string | null;
-  open: boolean;
+  specialtyId?: string;
   onOpenChange: (v: boolean) => void;
 }
 
-const SpecialtyDialog = ({ specialtyId, open, onOpenChange }: SpecialtyDialogProps) => {
+const SpecialtyDialog = ({ specialtyId, onOpenChange }: SpecialtyDialogProps) => {
   const router = useRouter();
 
   const specialtyQuery = usePublicSpecialtyById(specialtyId ?? "");
@@ -218,93 +217,91 @@ const SpecialtyDialog = ({ specialtyId, open, onOpenChange }: SpecialtyDialogPro
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg w-full p-0 gap-0 overflow-hidden rounded-2xl">
-        <DialogHeader className="sr-only">
-          <DialogTitle>{specialty?.name ?? "Specialty details"}</DialogTitle>
-          <DialogDescription>Specialty information and available doctors</DialogDescription>
-        </DialogHeader>
+    <DialogContent className="max-w-lg! w-full p-0 gap-0 overflow-hidden rounded-2xl">
+      <DialogHeader className="sr-only">
+        <DialogTitle>{specialty?.name ?? "Specialty details"}</DialogTitle>
+        <DialogDescription>Specialty information and available doctors</DialogDescription>
+      </DialogHeader>
 
-        <div className="relative">
-          {isLoadingSpecialty ? (
-            <Skeleton className="h-40 w-full rounded-none" />
-          ) : specialty ? (
-            <div className="relative h-40 w-full overflow-hidden bg-blue-50">
-              <Image
-                src={getImageUrl(specialty.image)}
-                alt={specialty.name}
-                fill
-                className="object-cover opacity-80"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <div className="relative">
+        {isLoadingSpecialty ? (
+          <Skeleton className="h-40 w-full rounded-none" />
+        ) : specialty ? (
+          <div className="relative h-40 w-full overflow-hidden bg-blue-50">
+            <Image
+              src={getImageUrl(specialty.image)}
+              alt={specialty.name}
+              fill
+              className="object-cover opacity-80"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-              <div className="absolute top-3 left-3">
-                <Badge className="bg-white/90 text-blue-700 border-0 text-xs font-medium backdrop-blur-sm">
-                  <Activity className="w-3 h-3 mr-1" />
-                  {SPECIALTY_TYPE_LABEL[specialty.specialtyType] ?? specialty.specialtyType}
-                </Badge>
-              </div>
-
-              {/* Visual title — aria-hidden since real title is in sr-only DialogHeader */}
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <p className="text-white text-lg font-bold leading-snug drop-shadow" aria-hidden>
-                  {specialty.name}
-                </p>
-              </div>
+            <div className="absolute top-3 left-3">
+              <Badge className="bg-white/90 text-blue-700 border-0 text-xs font-medium backdrop-blur-sm">
+                <Activity className="w-3 h-3 mr-1" />
+                {SPECIALTY_TYPE_LABEL[specialty.specialtyType] ?? specialty.specialtyType}
+              </Badge>
             </div>
-          ) : null}
-        </div>
 
-        {/* Scrollable body */}
-        <div className="overflow-y-auto h-[60vh] flex flex-col">
-          <div className="p-5 space-y-5 flex-1 h-full flex flex-col">
-            {/* Description */}
-            {isLoadingSpecialty ? (
-              <div className="space-y-2">
-                <Skeleton className="h-3 w-full" />
-                <Skeleton className="h-3 w-5/6" />
-                <Skeleton className="h-3 w-4/6" />
-              </div>
-            ) : specialty ? (
-              <div className="flex items-start gap-2 text-sm text-gray-600 leading-relaxed">
-                <Stethoscope className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
-                <p>{specialty.description}</p>
-              </div>
-            ) : null}
-
-            <Separator />
-
-            {/* Doctors section */}
-            <div className="flex-1 h-full flex flex-col">
-              <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-blue-500" />
-                Doctors in this specialty
-                {!isLoadingDoctors && doctors.length > 0 && (
-                  <span className="ml-1 text-xs font-normal text-gray-400">
-                    ({doctors.length} doctors)
-                  </span>
-                )}
-              </h3>
-
-              {isLoadingDoctors ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 2 }).map((_, i) => (
-                    <DoctorCardSkeleton key={i} />
-                  ))}
-                </div>
-              ) : doctors.length > 0 ? (
-                <VirtualDoctorList doctors={doctors} onBook={handleBook} />
-              ) : (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                  No doctors available in this specialty
-                </div>
-              )}
+            {/* Visual title — aria-hidden since real title is in sr-only DialogHeader */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-lg font-bold leading-snug drop-shadow" aria-hidden>
+                {specialty.name}
+              </p>
             </div>
           </div>
+        ) : null}
+      </div>
+
+      {/* Scrollable body */}
+      <div className="overflow-y-auto h-[60vh] flex flex-col">
+        <div className="p-5 space-y-5 flex-1 h-full flex flex-col">
+          {/* Description */}
+          {isLoadingSpecialty ? (
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-5/6" />
+              <Skeleton className="h-3 w-4/6" />
+            </div>
+          ) : specialty ? (
+            <div className="flex items-start gap-2 text-sm text-gray-600 leading-relaxed">
+              <Stethoscope className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
+              <p>{specialty.description}</p>
+            </div>
+          ) : null}
+
+          <Separator />
+
+          {/* Doctors section */}
+          <div className="flex-1 h-full flex flex-col">
+            <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
+              <Users className="w-4 h-4 text-blue-500" />
+              Doctors in this specialty
+              {!isLoadingDoctors && doctors.length > 0 && (
+                <span className="ml-1 text-xs font-normal text-gray-400">
+                  ({doctors.length} doctors)
+                </span>
+              )}
+            </h3>
+
+            {isLoadingDoctors ? (
+              <div className="space-y-3">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <DoctorCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : doctors.length > 0 ? (
+              <VirtualDoctorList doctors={doctors} onBook={handleBook} />
+            ) : (
+              <div className="text-center py-8 text-gray-400 text-sm">
+                <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                No doctors available in this specialty
+              </div>
+            )}
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </DialogContent>
   );
 };
 

@@ -16,11 +16,25 @@ export default defineConfig([
       import: importPlugin,
       "simple-import-sort": simpleImportSort,
       "unused-imports": unusedImports,
-      // "react-hooks": reactHooks,
-      // sonarjs,
     },
     rules: {
-      "simple-import-sort/imports": "error",
+      "simple-import-sort/imports": [
+        "error",
+        {
+          groups: [
+            ["^react", "^next"],
+
+            ["^@?\\w"],
+
+            ["^@/"],
+
+            ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+            ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+
+            ["^.+\\.?(css)$"],
+          ],
+        },
+      ],
       "simple-import-sort/exports": "error",
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
@@ -36,11 +50,6 @@ export default defineConfig([
       "import/newline-after-import": "error",
       "import/no-duplicates": "error",
       "@typescript-eslint/no-explicit-any": "warn",
-      // "react/react-in-jsx-scope": "off",
-      // "react-hooks/rules-of-hooks": "error",
-      // "react-hooks/exhaustive-deps": "warn",
-      // "sonarjs/no-duplicate-string": "warn",
-      // "sonarjs/cognitive-complexity": ["warn", 15],
     },
   },
 

@@ -9,18 +9,17 @@ import { cn, getImageUrl } from "@/lib/utils";
 import { usePublicSpecialtyList } from "@/hooks/public/usePublicSpecialty";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import SpecialtyDialog from "../SpecialtyDialog";
+import { Dialog } from "@/components/ui/dialog";
+import useDialog from "@/hooks/useDialog";
+import SpecialtyDialog from "@/components/SpecialtyDialog";
 
 const SpecialtiesSection = () => {
   const publicSpecialtyList = usePublicSpecialtyList({ isActive: true });
+  const dialog = useDialog<{ specialtyId: string }>();
 
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-
-  // Dialog state
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!api) return;
@@ -30,8 +29,7 @@ const SpecialtiesSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    setSelectedSpecialtyId(id);
-    setDialogOpen(true);
+    dialog.openDialog({ specialtyId: id });
   };
 
   return (
@@ -74,7 +72,7 @@ const SpecialtiesSection = () => {
                       type="button"
                       onClick={() => handleCardClick(specialty.id)}
                       className={cn(
-                        "w-full group flex flex-col items-center text-center gap-3 p-5 rounded-2xl bg-white",
+                        "w-full h-full group flex flex-col items-center text-center gap-3 p-5 rounded-2xl bg-white",
                         "border border-gray-100 hover:border-blue-200",
                         "shadow-sm hover:shadow-md transition-all duration-200",
                         "hover:-translate-y-1 cursor-pointer"
@@ -128,12 +126,12 @@ const SpecialtiesSection = () => {
         </div>
       </div>
 
-      {/* Specialty Dialog */}
-      <SpecialtyDialog
-        specialtyId={selectedSpecialtyId}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      />
+      <Dialog open={dialog.open} onOpenChange={dialog.onOpenChange} modal>
+        <SpecialtyDialog
+          specialtyId={dialog.data?.specialtyId!}
+          onOpenChange={dialog.onOpenChange}
+        />
+      </Dialog>
     </section>
   );
 };

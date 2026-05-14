@@ -17,18 +17,20 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { cn, formatCurrency, formatNumber, getImageUrl } from "@/lib/utils";
 import { usePublicDoctorList } from "@/hooks/public/usePublicDoctor";
-import DoctorDialog from "../DoctorDialog";
+import useDialog from "@/hooks/useDialog";
+import { Dialog } from "@/components/ui/dialog";
+import DoctorDialog from "@/components/DoctorDialog";
 
 const FeaturedDoctorsSection = () => {
+  const dialog = useDialog<{ doctorId: string }>();
+
   const publicDoctorList = usePublicDoctorList({ isFeatured: true });
 
   const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
 
-  // Dialog state
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [current, setCurrent] = useState(0);
+
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!api) return;
@@ -38,8 +40,7 @@ const FeaturedDoctorsSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    setSelectedDoctorId(id);
-    setDialogOpen(true);
+    dialog.openDialog({ doctorId: id });
   };
 
   return (
@@ -191,8 +192,9 @@ const FeaturedDoctorsSection = () => {
         </div>
       </div>
 
-      {/* Doctor Dialog */}
-      <DoctorDialog doctorId={selectedDoctorId} open={dialogOpen} onOpenChange={setDialogOpen} />
+      <Dialog open={dialog.open} onOpenChange={dialog.onOpenChange} modal>
+        <DoctorDialog doctorId={dialog.data?.doctorId} onOpenChange={dialog.onOpenChange} />
+      </Dialog>
     </section>
   );
 };
