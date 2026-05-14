@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronRight, ChevronLeft, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepSpecialty } from "@/components/Booking/StepSpecialty";
@@ -59,11 +58,12 @@ export default function BookingPage() {
             <StepBar current={step} />
 
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-              {step === 0 && <StepSpecialty />}
-              {step === 1 && <StepDoctor />}
-              {step === 2 && <StepSchedule />}
-              {step === 3 && <StepDetails />}
-              {step === 4 && <StepReview />}
+              {/* {step === 0 && <StepSpecialty />} */}
+              <StepSchedule />
+              {/* {step === 1 && <StepDoctor />} */}
+              {/* {step === 2 && <StepSchedule />} */}
+              {/* {step === 3 && <StepDetails />} */}
+              {/* {step === 4 && <StepReview />} */}
             </div>
 
             {/* Nav buttons */}

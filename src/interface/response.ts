@@ -2,6 +2,7 @@ import {
   APPOINTMENT_STATUS,
   BLOOD_TYPE,
   BOOKING_TYPE,
+  EXCEPTION_TYPE,
   GENDER,
   REVIEW_STATUS,
   ROLE_NAME,
@@ -99,4 +100,11 @@ export type ReviewResponse = BaseEntityResponse & {
   title: string;
   content: string;
   status: REVIEW_STATUS;
+};
+
+export type DoctorScheduleException = BaseEntityResponse & {
+  doctorProfile: DoctorProfileResponse;
+  exceptionDate: string;
+  type: EXCEPTION_TYPE;
+  reason: string;
 };

@@ -63,3 +63,8 @@ export enum REVIEW_STATUS {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
 }
+
+export enum EXCEPTION_TYPE {
+  LEAVE = "LEAVE", // nghỉ phép (T2-T6)
+  EXTRA = "EXTRA", // làm thêm (T7, CN)
+}
