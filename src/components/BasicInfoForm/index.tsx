@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+import { useUpdateUser } from "@/hooks/auth/useUpdateUser";
 
 type VerifiedBadgeProps = {
   verified: boolean;
@@ -109,6 +110,8 @@ export function BasicInfoForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
 
+  const updateUser = useUpdateUser();
+
   const isLoading = currentProfile?.isLoading ?? true;
 
   const initialValues = useRef<BasicInfoFormValues>({
@@ -125,8 +128,9 @@ export function BasicInfoForm() {
     helpers: FormikHelpers<BasicInfoFormValues>
   ) => {
     try {
-      console.log("BasicInfo submit →", values);
+      await updateUser.trigger(values);
       setIsEditing(false);
+      currentProfile.mutate();
     } catch (error) {
       console.error(error);
     } finally {

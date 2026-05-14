@@ -43,7 +43,7 @@ export function AuthErrorDialog() {
   function handleConfirm() {
     close();
     if (type === "unauthenticated") {
-      router.push("/login");
+      router.push("/auth/login");
     } else {
       router.push("/");
     }

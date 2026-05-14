@@ -27,7 +27,7 @@ const SessionProvider = ({ children }: { children: React.ReactNode }) => {
         await refresh();
         if (!isAuthenticated) {
           saveRedirectPath(pathname);
-          router.replace("/login");
+          router.replace("/auth/login");
         }
       } finally {
         setInitializing(false);

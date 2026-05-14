@@ -140,13 +140,13 @@ const Header = () => {
             ) : (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Đăng nhập</Link>
+                  <Link href="/auth/login">Đăng nhập</Link>
                 </Button>
                 <Button
                   asChild
                   className="bg-linear-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white shadow-sm"
                 >
-                  <Link href="/register">Đăng ký</Link>
+                  <Link href="/auth/register">Đăng ký</Link>
                 </Button>
               </>
             )}

@@ -329,7 +329,7 @@ const RegisterForm = () => {
               </Button> */}
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <Link href="/login" className="underline underline-offset-4">
+                <Link href="/auth/login" className="underline underline-offset-4">
                   Sign in
                 </Link>
               </p>
