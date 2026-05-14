@@ -7,6 +7,7 @@ import {
   formatDuration,
   intervalToDuration,
   isValid,
+  parse,
   parseISO,
 } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -199,4 +200,28 @@ export function getInitials(name: string) {
     .map((w) => w[0])
     .join("")
     .toUpperCase();
+}
+
+/**
+ * Parse a date string using a custom pattern (date-fns format tokens)
+ * @param value  - The date string to parse
+ * @param pattern - date-fns format pattern (e.g. "dd/MM/yyyy", "yyyy-MM-dd HH:mm")
+ * @param referenceDate - Base date for parsing (defaults to now)
+ * @returns Date object or null if invalid
+ *
+ * @example
+ * parseDate("15/01/2025", "dd/MM/yyyy")          // → Date(2025-01-15)
+ * parseDate("2025-01-15 08:30", "yyyy-MM-dd HH:mm") // → Date(2025-01-15T08:30)
+ * parseDate("Jan 15, 2025", "MMM dd, yyyy")       // → Date(2025-01-15)
+ */
+export function parseDate(
+  value: string | null | undefined,
+  pattern: string,
+  referenceDate: Date = new Date()
+): Date | null {
+  if (!value) return null;
+
+  const parsed = parse(value, pattern, referenceDate, { locale: enUS });
+
+  return isValid(parsed) ? parsed : null;
 }

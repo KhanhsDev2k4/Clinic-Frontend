@@ -27,29 +27,25 @@ const EMPTY_MEDICAL = (userId: string): MedicalInfoFormValues => ({
   chronicDiseases: "",
 });
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default function ProfilePage() {
   return (
-    <main className="min-h-screen w-xl flex items-center justify-center p-6 bg-background">
-      <div className="w-full max-w-lg">
-        <Tabs defaultValue="basic">
-          <TabsList className="w-full mb-6">
-            <TabsTrigger value="basic" className="flex-1">
-              Basic Info
-            </TabsTrigger>
-            <TabsTrigger value="medical" className="flex-1">
-              Medical Info
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="basic">
-            <BasicInfoForm />
-          </TabsContent>
-          <TabsContent value="medical">
-            <MedicalInfoForm />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </main>
+    <div className="w-full max-w-lg">
+      <Tabs defaultValue="basic">
+        <TabsList className="w-full mb-6">
+          <TabsTrigger value="basic" className="flex-1">
+            Basic Info
+          </TabsTrigger>
+          <TabsTrigger value="medical" className="flex-1">
+            Medical Info
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="basic">
+          <BasicInfoForm />
+        </TabsContent>
+        <TabsContent value="medical">
+          <MedicalInfoForm />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

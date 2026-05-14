@@ -1,12 +1,13 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormik, FormikHelpers } from "formik";
-import { Pencil, X, Camera, Save } from "lucide-react";
-import { cn, formatDate, getImageUrl, getInitials } from "@/lib/utils";
+import { Pencil, X, Camera, Save, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { cn, formatDate, getImageUrl, getInitials, parseDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -19,12 +20,96 @@ import { GENDER } from "@/common";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+
+type VerifiedBadgeProps = {
+  verified: boolean;
+  onVerify?: () => void;
+};
+
+function VerifiedBadge({ verified, onVerify }: VerifiedBadgeProps) {
+  if (verified) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600 border border-emerald-200">
+        <CheckCircle2 className="h-3 w-3" />
+        Verified
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-600 border border-amber-200">
+        <AlertCircle className="h-3 w-3" />
+        Unverified
+      </span>
+    </span>
+  );
+}
+
+function BasicInfoSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center gap-4 mb-2">
+          {/* Avatar skeleton */}
+          <Skeleton className="h-16 w-16 rounded-full" />
+
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-5 w-36" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+
+          {/* Edit button skeleton */}
+          <Skeleton className="h-9 w-9 rounded-full" />
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Full name — spans 2 cols */}
+          <div className="sm:col-span-2 space-y-1.5">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+
+          {/* Email */}
+          <div className="space-y-1.5">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+
+          {/* Phone */}
+          <div className="space-y-1.5">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+
+          {/* Gender */}
+          <div className="space-y-1.5">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+
+          {/* Date of birth */}
+          <div className="space-y-1.5">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function BasicInfoForm() {
+  const currentProfile = useCurrentProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
+
+  const isLoading = currentProfile?.isLoading ?? true;
 
   const initialValues = useRef<BasicInfoFormValues>({
     fullName: "",
@@ -55,6 +140,21 @@ export function BasicInfoForm() {
     onSubmit,
   });
 
+  useEffect(() => {
+    if (currentProfile?.data?.body) {
+      initialValues.current = {
+        fullName: currentProfile.data.body?.fullName,
+        email: currentProfile.data.body?.email,
+        phoneNumber: currentProfile.data.body?.phone,
+        gender: currentProfile.data.body?.gender,
+        dateOfBirth: parseDate(currentProfile.data.body?.dateOfBirth, "dd/MM/yyyy")!,
+        avatarUrl: currentProfile.data.body?.pathAvatar,
+      };
+
+      formik.setValues(initialValues.current);
+    }
+  }, [currentProfile?.data]);
+
   const handleToggleEdit = () => {
     if (isEditing) {
       formik.resetForm();
@@ -70,7 +170,6 @@ export function BasicInfoForm() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const objectUrl = URL.createObjectURL(file);
     setAvatarPreview(objectUrl);
   };
@@ -82,6 +181,8 @@ export function BasicInfoForm() {
 
   const avatarSrc =
     avatarPreview || (formik.values.avatarUrl ? getImageUrl(formik.values.avatarUrl) : undefined);
+
+  if (isLoading) return <BasicInfoSkeleton />;
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,7 +203,6 @@ export function BasicInfoForm() {
                 </AvatarFallback>
               </Avatar>
 
-              {/* Hover overlay — only visible while editing */}
               {isEditing && (
                 <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
                   <Camera className="h-5 w-5 text-white" />
@@ -160,11 +260,9 @@ export function BasicInfoForm() {
           </div>
         </CardHeader>
 
-        {/* ── Form body ── */}
         <CardContent>
           <form onSubmit={formik.handleSubmit}>
             <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Full name */}
               <Field className="sm:col-span-2">
                 <FieldLabel htmlFor="fullName">Full name</FieldLabel>
                 <Input
@@ -184,9 +282,16 @@ export function BasicInfoForm() {
                 )}
               </Field>
 
-              {/* Email */}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">
+                  <span className="flex items-center gap-2">
+                    Email
+                    <VerifiedBadge
+                      verified={!!currentProfile?.data?.body?.emailVerified}
+                      onVerify={() => console.log("trigger email verify flow")}
+                    />
+                  </span>
+                </FieldLabel>
                 <Input
                   id="email"
                   name="email"
@@ -207,7 +312,15 @@ export function BasicInfoForm() {
 
               {/* Phone */}
               <Field>
-                <FieldLabel htmlFor="phoneNumber">Phone number</FieldLabel>
+                <FieldLabel htmlFor="phoneNumber">
+                  <span className="flex items-center gap-2">
+                    Phone number
+                    <VerifiedBadge
+                      verified={!!currentProfile?.data?.body?.phoneVerified}
+                      onVerify={() => console.log("trigger phone verify flow")}
+                    />
+                  </span>
+                </FieldLabel>
                 <Input
                   id="phoneNumber"
                   name="phoneNumber"
@@ -296,10 +409,19 @@ export function BasicInfoForm() {
                 <Button
                   type="submit"
                   disabled={formik.isSubmitting || !formik.dirty}
-                  className="gap-2"
+                  className="gap-2 min-w-[130px]"
                 >
-                  <Save className="h-4 w-4" />
-                  {formik.isSubmitting ? "Saving…" : "Save changes"}
+                  {formik.isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Saving…
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Save changes
+                    </>
+                  )}
                 </Button>
               </div>
             )}

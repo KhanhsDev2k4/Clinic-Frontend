@@ -24,13 +24,15 @@ export type BaseEntityResponse = {
 
 export type UserResponse = BaseEntityResponse & {
   email: string;
-  phone: string;
   fullName: string;
+  phone: string;
   role: ROLE_NAME;
-  status: USER_STATUS;
-  pathAvatar: string | null;
-  dob: string;
   gender: GENDER;
+  dateOfBirth: string;
+  status: USER_STATUS;
+  pathAvatar: string;
+  emailVerified: boolean;
+  phoneVerified: boolean;
 };
 
 export type SpecialtyResponse = {

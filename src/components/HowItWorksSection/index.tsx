@@ -273,7 +273,7 @@ const HowItWorksSection = () => {
             size="lg"
             className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white rounded-xl shadow-md"
           >
-            <Link href="/booking">Book Now</Link>
+            <Link href="/patient/booking">Book Now</Link>
           </Button>
         </div>
       </div>

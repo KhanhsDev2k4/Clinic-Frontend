@@ -212,7 +212,7 @@ const SpecialtyDialog = ({ specialtyId, onOpenChange }: SpecialtyDialogProps) =>
   const isLoadingDoctors = doctorQuery.isLoading;
 
   const handleBook = (doctorId: string) => {
-    router.push(`/booking?doctorId=${doctorId}&specialtyId=${specialtyId}`);
+    router.push(`/patient/booking?doctorId=${doctorId}&specialtyId=${specialtyId}`);
     onOpenChange(false);
   };
 

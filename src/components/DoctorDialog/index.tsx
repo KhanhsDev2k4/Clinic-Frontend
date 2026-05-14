@@ -104,12 +104,12 @@ const DoctorDialog = ({ doctorId, onOpenChange }: DoctorDialogProps) => {
   const user = doctor?.user;
 
   const handleBook = () => {
-    router.push(`/booking?doctorId=${doctorId}`);
+    router.push(`/patient/booking?doctorId=${doctorId}`);
     onOpenChange?.(false);
   };
 
   const handleMessage = () => {
-    router.push(`/messages?doctorId=${doctorId}`);
+    router.push(`/patient/messages?doctorId=${doctorId}`);
     onOpenChange?.(false);
   };
 

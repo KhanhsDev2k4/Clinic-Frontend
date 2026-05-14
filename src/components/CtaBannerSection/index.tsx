@@ -33,7 +33,7 @@ const CtaBannerSection = () => {
               size="lg"
               className="bg-white text-blue-700 hover:bg-blue-50 font-semibold rounded-xl gap-2 shadow-md min-w-40"
             >
-              <Link href="/booking">
+              <Link href="/patient/booking">
                 <CalendarCheck className="w-5 h-5" />
                 Book Now
               </Link>

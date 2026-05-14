@@ -116,9 +116,12 @@ const Header = () => {
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem asChild>
-                      <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
+                      <Link
+                        href="/patient/profile"
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
                         <User className="w-4 h-4" />
-                        Hồ sơ của tôi
+                        My Profile
                       </Link>
                     </DropdownMenuItem>
 
@@ -129,7 +132,7 @@ const Header = () => {
                       className="flex items-center gap-2 text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
-                      Đăng xuất
+                      Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

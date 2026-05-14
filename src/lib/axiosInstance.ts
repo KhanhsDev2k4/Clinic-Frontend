@@ -3,13 +3,14 @@ import { AUTH_SESSION_SWR_KEY } from "@/hooks";
 import { AUTH_INITIAL_STATE } from "@/hooks/useSession";
 import axios from "axios";
 import { mutate } from "swr";
+import { showUnauthenticatedDialog, showAccessDeniedDialog } from "@/hooks/useAuthDialog";
 
 /**
- * Chuẩn hóa body trước khi gửi:
- * - Trim string (bỏ khoảng trắng đầu/cuối)
- * - Loại bỏ field có giá trị null | undefined
- * - Xử lý đệ quy với nested object & array
- * - Bỏ qua FormData (để nguyên)
+ * Sanitize request body before sending:
+ * - Trim strings
+ * - Strip null / undefined fields
+ * - Recurse into nested objects & arrays
+ * - Skip FormData (leave as-is)
  */
 const sanitizeBody = (
   body: Record<string, unknown> | FormData | undefined
@@ -68,18 +69,43 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
 
-    if (error.response?.status !== 401 || originalRequest._retry) {
+    // ── 403 Access Denied ──────────────────────────────────────────────────
+    // Show dialog immediately — no retry logic needed.
+    if (status === 403) {
+      showAccessDeniedDialog();
       return Promise.reject(error);
     }
 
+    // ── Non-401 errors — pass through unchanged ────────────────────────────
+    if (status !== 401) {
+      return Promise.reject(error);
+    }
+
+    // ── 401 already retried → refresh also failed → session is truly gone ──
+    // Only show the unauthenticated dialog at this point, not on the first 401
+    // (which may just mean the access token expired and can be silently refreshed).
+    if (originalRequest._retry) {
+      showUnauthenticatedDialog();
+      return Promise.reject(error);
+    }
+
+    // ── 401 first attempt → try to silently refresh the token ─────────────
     if (isRefreshing) {
+      // Another request is already refreshing — queue this one and wait.
       return new Promise<string>((resolve, reject) => {
         failedQueue.push({ resolve, reject });
-      }).then((token) => {
-        originalRequest.headers.Authorization = `Bearer ${token}`;
-        return axiosInstance(originalRequest);
-      });
+      })
+        .then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return axiosInstance(originalRequest);
+        })
+        .catch((err) => {
+          // Queue was flushed with an error — refresh failed, show dialog.
+          showUnauthenticatedDialog();
+          return Promise.reject(err);
+        });
     }
 
     originalRequest._retry = true;
@@ -93,6 +119,7 @@ axiosInstance.interceptors.response.use(
         refreshToken,
       });
 
+      // Persist new tokens & update SWR session cache.
       localStorage.setItem("refreshToken", data.refreshToken);
       mutate(
         AUTH_SESSION_SWR_KEY,
@@ -104,9 +131,11 @@ axiosInstance.interceptors.response.use(
       originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
       return axiosInstance(originalRequest);
     } catch (refreshError) {
+      // Refresh request itself failed — clear local auth state and show dialog.
       processQueue(refreshError, null);
       localStorage.removeItem("refreshToken");
       mutate(AUTH_SESSION_SWR_KEY, AUTH_INITIAL_STATE, { revalidate: false });
+      showUnauthenticatedDialog();
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
