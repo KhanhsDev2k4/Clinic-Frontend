@@ -1,6 +1,6 @@
 import { AppointmentFilterFormValues } from "@/components/Appointments/TabContent";
 import { ApiPagedResponse, METHOD } from "@/hooks/global";
-import { useSWRWrapper } from "@/hooks/swr";
+import { useMutation, useSWRWrapper } from "@/hooks/swr";
 import { AppointmentResponse } from "@/interface/response";
 import { buildQueryParams } from "@/lib/utils";
 
@@ -21,5 +21,27 @@ export const usePatientAppointmentDetail = (aptId: string | null) => {
     url: `/api/v1/patient/appointment/${aptId}`,
     method: METHOD.GET,
     enable: !!aptId,
+  });
+};
+
+export const usePatientAppointmentCreate = () => {
+  return useMutation<AppointmentResponse>("/api/v1/patient/appointment", {
+    url: "/api/v1/patient/appointment",
+    method: METHOD.POST,
+    notification: {
+      message: "You have successfully booked an appointment",
+      title: "Appointment",
+    },
+  });
+};
+
+export const usePatientAppointmentUpdate = (appointmentId: string) => {
+  return useMutation<AppointmentResponse>(`/api/v1/patient/appointment/${appointmentId}`, {
+    url: `/api/v1/patient/appointment/${appointmentId}`,
+    method: METHOD.PATCH,
+    notification: {
+      message: "You have successfully updated your appointment",
+      title: "Appointment",
+    },
   });
 };

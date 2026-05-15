@@ -192,7 +192,7 @@ const FeaturedDoctorsSection = () => {
         </div>
       </div>
 
-      <Dialog open={popup.open} onOpenChange={popup.onOpenChange} modal>
+      <Dialog open={popup.open} onOpenChange={popup.onOpenChange}>
         <DoctorDialog doctorId={popup.data?.doctorId} onOpenChange={popup.onOpenChange} />
       </Dialog>
     </section>

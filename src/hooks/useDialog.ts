@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-interface popupContext<T> {
+export interface PopupContext<T> {
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
   data?: T;
 }
 
 const usePopup = <T = Record<string, unknown>>() => {
-  const [popupContext, setPopupContext] = useState<popupContext<T>>({});
+  const [popupContext, setPopupContext] = useState<PopupContext<T>>({});
 
   const openPopup = (data?: T) => {
     setPopupContext({ open: true, data });

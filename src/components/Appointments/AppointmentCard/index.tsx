@@ -1,8 +1,10 @@
 "use client";
 import { APPOINTMENT_STATUS } from "@/common";
 import BookingTypeBadge from "@/components/Appointments/BookingTypeBadge";
+import { CancelAppointmentDialog } from "@/components/Appointments/CancelAppointmentDialog";
 import DetailDrawer from "@/components/Appointments/DetailDrawer";
 import StatusBadge from "@/components/Appointments/StatusBadge";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,11 +29,22 @@ interface AppointmentCardProps {
 function AppointmentCard({ apt }: AppointmentCardProps) {
   const parsedDate = parseDate(apt.appointmentDate, "HH:mm:ss dd/MM/yyyy");
 
-  const canAct =
-    apt.status !== APPOINTMENT_STATUS.COMPLETED && apt.status !== APPOINTMENT_STATUS.CANCELLED;
+  const canCancel = [
+    APPOINTMENT_STATUS.PENDING,
+    APPOINTMENT_STATUS.CONFIRMED,
+    APPOINTMENT_STATUS.CHECKED_IN,
+    APPOINTMENT_STATUS.IN_PROGRESS,
+  ].includes(apt.status);
+  const canReschedule = [APPOINTMENT_STATUS.PENDING, APPOINTMENT_STATUS.CONFIRMED].includes(
+    apt.status
+  );
+  const canReactivate = apt.status === APPOINTMENT_STATUS.CANCELLED;
+
   const firstService = apt.clinicServices?.[0];
 
-  const popup = usePopup<{ appointmentId: string }>();
+  const sheetDetail = usePopup<{ appointmentId: string }>();
+
+  const dialogCancel = usePopup<{ appointmentId: string }>();
 
   return (
     <Card className="transition-colors hover:border-border/80">
@@ -82,28 +95,31 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
                 size="sm"
                 variant="outline"
                 className="h-7 text-xs gap-1"
-                onClick={() => popup.openPopup({ appointmentId: apt.id })}
+                onClick={() => sheetDetail.openPopup({ appointmentId: apt.id })}
               >
                 <Eye className="h-3.5 w-3.5" /> View details
               </Button>
-              {canAct && (
+              {(canCancel || canReschedule || canReactivate) && (
                 <>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 text-xs gap-1"
-                    // onClick={() => onReschedule(apt)}
-                  >
-                    <CalendarClock className="h-3.5 w-3.5" /> Reschedule
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 text-xs gap-1 text-destructive border-destructive/30 hover:bg-destructive/5"
-                    // onClick={() => onCancel(apt)}
-                  >
-                    <XCircle className="h-3.5 w-3.5" /> Cancel
-                  </Button>
+                  {canReschedule && (
+                    <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
+                      <CalendarClock className="h-4 w-4" /> Reschedule
+                    </Button>
+                  )}
+                  {canCancel && (
+                    <Button
+                      variant="outline"
+                      className="h-7 text-xs gap-1 text-destructive border-destructive/30 hover:bg-destructive/5"
+                      onClick={() => dialogCancel.openPopup({ appointmentId: apt.id })}
+                    >
+                      <XCircle className="h-4 w-4" /> Cancel
+                    </Button>
+                  )}
+                  {canReactivate && (
+                    <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
+                      <CalendarClock className="h-4 w-4" /> Reactivate
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -116,9 +132,20 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
           </div>
         </div>
       </CardContent>
-      <Sheet open={popup.open} onOpenChange={popup.onOpenChange} modal>
-        <DetailDrawer appointmentId={popup.data?.appointmentId!} onClose={popup.closePopup} />
+      <Sheet open={sheetDetail.open} onOpenChange={sheetDetail.onOpenChange}>
+        <DetailDrawer
+          appointmentId={sheetDetail.data?.appointmentId!}
+          onClose={sheetDetail.closePopup}
+          dialogCancel={dialogCancel}
+        />
       </Sheet>
+
+      <AlertDialog open={dialogCancel?.open} onOpenChange={dialogCancel?.onOpenChange}>
+        <CancelAppointmentDialog
+          appointmentId={dialogCancel?.data?.appointmentId!}
+          onClose={dialogCancel?.closePopup}
+        />
+      </AlertDialog>
     </Card>
   );
 }

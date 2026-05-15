@@ -22,14 +22,3 @@ export const usePublicAppointment = (
     }
   );
 };
-
-export const usePublicAppointmentCreate = () => {
-  return useMutation<AppointmentResponse>("/api/v1/patient/appointment", {
-    url: "/api/v1/patient/appointment",
-    method: METHOD.POST,
-    notification: {
-      message: "You have successfully booked an appointment",
-      title: "Appointment",
-    },
-  });
-};

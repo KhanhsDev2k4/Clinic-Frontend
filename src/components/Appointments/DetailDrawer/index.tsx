@@ -1,14 +1,17 @@
 "use client";
 import { APPOINTMENT_STATUS, INVOICE_STATUS } from "@/common";
 import BookingTypeBadge from "@/components/Appointments/BookingTypeBadge";
+import { CancelAppointmentDialog } from "@/components/Appointments/CancelAppointmentDialog";
 import { statusConfig } from "@/components/Appointments/DetailDrawer/config";
 import StatusBadge from "@/components/Appointments/StatusBadge";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { usePatientAppointmentDetail } from "@/hooks/patient/usePatientAppointment";
+import usePopup from "@/hooks/useDialog";
 import { formatCurrency, formatDate, formatTime, getInitials, parseDate } from "@/lib/utils";
 import { Calendar, CalendarClock, Clock, ListOrdered, XCircle } from "lucide-react";
 import Image from "next/image";
@@ -16,9 +19,10 @@ import Image from "next/image";
 interface DetailDrawerProps {
   appointmentId: string | null;
   onClose: () => void;
+  dialogCancel?: ReturnType<typeof usePopup<{ appointmentId: string }>>;
 }
 
-function DetailDrawer({ appointmentId, onClose }: DetailDrawerProps) {
+function DetailDrawer({ appointmentId, onClose, dialogCancel }: DetailDrawerProps) {
   const patientAppointment = usePatientAppointmentDetail(appointmentId);
   const apt = patientAppointment.data?.body;
 
@@ -31,6 +35,9 @@ function DetailDrawer({ appointmentId, onClose }: DetailDrawerProps) {
     APPOINTMENT_STATUS.CHECKED_IN,
     APPOINTMENT_STATUS.IN_PROGRESS,
   ].includes(apt.status);
+
+  // const dialogCancel = usePopup<{ appointmentId: string }>();
+
   const canReschedule = [APPOINTMENT_STATUS.PENDING, APPOINTMENT_STATUS.CONFIRMED].includes(
     apt.status
   );
@@ -283,7 +290,10 @@ function DetailDrawer({ appointmentId, onClose }: DetailDrawerProps) {
             <Button
               variant="outline"
               className="flex-1 gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/5"
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                dialogCancel?.openPopup({ appointmentId: apt.id });
+              }}
             >
               <XCircle className="h-4 w-4" /> Cancel
             </Button>

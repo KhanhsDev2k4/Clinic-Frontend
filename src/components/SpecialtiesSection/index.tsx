@@ -126,7 +126,7 @@ const SpecialtiesSection = () => {
         </div>
       </div>
 
-      <Dialog open={popup.open} onOpenChange={popup.onOpenChange} modal>
+      <Dialog open={popup.open} onOpenChange={popup.onOpenChange}>
         <SpecialtyDialog specialtyId={popup.data?.specialtyId!} onOpenChange={popup.onOpenChange} />
       </Dialog>
     </section>

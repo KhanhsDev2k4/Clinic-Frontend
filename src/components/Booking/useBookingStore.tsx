@@ -1,11 +1,11 @@
 import { BOOKING_TYPE, ITEM_TYPE, SPECIALTY_TYPE } from "@/common";
 import { BOOKING_STORE_KEY } from "@/hooks";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+import { usePatientAppointmentCreate } from "@/hooks/patient/usePatientAppointment";
 import { usePatientCreateInvoice } from "@/hooks/patient/usePatientInvoice";
-import { usePublicAppointmentCreate } from "@/hooks/public/usePublicAppointment";
 import { usePublicServiceList } from "@/hooks/public/usePublicService";
 import { DoctorProfileResponse, SpecialtyResponse } from "@/interface/response";
-import { formatDate, formatDateToApi } from "@/lib/utils";
+import { formatDateToApi } from "@/lib/utils";
 import { set } from "date-fns";
 import {
   HeartPulse,
@@ -98,7 +98,7 @@ export const useBookingStore = () => {
   const currentProfile = useCurrentProfile();
   const patientCreateInvoice = usePatientCreateInvoice();
 
-  const appointmentMutation = usePublicAppointmentCreate();
+  const appointmentMutation = usePatientAppointmentCreate();
   const bookingStore = useSWR<BookingState>(BOOKING_STORE_KEY, null, {
     fallbackData: initialBookingState,
   });
