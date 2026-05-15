@@ -19,6 +19,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { usePatientAppointment } from "@/hooks/patient/usePatientAppointment";
 import { APPOINTMENT_TAB } from "@/components/Appointments/config";
 import { FILTER_ALL_VALUE } from "@/hooks/global";
+import { useVirtualizer } from "@tanstack/react-virtual";
+
+const CARD_ESTIMATED_HEIGHT = 120;
 
 interface TabContentProps {
   tab: APPOINTMENT_TAB;
@@ -43,15 +46,26 @@ function TabContent({ tab }: TabContentProps) {
 
   const debouncedKeyword = useDebounce(formik.values.keyword, 600);
 
-  const patientAppointment = usePatientAppointment({
+  const filter: AppointmentFilterFormValues = {
     keyword: debouncedKeyword,
     bookingType: formik.values.bookingType,
     typeTime: formik.values.typeTime,
-  });
+  };
+
+  const patientAppointment = usePatientAppointment(filter);
 
   useEffect(() => {
     formik.setFieldValue("typeTime", tab);
   }, [tab]);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: patientAppointment?.data?.body?.data?.length ?? 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => CARD_ESTIMATED_HEIGHT,
+    overscan: 3,
+  });
 
   return (
     <div className="flex flex-col gap-3">
@@ -94,9 +108,38 @@ function TabContent({ tab }: TabContentProps) {
       ) : !patientAppointment?.data?.body?.data?.length ? (
         <EmptyState tab={tab} />
       ) : (
-        patientAppointment.data?.body?.data?.map((apt) => (
-          <AppointmentCard key={apt.id} apt={apt} />
-        ))
+        <div
+          ref={parentRef}
+          style={{
+            height: "600px",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            style={{
+              height: virtualizer.getTotalSize(),
+              position: "relative",
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualRow) => (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  transform: `translateY(${virtualRow.start}px)`,
+                  paddingBottom: 12,
+                }}
+              >
+                <AppointmentCard apt={patientAppointment?.data?.body?.data?.[virtualRow?.index]!} />
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

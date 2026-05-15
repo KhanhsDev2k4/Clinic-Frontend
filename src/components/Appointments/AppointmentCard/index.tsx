@@ -37,6 +37,7 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
     APPOINTMENT_STATUS.CHECKED_IN,
     APPOINTMENT_STATUS.IN_PROGRESS,
   ].includes(apt.status);
+
   const canReschedule = [APPOINTMENT_STATUS.PENDING, APPOINTMENT_STATUS.CONFIRMED].includes(
     apt.status
   );

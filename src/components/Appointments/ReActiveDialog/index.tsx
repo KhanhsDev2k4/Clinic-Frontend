@@ -1,4 +1,5 @@
 "use client";
+import { APPOINTMENT_STATUS } from "@/common";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -41,8 +42,10 @@ export function ReactivateAppointmentDialog({
   const strikethrough = !SLOT_AVAILABLE;
 
   const handleConfirm = async () => {
-    // TODO: await patientAppointmentUpdate.trigger({ status: APPOINTMENT_STATUS.PENDING })
-    onClose?.();
+    try {
+      await patientAppointmentUpdate.trigger({ status: APPOINTMENT_STATUS.PENDING });
+      onClose?.();
+    } catch (error) {}
   };
 
   // ── Reusable schedule preview card ────────────────────────────────────────

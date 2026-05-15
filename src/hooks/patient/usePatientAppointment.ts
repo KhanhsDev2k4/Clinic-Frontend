@@ -1,14 +1,16 @@
 import { AppointmentFilterFormValues } from "@/components/Appointments/TabContent";
 import { ApiPagedResponse, METHOD } from "@/hooks/global";
 import { useMutation, useSWRWrapper } from "@/hooks/swr";
-import { AppointmentResponse } from "@/interface/response";
+import { useSession } from "@/hooks/useSession";
+import { AppointmentResponse, AppointmentStatisticsResponse } from "@/interface/response";
 import { buildQueryParams } from "@/lib/utils";
 
 export const usePatientAppointment = (filter?: AppointmentFilterFormValues) => {
   const query = buildQueryParams(filter);
+  const { accessToken } = useSession();
 
   return useSWRWrapper<ApiPagedResponse<AppointmentResponse>>(
-    `/api/v1/patient/appointment?${query}`,
+    `/api/v1/patient/appointment?${query}&accessToken=${accessToken}`,
     {
       url: `/api/v1/patient/appointment?${query}`,
       method: METHOD.GET,
@@ -17,11 +19,15 @@ export const usePatientAppointment = (filter?: AppointmentFilterFormValues) => {
 };
 
 export const usePatientAppointmentDetail = (aptId: string | null) => {
-  return useSWRWrapper<AppointmentResponse>(`/api/v1/patient/appointment/${aptId}`, {
-    url: `/api/v1/patient/appointment/${aptId}`,
-    method: METHOD.GET,
-    enable: !!aptId,
-  });
+  const { accessToken } = useSession();
+  return useSWRWrapper<AppointmentResponse>(
+    `/api/v1/patient/appointment/${aptId}?accessToken=${accessToken}`,
+    {
+      url: `/api/v1/patient/appointment/${aptId}?accessToken=${accessToken}`,
+      method: METHOD.GET,
+      enable: !!aptId,
+    }
+  );
 };
 
 export const usePatientAppointmentCreate = () => {
@@ -44,4 +50,26 @@ export const usePatientAppointmentUpdate = (appointmentId: string) => {
       title: "Appointment",
     },
   });
+};
+
+export const usePatientAppointmentStats = () => {
+  const { accessToken } = useSession();
+  return useSWRWrapper<AppointmentStatisticsResponse>(
+    "/api/v1/patient/appointment/statistics?accessToken=" + accessToken,
+    {
+      url: "/api/v1/patient/appointment/statistics",
+      method: METHOD.GET,
+    }
+  );
+};
+
+export const usePatientNextAppointment = () => {
+  const { accessToken } = useSession();
+  return useSWRWrapper<AppointmentResponse>(
+    "/api/v1/patient/appointment/next?accessToken=" + accessToken,
+    {
+      url: "/api/v1/patient/appointment/next",
+      method: METHOD.GET,
+    }
+  );
 };

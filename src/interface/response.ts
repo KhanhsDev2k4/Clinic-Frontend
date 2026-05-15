@@ -209,3 +209,16 @@ export type InvoiceItemResponse = {
 
   deleted: boolean;
 };
+
+export type AppointmentStatisticsResponse = {
+  todayCount: number;
+  upcomingCount: number;
+
+  pendingCount: number;
+  confirmedCount: number;
+  checkedInCount: number;
+  inProgressCount: number;
+  completedCount: number;
+  cancelledCount: number;
+  noShowCount: number;
+};
