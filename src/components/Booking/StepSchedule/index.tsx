@@ -6,17 +6,20 @@ import { useBookingStore } from "@/components/Booking/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePublicDoctorScheduleExceptions } from "@/hooks/public/usePublicDoctorSchedule";
-import { formatDate, formatDateToApi, parseDate } from "@/lib/utils";
-import { isSameDay } from "date-fns";
+import { formatDateToApi, parseDate } from "@/lib/utils";
+import { isSameDay, startOfDay } from "date-fns";
 import { useState } from "react";
 
 function StepSchedule() {
-  const [currentDay, setCurrentDay] = useState(new Date());
+  const today = startOfDay(new Date());
 
-  const startOfMonth = new Date(currentDay.getFullYear(), currentDay.getMonth(), 1);
-  const endOfMonth = new Date(currentDay.getFullYear(), currentDay.getMonth() + 1, 0);
+  const [displayMonth, setDisplayMonth] = useState(today);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
-  const { store } = useBookingStore();
+  const startOfMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1);
+  const endOfMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 0);
+
+  const { store, setBookingState } = useBookingStore();
 
   const publicDoctorScheduleExceptions = usePublicDoctorScheduleExceptions({
     doctorId: "40024a2e-8bd4-41cb-abbb-e46f08cc87b0",
@@ -25,9 +28,6 @@ function StepSchedule() {
   });
 
   const getDayStatus = (date: Date): DayStatus => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     if (date < today) return "disabled";
 
     const exception = publicDoctorScheduleExceptions.data?.body?.data?.find((e) =>
@@ -38,9 +38,17 @@ function StepSchedule() {
 
     if (isWeekend) {
       return exception?.type === EXCEPTION_TYPE.EXTRA ? "overtime" : "disabled";
-    } else {
-      return exception?.type === EXCEPTION_TYPE.LEAVE ? "full" : "available";
     }
+
+    return exception?.type === EXCEPTION_TYPE.LEAVE ? "leave" : "available";
+  };
+
+  const handleSelectDate = (date: Date | undefined) => {
+    if (!date) return;
+    const status = getDayStatus(date);
+    if (status === "disabled" || status === "full" || status === "leave") return;
+
+    setSelectedDate(date);
   };
 
   return (
@@ -48,19 +56,16 @@ function StepSchedule() {
       <CardContent className="p-0">
         <Calendar
           mode="single"
-          defaultMonth={currentDay}
-          selected={currentDay}
-          onSelect={() => {}}
-          onMonthChange={(month) => {
-            setCurrentDay(month);
-          }}
+          month={displayMonth}
+          selected={selectedDate}
+          onSelect={handleSelectDate}
+          onMonthChange={setDisplayMonth}
+          disabled={(date) => date < today}
           numberOfMonths={1}
           captionLayout="dropdown"
           className="[--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]"
           formatters={{
-            formatMonthDropdown: (date) => {
-              return date.toLocaleString("default", { month: "long" });
-            },
+            formatMonthDropdown: (date) => date.toLocaleString("default", { month: "long" }),
           }}
           components={{
             DayButton: (props) => <DayButton {...props} dayStatus={getDayStatus(props.day.date)} />,
