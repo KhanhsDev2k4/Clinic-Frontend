@@ -10,12 +10,12 @@ import { usePublicSpecialtyList } from "@/hooks/public/usePublicSpecialty";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Dialog } from "@/components/ui/dialog";
-import useDialog from "@/hooks/useDialog";
+import usePopup from "@/hooks/useDialog";
 import SpecialtyDialog from "@/components/SpecialtyDialog";
 
 const SpecialtiesSection = () => {
   const publicSpecialtyList = usePublicSpecialtyList({ isActive: true });
-  const dialog = useDialog<{ specialtyId: string }>();
+  const popup = usePopup<{ specialtyId: string }>();
 
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -29,7 +29,7 @@ const SpecialtiesSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    dialog.openDialog({ specialtyId: id });
+    popup.openPopup({ specialtyId: id });
   };
 
   return (
@@ -126,11 +126,8 @@ const SpecialtiesSection = () => {
         </div>
       </div>
 
-      <Dialog open={dialog.open} onOpenChange={dialog.onOpenChange} modal>
-        <SpecialtyDialog
-          specialtyId={dialog.data?.specialtyId!}
-          onOpenChange={dialog.onOpenChange}
-        />
+      <Dialog open={popup.open} onOpenChange={popup.onOpenChange} modal>
+        <SpecialtyDialog specialtyId={popup.data?.specialtyId!} onOpenChange={popup.onOpenChange} />
       </Dialog>
     </section>
   );

@@ -94,7 +94,6 @@ export function useAuth() {
     if (currentAccessToken) return;
 
     const refreshToken = localStorage.getItem("refreshToken");
-    console.log("Check refreshToken", refreshToken);
     if (!refreshToken) return;
 
     try {

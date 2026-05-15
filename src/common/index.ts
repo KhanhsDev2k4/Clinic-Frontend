@@ -75,3 +75,10 @@ export enum ITEM_TYPE {
   LAB_TEST = "LAB_TEST",
   OTHER = "OTHER",
 }
+
+export enum INVOICE_STATUS {
+  DRAFT = "DRAFT",
+  PENDING = "PENDING",
+  PAID = "PAID",
+  CANCELLED = "CANCELLED",
+}

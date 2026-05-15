@@ -4,6 +4,7 @@ import {
   BOOKING_TYPE,
   EXCEPTION_TYPE,
   GENDER,
+  INVOICE_STATUS,
   REVIEW_STATUS,
   ROLE_NAME,
   SPECIALTY_TYPE,
@@ -19,8 +20,10 @@ export type BaseFilter = {
 
 export type BaseEntityResponse = {
   id: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string | null;
+  deletedAt?: string | null;
+  deleted?: boolean;
 };
 
 export type UserResponse = BaseEntityResponse & {
@@ -79,17 +82,57 @@ export type PatientProfileResponse = BaseEntityResponse & {
 
 export type AppointmentResponse = BaseEntityResponse & {
   appointmentCode: string;
-  patientProfile: PatientProfileResponse;
-  doctorProfile: DoctorProfileResponse;
-  specialty: SpecialtyResponse;
+
+  // format: "16:00:00 15/05/2026"
   appointmentDate: string;
-  appointmentTime: string;
+
   status: APPOINTMENT_STATUS;
+
   bookingType: BOOKING_TYPE;
+
   reason: string;
   symptoms: string;
   notes: string;
-  queueNumber: number;
+
+  queueNumber: number | null;
+
+  patientProfileId: string;
+  patientName: string;
+
+  doctorProfileId: string;
+  doctorName: string;
+  doctorPathAvatar: string | null;
+
+  specialtyId: string;
+  specialtyName: string;
+
+  invoices: InvoiceResponse[] | null;
+
+  clinicServices: ClinicServiceResponse[];
+
+  fee: number;
+};
+
+export type ClinicServiceResponse = {
+  id: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+
+  name: string;
+  slug: string;
+  description: string;
+
+  price: number;
+  promotionalPrice: number | null;
+
+  duration: number;
+
+  image: string;
+
+  isFeatured: boolean;
+  isActive: boolean;
+  deleted: boolean;
 };
 
 export type ReviewResponse = BaseEntityResponse & {
@@ -119,4 +162,48 @@ export type ServiceResponse = BaseEntityResponse & {
   image: string;
   isFeatured: boolean;
   isActive: boolean;
+};
+
+export type InvoiceResponse = {
+  id: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+
+  invoiceCode: string;
+
+  patientProfile: PatientProfileResponse;
+
+  invoiceDate: string;
+
+  subtotal: number;
+  discountAmount: number;
+  totalAmount: number;
+  insuranceCovered: number;
+  patientPaid: number;
+  balance: number;
+
+  status: INVOICE_STATUS;
+
+  items: InvoiceItemResponse[];
+
+  deleted: boolean;
+};
+
+export type InvoiceItemResponse = {
+  id: string;
+
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+
+  serviceName: string;
+
+  quantity: number;
+
+  unitPrice: number;
+
+  totalPrice: number;
+
+  deleted: boolean;
 };

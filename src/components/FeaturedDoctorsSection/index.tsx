@@ -17,12 +17,12 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { cn, formatCurrency, formatNumber, getImageUrl } from "@/lib/utils";
 import { usePublicDoctorList } from "@/hooks/public/usePublicDoctor";
-import useDialog from "@/hooks/useDialog";
+import usePopup from "@/hooks/useDialog";
 import { Dialog } from "@/components/ui/dialog";
 import DoctorDialog from "@/components/DoctorDialog";
 
 const FeaturedDoctorsSection = () => {
-  const dialog = useDialog<{ doctorId: string }>();
+  const popup = usePopup<{ doctorId: string }>();
 
   const publicDoctorList = usePublicDoctorList({ isFeatured: true });
 
@@ -40,7 +40,7 @@ const FeaturedDoctorsSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    dialog.openDialog({ doctorId: id });
+    popup.openPopup({ doctorId: id });
   };
 
   return (
@@ -192,8 +192,8 @@ const FeaturedDoctorsSection = () => {
         </div>
       </div>
 
-      <Dialog open={dialog.open} onOpenChange={dialog.onOpenChange} modal>
-        <DoctorDialog doctorId={dialog.data?.doctorId} onOpenChange={dialog.onOpenChange} />
+      <Dialog open={popup.open} onOpenChange={popup.onOpenChange} modal>
+        <DoctorDialog doctorId={popup.data?.doctorId} onOpenChange={popup.onOpenChange} />
       </Dialog>
     </section>
   );

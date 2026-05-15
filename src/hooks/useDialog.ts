@@ -1,33 +1,33 @@
 import { useState } from "react";
 
-interface DialogContext<T> {
+interface popupContext<T> {
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
   data?: T;
 }
 
-const useDialog = <T = Record<string, unknown>>() => {
-  const [dialogContext, setDialogContext] = useState<DialogContext<T>>({});
+const usePopup = <T = Record<string, unknown>>() => {
+  const [popupContext, setPopupContext] = useState<popupContext<T>>({});
 
-  const openDialog = (data?: T) => {
-    setDialogContext({ open: true, data });
+  const openPopup = (data?: T) => {
+    setPopupContext({ open: true, data });
   };
 
-  const closeDialog = () => {
-    setDialogContext({ open: false, data: undefined });
+  const closePopup = () => {
+    setPopupContext({ open: false, data: undefined });
   };
 
   const onOpenChange = (open: boolean) => {
-    setDialogContext((prev) => ({ ...prev, open }));
+    setPopupContext((prev) => ({ ...prev, open }));
   };
 
   return {
-    open: dialogContext.open,
-    data: dialogContext.data,
-    openDialog,
-    closeDialog,
+    open: popupContext.open,
+    data: popupContext.data,
+    openPopup,
+    closePopup,
     onOpenChange,
   };
 };
 
-export default useDialog;
+export default usePopup;
