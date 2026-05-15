@@ -1,8 +1,8 @@
 "use client";
 
-import { EXCEPTION_TYPE } from "@/common";
+import { DAY_STATUS, EXCEPTION_TYPE } from "@/common";
 import CalendarLegend from "@/components/Booking/StepSchedule/CalendarLegend";
-import DayButton, { DayStatus } from "@/components/Booking/StepSchedule/DayButton";
+import DayButton from "@/components/Booking/StepSchedule/DayButton";
 import TimePicker from "@/components/Booking/StepSchedule/TimePicker";
 import { useBookingStore } from "@/components/Booking/useBookingStore";
 import { StepScheduleSkeleton } from "@/components/StepScheduleSkeleton";
@@ -10,13 +10,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePublicDoctorScheduleExceptions } from "@/hooks/public/usePublicDoctorSchedule";
 import { formatDateToApi, parseDate } from "@/lib/utils";
-import { isSameDay, startOfDay } from "date-fns";
-import { useState } from "react";
+import { isBefore, isSameDay, startOfDay } from "date-fns";
+import { useRef, useState } from "react";
 
 function StepSchedule() {
-  const today = startOfDay(new Date());
+  const today = useRef(startOfDay(new Date()));
 
-  const [displayMonth, setDisplayMonth] = useState(today);
+  const [displayMonth, setDisplayMonth] = useState(today.current);
 
   const startOfMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), 1);
   const endOfMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 0);
@@ -29,8 +29,8 @@ function StepSchedule() {
     to: formatDateToApi(endOfMonth),
   });
 
-  const getDayStatus = (date: Date): DayStatus => {
-    if (date < today) return "disabled";
+  const getDayStatus = (date: Date): DAY_STATUS => {
+    if (isBefore(date, today.current)) return DAY_STATUS.DISABLED;
 
     const exception = publicDoctorScheduleExceptions.data?.body?.data?.find((e) =>
       isSameDay(parseDate(e.exceptionDate, "dd/MM/yyyy")!, date)
@@ -38,16 +38,17 @@ function StepSchedule() {
 
     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
     if (isWeekend) {
-      return exception?.type === EXCEPTION_TYPE.EXTRA ? "overtime" : "disabled";
+      return exception?.type === EXCEPTION_TYPE.EXTRA ? DAY_STATUS.OVERTIME : DAY_STATUS.DISABLED;
     }
 
-    return exception?.type === EXCEPTION_TYPE.LEAVE ? "leave" : "available";
+    return exception?.type === EXCEPTION_TYPE.LEAVE ? DAY_STATUS.LEAVE : DAY_STATUS.AVAILABLE;
   };
 
   const handleSelectDate = (date: Date | undefined) => {
     if (!date) return;
     const status = getDayStatus(date);
-    if (status === "disabled" || status === "full" || status === "leave") return;
+    if (status === DAY_STATUS.DISABLED || status === DAY_STATUS.FULL || status === DAY_STATUS.LEAVE)
+      return;
     setBookingState({ date, time: undefined });
   };
 
@@ -64,7 +65,7 @@ function StepSchedule() {
               selected={store?.date}
               onSelect={handleSelectDate}
               onMonthChange={setDisplayMonth}
-              disabled={(date) => date < today}
+              disabled={(date) => isBefore(date, today.current)}
               numberOfMonths={1}
               captionLayout="dropdown"
               className="[--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]"

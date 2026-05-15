@@ -20,9 +20,15 @@ interface DetailDrawerProps {
   appointmentId: string | null;
   onClose: () => void;
   dialogCancel?: ReturnType<typeof usePopup<{ appointmentId: string }>>;
+  sheetReschedule?: ReturnType<typeof usePopup<{ appointmentId: string }>>;
 }
 
-function DetailDrawer({ appointmentId, onClose, dialogCancel }: DetailDrawerProps) {
+function DetailDrawer({
+  appointmentId,
+  onClose,
+  dialogCancel,
+  sheetReschedule,
+}: DetailDrawerProps) {
   const patientAppointment = usePatientAppointmentDetail(appointmentId);
   const apt = patientAppointment.data?.body;
 
@@ -35,8 +41,6 @@ function DetailDrawer({ appointmentId, onClose, dialogCancel }: DetailDrawerProp
     APPOINTMENT_STATUS.CHECKED_IN,
     APPOINTMENT_STATUS.IN_PROGRESS,
   ].includes(apt.status);
-
-  // const dialogCancel = usePopup<{ appointmentId: string }>();
 
   const canReschedule = [APPOINTMENT_STATUS.PENDING, APPOINTMENT_STATUS.CONFIRMED].includes(
     apt.status
@@ -282,7 +286,14 @@ function DetailDrawer({ appointmentId, onClose, dialogCancel }: DetailDrawerProp
       {(canCancel || canReschedule || canReactivate) && (
         <div className="border-t px-5 py-4 flex gap-2">
           {canReschedule && (
-            <Button variant="outline" className="flex-1 gap-1.5" onClick={onClose}>
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5"
+              onClick={() => {
+                onClose();
+                sheetReschedule?.openPopup({ appointmentId: apt.id });
+              }}
+            >
               <CalendarClock className="h-4 w-4" /> Reschedule
             </Button>
           )}

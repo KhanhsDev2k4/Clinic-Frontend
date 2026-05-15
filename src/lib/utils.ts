@@ -193,7 +193,8 @@ export const getImageUrl = (path: string | null | undefined): string => {
   return `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`;
 };
 
-export function getInitials(name: string) {
+export function getInitials(name: string | undefined | null): string {
+  if (!name) return "";
   return name
     .split(" ")
     .slice(-2)

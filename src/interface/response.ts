@@ -86,6 +86,8 @@ export type AppointmentResponse = BaseEntityResponse & {
   // format: "16:00:00 15/05/2026"
   appointmentDate: string;
 
+  appointmentTime: string;
+
   status: APPOINTMENT_STATUS;
 
   bookingType: BOOKING_TYPE;

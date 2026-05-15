@@ -3,6 +3,7 @@ import { APPOINTMENT_STATUS } from "@/common";
 import BookingTypeBadge from "@/components/Appointments/BookingTypeBadge";
 import { CancelAppointmentDialog } from "@/components/Appointments/CancelAppointmentDialog";
 import DetailDrawer from "@/components/Appointments/DetailDrawer";
+import { RescheduleSheet } from "@/components/Appointments/RescheduleSheet";
 import StatusBadge from "@/components/Appointments/StatusBadge";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -43,6 +44,8 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
   const firstService = apt.clinicServices?.[0];
 
   const sheetDetail = usePopup<{ appointmentId: string }>();
+
+  const sheetReschedule = usePopup<{ appointmentId: string }>();
 
   const dialogCancel = usePopup<{ appointmentId: string }>();
 
@@ -102,7 +105,12 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
               {(canCancel || canReschedule || canReactivate) && (
                 <>
                   {canReschedule && (
-                    <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs gap-1"
+                      onClick={() => sheetReschedule.openPopup({ appointmentId: apt.id })}
+                    >
                       <CalendarClock className="h-4 w-4" /> Reschedule
                     </Button>
                   )}
@@ -137,6 +145,7 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
           appointmentId={sheetDetail.data?.appointmentId!}
           onClose={sheetDetail.closePopup}
           dialogCancel={dialogCancel}
+          sheetReschedule={sheetReschedule}
         />
       </Sheet>
 
@@ -146,6 +155,13 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
           onClose={dialogCancel?.closePopup}
         />
       </AlertDialog>
+
+      <Sheet open={sheetReschedule.open} onOpenChange={sheetReschedule.onOpenChange}>
+        <RescheduleSheet
+          appointmentId={sheetReschedule.data?.appointmentId!}
+          onClose={sheetReschedule.closePopup}
+        />
+      </Sheet>
     </Card>
   );
 }

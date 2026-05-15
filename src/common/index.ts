@@ -82,3 +82,11 @@ export enum INVOICE_STATUS {
   PAID = "PAID",
   CANCELLED = "CANCELLED",
 }
+
+export enum DAY_STATUS {
+  AVAILABLE = "available",
+  FULL = "full",
+  OVERTIME = "overtime",
+  DISABLED = "disabled",
+  LEAVE = "leave",
+}
