@@ -20,6 +20,7 @@ import { usePatientAppointment } from "@/hooks/patient/usePatientAppointment";
 import { APPOINTMENT_TAB } from "@/components/Appointments/config";
 import { FILTER_ALL_VALUE } from "@/hooks/global";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 
 const CARD_ESTIMATED_HEIGHT = 120;
 
@@ -34,6 +35,8 @@ export interface AppointmentFilterFormValues extends BaseFilter {
 }
 
 function TabContent({ tab }: TabContentProps) {
+  const { swr } = useForceRefreshAppointment();
+
   const initialValues = useRef<AppointmentFilterFormValues>({
     keyword: "",
     typeTime: tab,
@@ -53,6 +56,16 @@ function TabContent({ tab }: TabContentProps) {
   };
 
   const patientAppointment = usePatientAppointment(filter);
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    patientAppointment.mutate();
+  }, [swr?.data]);
 
   useEffect(() => {
     formik.setFieldValue("typeTime", tab);

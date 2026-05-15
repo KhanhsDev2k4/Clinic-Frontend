@@ -5,6 +5,7 @@ import {
   RescheduleFormValues,
   rescheduleSchema,
 } from "@/components/Appointments/RescheduleSheet/config";
+import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 import CalendarLegend from "@/components/Booking/StepSchedule/CalendarLegend";
 import DayButton from "@/components/Booking/StepSchedule/DayButton";
 import {
@@ -38,6 +39,7 @@ interface RescheduleSheetProps {
 export function RescheduleSheet({ appointmentId, onClose }: RescheduleSheetProps) {
   const patientAppointment = usePatientAppointmentDetail(appointmentId);
   const apt = patientAppointment.data?.body;
+  const { forceMutate } = useForceRefreshAppointment();
 
   const today = useRef(startOfDay(new Date()));
   const [displayMonth, setDisplayMonth] = useState(today.current);
@@ -69,6 +71,7 @@ export function RescheduleSheet({ appointmentId, onClose }: RescheduleSheetProps
           newTime: values.time,
         });
         onClose?.();
+        forceMutate();
       } catch (error) {
         // TODO: show toast on error
       } finally {

@@ -1,5 +1,6 @@
 "use client";
 import { APPOINTMENT_STATUS } from "@/common";
+import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -33,6 +34,7 @@ export function ReactivateAppointmentDialog({
 }: ReactivateAppointmentDialogProps) {
   const patientAppointment = usePatientAppointmentDetail(appointmentId);
   const patientAppointmentUpdate = usePatientAppointmentUpdate(appointmentId);
+  const { forceMutate } = useForceRefreshAppointment();
 
   const apt = patientAppointment.data?.body;
   const isLoading = patientAppointment.isLoading;
@@ -45,6 +47,7 @@ export function ReactivateAppointmentDialog({
     try {
       await patientAppointmentUpdate.trigger({ status: APPOINTMENT_STATUS.PENDING });
       onClose?.();
+      forceMutate();
     } catch (error) {}
   };
 

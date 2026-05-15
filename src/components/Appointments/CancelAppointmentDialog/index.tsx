@@ -1,5 +1,6 @@
 "use client";
 import { APPOINTMENT_STATUS } from "@/common";
+import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,6 +20,7 @@ interface CancelAppointmentDialogProps {
 
 export function CancelAppointmentDialog({ appointmentId, onClose }: CancelAppointmentDialogProps) {
   const patientAppointmentUpdate = usePatientAppointmentUpdate(appointmentId);
+  const { forceMutate } = useForceRefreshAppointment();
 
   const handleConfirm = async () => {
     try {
@@ -26,6 +28,7 @@ export function CancelAppointmentDialog({ appointmentId, onClose }: CancelAppoin
         status: APPOINTMENT_STATUS.CANCELLED,
       });
       onClose?.();
+      forceMutate();
     } catch (error) {}
   };
 

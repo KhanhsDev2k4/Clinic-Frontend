@@ -2,7 +2,7 @@ import MyAppointmentsPage from "@/components/Appointments";
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="flex h-full w-full p-6 md:p-10 flex-1 flex-col">
       <MyAppointmentsPage />
     </div>
   );

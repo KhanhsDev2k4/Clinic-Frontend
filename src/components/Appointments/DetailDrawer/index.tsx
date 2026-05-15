@@ -4,6 +4,7 @@ import BookingTypeBadge from "@/components/Appointments/BookingTypeBadge";
 import { CancelAppointmentDialog } from "@/components/Appointments/CancelAppointmentDialog";
 import { statusConfig } from "@/components/Appointments/DetailDrawer/config";
 import StatusBadge from "@/components/Appointments/StatusBadge";
+import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 import DetailDrawerSkeleton from "@/components/DetailDrawerSkeleton";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
