@@ -62,7 +62,7 @@ const MyAppointmentsPage = () => {
         </div>
 
         <div className="col-span-8 flex-1 h-full overflow-x-hidden flex-col overflow-y-auto">
-          {/* <Tabs defaultValue="upcoming">
+          <Tabs defaultValue="upcoming" className="flex flex-1 h-full">
             <TabsList className="mb-4 h-9">
               {Object.values(APPOINTMENT_TAB).map((tab) => (
                 <TabsTrigger key={tab} value={tab} className="text-xs">
@@ -76,7 +76,7 @@ const MyAppointmentsPage = () => {
                 <TabContent tab={tab} />
               </TabsContent>
             ))}
-          </Tabs> */}
+          </Tabs>
         </div>
       </div>
     </div>

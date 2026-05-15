@@ -121,13 +121,7 @@ function TabContent({ tab }: TabContentProps) {
       ) : !patientAppointment?.data?.body?.data?.length ? (
         <EmptyState tab={tab} />
       ) : (
-        <div
-          ref={parentRef}
-          style={{
-            height: "600px",
-            overflowY: "auto",
-          }}
-        >
+        <div ref={parentRef} className="h-full flex-1 overflow-y-auto" style={{}}>
           <div
             style={{
               height: virtualizer.getTotalSize(),
