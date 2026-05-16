@@ -81,7 +81,7 @@ function TabContent({ tab }: TabContentProps) {
   });
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 h-full flex-1">
       <div className="flex gap-2 flex-wrap">
         <div className="relative flex-1 h-full">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -132,14 +132,10 @@ function TabContent({ tab }: TabContentProps) {
               <div
                 key={virtualRow.key}
                 data-index={virtualRow.index}
+                className="absolute top-0 right-0 left-0 px-1 py-2"
                 ref={virtualizer.measureElement}
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
                   transform: `translateY(${virtualRow.start}px)`,
-                  paddingBottom: 12,
                 }}
               >
                 <AppointmentCard apt={patientAppointment?.data?.body?.data?.[virtualRow?.index]!} />

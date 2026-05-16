@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "@/i18n/routing";
 
-export default function proxy(request: NextRequest) {
-  const res = NextResponse.next();
-  res.headers.set("x-pathname", request.nextUrl.pathname);
-  return res;
-}
-export const config = { matcher: ["/((?!_next|favicon.ico).*)"] };
+export default createMiddleware(routing);
+
+export const config = {
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
+};
