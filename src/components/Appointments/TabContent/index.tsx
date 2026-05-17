@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
 import { useFormik } from "formik";
-import { Search } from "lucide-react";
+import { CalendarIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -21,8 +21,12 @@ import { APPOINTMENT_TAB } from "@/components/Appointments/config";
 import { FILTER_ALL_VALUE, VALUE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
-import { formatDateToApi } from "@/lib/utils";
-import { set } from "date-fns";
+import { formatDate, formatDateToApi } from "@/lib/utils";
+import { endOfDay, set, startOfDay } from "date-fns";
+import { DateRange } from "react-day-picker";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 
 const CARD_ESTIMATED_HEIGHT = 120;
 
@@ -33,8 +37,7 @@ interface TabContentProps {
 export interface AppointmentFilterFormValues extends BaseFilter {
   keyword?: string;
   bookingType?: BOOKING_TYPE | VALUE_OF_FILTER_ALL_VALUE;
-  fromDate?: string; //HH:mm dd/MM/yyyy
-  toDate?: string; //HH:mm dd/MM/yyyy
+  date?: DateRange;
   status?: APPOINTMENT_STATUS[];
 }
 
@@ -45,6 +48,16 @@ function TabContent({ tab }: TabContentProps) {
     keyword: "",
     typeTime: tab,
     bookingType: FILTER_ALL_VALUE,
+    date: {
+      from: new Date(),
+      to: set(new Date(), {
+        date: new Date().getDate() + 7,
+        hours: 23,
+        minutes: 59,
+        seconds: 59,
+      }),
+    },
+    status: undefined,
   });
 
   const formik = useFormik<AppointmentFilterFormValues & { typeTime: APPOINTMENT_TAB }>({
@@ -54,42 +67,54 @@ function TabContent({ tab }: TabContentProps) {
 
   const debouncedKeyword = useDebounce(formik.values.keyword, 600);
 
-  const buildFilter = useCallback((): AppointmentFilterFormValues => {
+  const buildFilter = useCallback(() => {
     const { typeTime, bookingType } = formik.values;
-    const now = new Date();
 
     const base = { keyword: debouncedKeyword, bookingType };
+    const today = new Date();
 
-    const ACTIVE_STATUSES = [
-      APPOINTMENT_STATUS.PENDING,
-      APPOINTMENT_STATUS.CONFIRMED,
-      APPOINTMENT_STATUS.IN_PROGRESS,
-    ];
-
-    const CONFIG: Partial<Record<APPOINTMENT_TAB, Partial<AppointmentFilterFormValues>>> = {
+    const CONFIG: Partial<
+      Record<
+        APPOINTMENT_TAB,
+        Partial<AppointmentFilterFormValues & { fromDate: string; toDate: string }>
+      >
+    > = {
       [APPOINTMENT_TAB.TODAY]: {
-        fromDate: formatDateToApi(now, "HH:mm dd/MM/yyyy"),
-        toDate: formatDateToApi(now, "HH:mm dd/MM/yyyy"),
-        status: ACTIVE_STATUSES,
+        status: [APPOINTMENT_STATUS.CONFIRMED, APPOINTMENT_STATUS.IN_PROGRESS],
+        fromDate: formatDateToApi(startOfDay(today), "HH:mm dd/MM/yyyy"),
+        toDate: formatDateToApi(endOfDay(today), "HH:mm dd/MM/yyyy"),
       },
+
       [APPOINTMENT_TAB.UPCOMING]: {
-        fromDate: formatDateToApi(now, "HH:mm dd/MM/yyyy"),
-        toDate: formatDateToApi(
-          set(now, { date: now.getDate() + 7, hours: 23, minutes: 59, seconds: 59 }),
-          "HH:mm dd/MM/yyyy"
-        ),
-        status: ACTIVE_STATUSES,
+        status: [APPOINTMENT_STATUS.CONFIRMED, APPOINTMENT_STATUS.IN_PROGRESS],
+        fromDate: formatDateToApi(startOfDay(formik.values.date?.from!), "HH:mm dd/MM/yyyy"),
+        toDate: formatDateToApi(endOfDay(formik.values.date?.to!), "HH:mm dd/MM/yyyy"),
       },
-      [APPOINTMENT_TAB.COMPLETED]: { status: [APPOINTMENT_STATUS.COMPLETED] },
-      [APPOINTMENT_TAB.CANCELLED]: { status: [APPOINTMENT_STATUS.CANCELLED] },
+
+      [APPOINTMENT_TAB.COMPLETED]: {
+        status: [APPOINTMENT_STATUS.COMPLETED],
+        fromDate: formatDateToApi(startOfDay(formik.values.date?.from!), "HH:mm dd/MM/yyyy"),
+        toDate: formatDateToApi(endOfDay(formik.values.date?.to!), "HH:mm dd/MM/yyyy"),
+      },
+
+      [APPOINTMENT_TAB.CANCELLED]: {
+        status: [APPOINTMENT_STATUS.CANCELLED],
+        fromDate: formatDateToApi(startOfDay(formik.values.date?.from!), "HH:mm dd/MM/yyyy"),
+        toDate: formatDateToApi(endOfDay(formik.values.date?.to!), "HH:mm dd/MM/yyyy"),
+      },
+
       [APPOINTMENT_TAB.PENDING]: {
         status: [APPOINTMENT_STATUS.PENDING],
-        fromDate: formatDateToApi(now, "HH:mm dd/MM/yyyy"),
+        fromDate: formatDateToApi(startOfDay(formik.values.date?.from!), "HH:mm dd/MM/yyyy"),
+        toDate: formatDateToApi(endOfDay(formik.values.date?.to!), "HH:mm dd/MM/yyyy"),
       },
     };
 
-    return { ...base, ...CONFIG[typeTime] };
-  }, [debouncedKeyword, formik.values.typeTime, formik.values.bookingType]);
+    return {
+      ...base,
+      ...CONFIG[typeTime],
+    };
+  }, [debouncedKeyword, formik.values.typeTime, formik.values.bookingType, formik.values.date]);
 
   const patientAppointment = usePatientAppointment(buildFilter());
 
@@ -131,6 +156,43 @@ function TabContent({ tab }: TabContentProps) {
             onBlur={formik.handleBlur}
           />
         </div>
+        {![APPOINTMENT_TAB.TODAY].includes(tab) && (
+          <div className="h-full w-60">
+            <Popover>
+              <PopoverTrigger asChild className="w-full">
+                <Button
+                  variant="outline"
+                  id="date-picker-range"
+                  className="justify-start px-2.5 font-normal"
+                >
+                  <CalendarIcon />
+                  {formik.values.date?.from ? (
+                    formik.values.date?.to ? (
+                      <>
+                        {formatDate(formik.values.date?.from)} -{" "}
+                        {formatDate(formik.values.date?.to)}
+                      </>
+                    ) : (
+                      formatDate(formik.values.date?.from)
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="range"
+                  selected={formik.values.date}
+                  defaultMonth={formik.values.date?.from}
+                  onSelect={(date) => {
+                    formik.setFieldValue("date", date);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
         <div className="h-full">
           <Select
             name="bookingType"
