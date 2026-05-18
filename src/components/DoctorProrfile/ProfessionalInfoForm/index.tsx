@@ -72,9 +72,10 @@ export function ProfessionalInfoForm() {
         degree: doctor.degree ?? "",
         experienceYears: doctor.experienceYears ?? 0,
       };
+      console.log("V", initialValues.current);
       formik.setValues(initialValues.current);
     }
-  }, [currentProfile?.data]);
+  }, [doctor]);
 
   const isLoading = currentProfile?.isLoading ?? true;
 

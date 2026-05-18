@@ -152,9 +152,6 @@ export function FeeForm() {
                 </div>
               ) : (
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium pointer-events-none">
-                    ₫
-                  </span>
                   <Input
                     id="consultationFee"
                     name="consultationFee"
@@ -168,6 +165,9 @@ export function FeeForm() {
                     onBlur={formik.handleBlur}
                     className={cn(editableInputCn, "pl-7")}
                   />
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium pointer-events-none">
+                    $
+                  </span>
                 </div>
               )}
 

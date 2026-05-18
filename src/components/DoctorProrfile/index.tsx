@@ -22,6 +22,7 @@ import { ProfessionalInfoForm } from "@/components/DoctorProrfile/ProfessionalIn
 import { BioEducationForm } from "@/components/DoctorProrfile/BioEducationForm";
 import { ReviewsStatsView } from "@/components/DoctorProrfile/ReviewsStatsView";
 import { FeeForm } from "@/components/DoctorProrfile/FeeForm";
+import NumberFlow from "@number-flow/react";
 
 type SectionId = "basic" | "professional" | "bio" | "fee" | "reviews";
 
@@ -83,6 +84,8 @@ export default function DoctorProfile() {
     !!user?.phoneVerified,
     !!profile?.doctor?.bio,
     !!profile?.doctor?.specialty,
+    !!profile?.doctor?.degree,
+    !!profile?.doctor?.consultationFee,
   ];
   const completionPct = Math.round(
     (completionItems.filter(Boolean).length / completionItems.length) * 100
@@ -184,7 +187,7 @@ export default function DoctorProfile() {
               <div className="text-right pl-6">
                 <p className="text-xs text-muted-foreground">Profile Completion</p>
                 <p className="text-2xl font-bold tabular-nums text-foreground leading-tight">
-                  {completionPct}%
+                  {<NumberFlow value={Number(completionPct ?? 0)} />}%
                 </p>
               </div>
             </div>
