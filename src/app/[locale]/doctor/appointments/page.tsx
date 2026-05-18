@@ -1,5 +1,9 @@
-import DoctorProfile from "@/components/DoctorProfile";
+import DoctorAppointments from "@/components/DoctorAppointments";
 
 export default function Page() {
-  return <DoctorProfile />;
+  return (
+    <div className="flex h-full w-full p-6 md:p-10 flex-1 flex-col">
+      <DoctorAppointments />
+    </div>
+  );
 }

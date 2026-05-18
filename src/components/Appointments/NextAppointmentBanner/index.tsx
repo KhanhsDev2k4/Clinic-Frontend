@@ -20,8 +20,6 @@ const NextAppointmentBanner = () => {
     return <EmptyBanner />;
   }
 
-  console.log("Check parsedDate", parsedDate);
-
   return (
     <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-4 flex items-center justify-between gap-4 flex-wrap mb-6">
       <div className="flex items-center gap-3">

@@ -234,7 +234,7 @@ const SpecialtyDialog = ({ specialtyId, onOpenChange }: SpecialtyDialogProps) =>
               fill
               className="object-cover opacity-80"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
 
             <div className="absolute top-3 left-3">
               <Badge className="bg-white/90 text-blue-700 border-0 text-xs font-medium backdrop-blur-sm">
