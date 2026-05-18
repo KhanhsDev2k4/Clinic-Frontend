@@ -33,7 +33,7 @@ const Header = () => {
 
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
-    return pathname === path || pathname.startsWith(path + "/");
+    return pathname === path;
   };
 
   const { openDialog } = useLogoutDialog();

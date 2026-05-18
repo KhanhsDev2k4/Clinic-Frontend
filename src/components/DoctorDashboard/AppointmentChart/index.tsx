@@ -78,7 +78,7 @@ export function AppointmentChart() {
       </div>
 
       {/* Chart */}
-      <ChartContainer config={chartConfig} className="min-h-[220px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-55 w-full">
         <BarChart data={data} accessibilityLayer>
           <CartesianGrid vertical={false} stroke="#f1f5f9" />
           <XAxis

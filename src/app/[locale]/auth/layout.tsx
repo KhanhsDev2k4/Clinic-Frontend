@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated) router.replace("/");
+    // if (isAuthenticated) router.replace("/");
   }, [isAuthenticated]);
 
   return children;
