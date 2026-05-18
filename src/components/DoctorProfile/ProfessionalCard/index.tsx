@@ -1,6 +1,6 @@
 "use client";
 
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 
