@@ -287,12 +287,14 @@ def sendLogFile(String status) {
             sh """
                 # 1. Tải console log từ Jenkins API
                 curl -s --max-time 30 \\
+                    -u "\${JENKINS_USER}:\${JENKINS_TOKEN}" \\
                     "\${JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/consoleText" \\
                     -o "${logFilePath}" || true
 
-                # Fallback qua BUILD_URL nếu URL trên trống (multi-branch / folder job)
+                # Fallback qua BUILD_URL
                 if [ ! -s "${logFilePath}" ]; then
                     curl -s --max-time 30 \\
+                        -u "\${JENKINS_USER}:\${JENKINS_TOKEN}" \\
                         "\${BUILD_URL}consoleText" \\
                         -o "${logFilePath}" || true
                 fi
