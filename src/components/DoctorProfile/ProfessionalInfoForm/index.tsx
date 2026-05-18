@@ -17,9 +17,9 @@ import {
 } from "@/components/ui/select";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { DEGREE_OPTIONS, ProfessionalInfoFormValues, professionalInfoSchema } from "./config";
-import ProfessionalInfoSkeleton from "@/components/DoctorProrfile/ProfessionalInfoSkeleton";
 import SpecialtyCombobox from "@/components/SpecialtyCombobox";
 import { useDoctorProfile } from "@/hooks/doctor/useDoctorProfile";
+import ProfessionalInfoSkeleton from "@/components/DoctorProfile/ProfessionalInfoSkeleton";
 
 export function ProfessionalInfoForm() {
   const currentProfile = useCurrentProfile();
@@ -50,7 +50,7 @@ export function ProfessionalInfoForm() {
     try {
       isUpdateMode ? await updateDoctorProfile(values) : await createDoctorProfile(values);
       setIsEditing(false);
-      currentProfile.mutate();
+      await currentProfile.mutate();
     } catch (error) {
       console.error(error);
     } finally {
