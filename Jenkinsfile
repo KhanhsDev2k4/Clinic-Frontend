@@ -14,6 +14,7 @@ pipeline {
         TELEGRAM_CREDS     = 'telegram-bot-token'
         TELEGRAM_CHAT_ID   = 'telegram-chat-id'
         ENV_FILE           = 'fe-clinic-env'
+        JENKINS_API_CREDS = 'jenkins-api-credentials'
 
         VPS_HOST           = '159.223.41.100'
         VPS_USER           = 'root'
@@ -270,7 +271,12 @@ def sendTelegram(String message) {
 def sendLogFile(String status) {
     withCredentials([
         string(credentialsId: "${TELEGRAM_CREDS}",   variable: 'BOT_TOKEN'),
-        string(credentialsId: "${TELEGRAM_CHAT_ID}", variable: 'CHAT_ID')
+        string(credentialsId: "${TELEGRAM_CHAT_ID}", variable: 'CHAT_ID'),
+        usernamePassword(
+            credentialsId: "${JENKINS_API_CREDS}",
+            usernameVariable: 'JENKINS_USER',
+            passwordVariable: 'JENKINS_TOKEN'
+        )
     ]) {
         script {
             def safeJobName = env.JOB_NAME.replaceAll('[^a-zA-Z0-9_-]', '_')
