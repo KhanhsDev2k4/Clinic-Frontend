@@ -76,6 +76,14 @@ export enum ITEM_TYPE {
   OTHER = "OTHER",
 }
 
+export enum DAY_STATUS {
+  AVAILABLE = "available",
+  FULL = "full",
+  OVERTIME = "overtime",
+  DISABLED = "disabled",
+  LEAVE = "leave",
+}
+
 export enum INVOICE_STATUS {
   DRAFT = "DRAFT",
   PENDING = "PENDING",
@@ -83,10 +91,9 @@ export enum INVOICE_STATUS {
   CANCELLED = "CANCELLED",
 }
 
-export enum DAY_STATUS {
-  AVAILABLE = "available",
-  FULL = "full",
-  OVERTIME = "overtime",
-  DISABLED = "disabled",
-  LEAVE = "leave",
+export enum INVOICE_ITEM_TYPE {
+  SERVICE = "SERVICE",
+  MEDICATION = "MEDICATION",
+  LAB_TEST = "LAB_TEST",
+  OTHER = "OTHER",
 }

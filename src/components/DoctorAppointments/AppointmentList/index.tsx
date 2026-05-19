@@ -15,7 +15,7 @@ import AppointmentSkeleton from "@/components/Appointments/AppointmentSkeleton";
 import EmptyStateList from "@/components/DoctorAppointments/AppointmentList/EmptyStateList";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { ROLE_NAME } from "@/common";
-import { useStaffAppointment } from "@/hooks/staff/useDoctorAppointment";
+import { useStaffAppointment } from "@/hooks/staff/useStaffAppointment";
 
 // ─── SkeletonRow ───────────────────────────────────────────────────────────────
 

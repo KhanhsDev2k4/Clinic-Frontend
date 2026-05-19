@@ -18,7 +18,7 @@ import { APPOINTMENT_STATUS, BOOKING_TYPE } from "@/common";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePatientAppointment } from "@/hooks/patient/usePatientAppointment";
 import { APPOINTMENT_TAB } from "@/components/Appointments/config";
-import { FILTER_ALL_VALUE, VALUE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
+import { FILTER_ALL_VALUE, TYPE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useForceRefreshAppointment } from "@/components/Appointments/TabContent/hook";
 import { formatDate, formatDateToApi } from "@/lib/utils";
@@ -36,7 +36,7 @@ interface TabContentProps {
 
 export interface AppointmentFilterFormValues extends BaseFilter {
   keyword?: string;
-  bookingType?: BOOKING_TYPE | VALUE_OF_FILTER_ALL_VALUE;
+  bookingType?: BOOKING_TYPE | TYPE_OF_FILTER_ALL_VALUE;
   date?: DateRange;
   status?: APPOINTMENT_STATUS[];
 }

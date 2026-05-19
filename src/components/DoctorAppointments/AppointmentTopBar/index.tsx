@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useFilterAppointmentsData } from "@/components/DoctorAppointments/hook";
 import { APPOINTMENT_STATUS } from "@/common";
-import { FILTER_ALL_VALUE, VALUE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
+import { FILTER_ALL_VALUE, TYPE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 
-const filterOptions: { label: string; value: APPOINTMENT_STATUS | VALUE_OF_FILTER_ALL_VALUE }[] = [
+const filterOptions: { label: string; value: APPOINTMENT_STATUS | TYPE_OF_FILTER_ALL_VALUE }[] = [
   { label: "All", value: FILTER_ALL_VALUE },
   { label: "Pending", value: APPOINTMENT_STATUS.PENDING },
   { label: "Confirmed", value: APPOINTMENT_STATUS.CONFIRMED },

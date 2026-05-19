@@ -1,4 +1,3 @@
-import { MedicalInfoFormValues } from "@/components/MedicalInfoForm/config";
 import { StaffInfoFormValues } from "@/components/StaffProfile/StaffInfoForm/config";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { METHOD } from "@/hooks/global";
