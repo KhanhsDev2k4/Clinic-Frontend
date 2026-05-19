@@ -1,8 +1,5 @@
-import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
-import {
-  INVOICE_ITEM_TYPE_LABELS,
-  INVOICE_STATUS_CONFIG,
-} from "@/components/InvoiceManagement/config";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { INVOICE_ITEM_TYPE_LABELS } from "@/components/InvoiceManagement/config";
 import { InvoiceResponse } from "@/interface/response";
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
