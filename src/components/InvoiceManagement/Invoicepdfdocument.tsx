@@ -220,15 +220,15 @@ export function InvoicePdfDocument({
         {/* ── Patient info ── */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Bill To</Text>
-          <Text style={styles.patientName}>{invoice.patientProfile.fullName}</Text>
-          {invoice.patientProfile.phone && (
-            <Text style={styles.patientPhone}>{invoice.patientProfile.phone}</Text>
+          <Text style={styles.patientName}>{invoice.patientProfile?.user?.fullName}</Text>
+          {invoice.patientProfile?.user?.phone && (
+            <Text style={styles.patientPhone}>{invoice.patientProfile?.user?.phone}</Text>
           )}
-          {invoice.appointment && (
-            <Text style={styles.patientPhone}>
-              Appointment: {invoice.appointment.appointmentCode ?? `#${invoice.appointment.id}`}
-            </Text>
-          )}
+          {/*{invoice.appointment && (*/}
+          {/*  <Text style={styles.patientPhone}>*/}
+          {/*    Appointment: {invoice.appointment.appointmentCode ?? `#${invoice.appointment.id}`}*/}
+          {/*  </Text>*/}
+          {/*)}*/}
         </View>
 
         {/* ── Items table ── */}
