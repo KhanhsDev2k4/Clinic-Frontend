@@ -75,11 +75,18 @@ export function InvoiceTable({}: InvoiceTableProps) {
   const { data: filterData } = useFilterInvoiceData();
 
   const buildFilter = useCallback(() => {
+    const fromDate = filterData?.date?.from
+      ? formatDateToApi(startOfDay(filterData.date.from), "HH:mm dd/MM/yyyy")
+      : undefined;
+    const toDate = filterData?.date?.to
+      ? formatDateToApi(endOfDay(filterData.date.to), "HH:mm dd/MM/yyyy")
+      : undefined;
+
     return {
       keyword: filterData?.keyword,
       status: filterData?.status,
-      fromDate: formatDateToApi(startOfDay(filterData.date?.from!), "HH:mm dd/MM/yyyy"),
-      toDate: formatDateToApi(endOfDay(filterData.date?.to!), "HH:mm dd/MM/yyyy"),
+      fromDate,
+      toDate,
     };
   }, [filterData]);
 
