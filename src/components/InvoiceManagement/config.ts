@@ -53,13 +53,13 @@ export const canTransitionStatus = (current: INVOICE_STATUS): boolean => {
 };
 
 export const paidSchema = yup.object().shape({
-  discountAmount: yup.number().min(0, "Discount không được âm").nullable(),
+  discountAmount: yup.number().min(0, "Discount cannot be negative").nullable(),
 
-  insuranceCovered: yup.number().min(0, "Insurance không được âm").nullable(),
+  insuranceCovered: yup.number().min(0, "Insurance cannot be negative").nullable(),
 
   patientPaid: yup
     .number()
-    .min(0, "Số tiền thanh toán không được âm")
-    .required("Vui lòng nhập số tiền thanh toán"),
+    .min(0, "Payment amount cannot be negative")
+    .required("Please enter the payment amount"),
 });
 export type PaidFormValues = yup.InferType<typeof paidSchema>;
