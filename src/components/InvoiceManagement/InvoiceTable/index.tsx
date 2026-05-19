@@ -17,8 +17,6 @@ import { useFilterInvoiceData } from "@/components/InvoiceManagement/hook";
 import { formatDateToApi } from "@/lib/utils";
 import { endOfDay, startOfDay } from "date-fns";
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
 function InvoiceTableSkeleton() {
   return (
     <>

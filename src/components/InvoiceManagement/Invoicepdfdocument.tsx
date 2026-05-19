@@ -1,8 +1,6 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { INVOICE_ITEM_TYPE_LABELS } from "@/components/InvoiceManagement/config";
 import { InvoiceResponse } from "@/interface/response";
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   page: {
