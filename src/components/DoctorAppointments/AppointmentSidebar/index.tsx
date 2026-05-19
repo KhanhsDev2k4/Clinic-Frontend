@@ -14,7 +14,7 @@ import { endOfDay, startOfDay } from "date-fns";
 import { SidebarAppointmentCard } from "@/components/DoctorAppointments/AppointmentSidebar/SidebarAppointmentCard";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { ROLE_NAME } from "@/common";
-import { useStaffAppointment } from "@/hooks/staff/useDoctorAppointment";
+import { useStaffAppointment } from "@/hooks/staff/useStaffAppointment";
 
 const CARD_ESTIMATED_HEIGHT = 120;
 

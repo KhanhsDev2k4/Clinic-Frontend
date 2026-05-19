@@ -1,8 +1,8 @@
 import { APPOINTMENT_STATUS } from "@/common";
-import { FILTER_ALL_VALUE, VALUE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
+import { FILTER_ALL_VALUE, TYPE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
 import { CalendarX, Clock, Sun, ClipboardCheck, XCircle } from "lucide-react";
 
-export const EMPTY_CONFIG: Record<APPOINTMENT_STATUS | VALUE_OF_FILTER_ALL_VALUE, any> = {
+export const EMPTY_CONFIG: Record<APPOINTMENT_STATUS | TYPE_OF_FILTER_ALL_VALUE, any> = {
   [FILTER_ALL_VALUE]: {
     Icon: CalendarX,
     title: "No appointments",

@@ -4,6 +4,7 @@ import {
   BOOKING_TYPE,
   EXCEPTION_TYPE,
   GENDER,
+  INVOICE_ITEM_TYPE,
   INVOICE_STATUS,
   REVIEW_STATUS,
   ROLE_NAME,
@@ -185,7 +186,7 @@ export type InvoiceResponse = {
 
   patientProfile: PatientProfileResponse;
 
-  invoiceDate: string;
+  invoiceDate: string; // "dd/MM/yyyy" per @JsonFormat
 
   subtotal: number;
   discountAmount: number;
@@ -205,6 +206,7 @@ export type InvoiceItemResponse = {
   id: string;
 
   createdAt: string;
+  itemName: string;
   updatedAt: string | null;
   deletedAt: string | null;
 
@@ -217,6 +219,7 @@ export type InvoiceItemResponse = {
   totalPrice: number;
 
   deleted: boolean;
+  itemType: INVOICE_ITEM_TYPE;
 };
 
 export type AppointmentStatisticsResponse = {

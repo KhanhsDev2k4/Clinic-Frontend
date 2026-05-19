@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { EMPTY_CONFIG } from "@/components/DoctorAppointments/AppointmentList/EmptyStateList/config";
-import { VALUE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
+import { TYPE_OF_FILTER_ALL_VALUE } from "@/hooks/global";
 import { APPOINTMENT_STATUS } from "@/common";
 
-function EmptyStateList({ status }: { status: APPOINTMENT_STATUS | VALUE_OF_FILTER_ALL_VALUE }) {
+function EmptyStateList({ status }: { status: APPOINTMENT_STATUS | TYPE_OF_FILTER_ALL_VALUE }) {
   const cfg = EMPTY_CONFIG[status];
   const { Icon, title, sub, showBook } = cfg;
   return (

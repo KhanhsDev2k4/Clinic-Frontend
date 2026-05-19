@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { useDoctorAppointmentUpdate } from "@/hooks/doctor/useDoctorAppointment";
-import { useStaffAppointmentUpdate } from "@/hooks/staff/useDoctorAppointment";
+import { useStaffAppointmentUpdate } from "@/hooks/staff/useStaffAppointment";
 import { useInvoiceDetailByAppointmentId } from "@/hooks/staff/useStaffInvoice";
 
 function ActionButton({ action, appointmentId }: { action: Action; appointmentId: string }) {
