@@ -34,7 +34,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
 
   const currentProfile = useCurrentProfile();
 
-  const { updateReview, createReview } = usePatientReview();
+  const { updateReview, createReview } = usePatientReview(appointmentId);
 
   const review = data?.body;
 
