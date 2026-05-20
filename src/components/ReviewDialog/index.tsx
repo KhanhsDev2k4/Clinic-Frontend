@@ -43,6 +43,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
   const onSubmit = async (values: ReviewFormValues, helpers: FormikHelpers<ReviewFormValues>) => {
     try {
       const createPayload = _.merge(
+        {},
         {
           patientProfileId: currentProfile.data?.body?.patient?.id,
           doctorProfileId: appointmentDetail.data?.body?.doctorProfileId,
@@ -50,6 +51,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
         },
         values
       );
+
       isUpdateMode ? await updateReview(values) : await createReview(createPayload);
       onClose();
     } catch {
@@ -156,7 +158,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
             : "Share your experience with "}
           {!isUpdateMode && (
             <span className="font-medium text-foreground">
-              {appointmentDetail.data?.body?.doctorName ?? review?.doctorProfile?.user?.fullName}
+              {appointmentDetail.data?.body?.doctorName ?? review?.user?.fullName}
             </span>
           )}
         </AlertDialogDescription>

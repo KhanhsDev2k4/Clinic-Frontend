@@ -150,14 +150,18 @@ export type ClinicServiceResponse = {
 };
 
 export type ReviewResponse = BaseEntityResponse & {
-  patientProfile: PatientProfileResponse;
-  doctorProfile: DoctorProfileResponse;
-  appointment: AppointmentResponse;
+  patientProfileId: string;
+  patientName: string;
+  doctorProfileId: string;
+  doctorName: string;
   rating: number;
   title: string;
   content: string;
   status: REVIEW_STATUS;
+  patientPathAvatar?: string;
 };
+
+export type ReviewDetailsResponse = BaseEntityResponse & {};
 
 export type DoctorScheduleExceptionResponse = BaseEntityResponse & {
   doctorProfile: DoctorProfileResponse;

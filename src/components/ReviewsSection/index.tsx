@@ -1,109 +1,30 @@
 "use client";
 
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+import { Carousel, type CarouselApi, CarouselContent, CarouselItem, } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { cn, getImageUrl } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
-
-type MockReview = {
-  id: string;
-  patientName: string;
-  patientAvatar: string | null;
-  doctorName: string;
-  specialtyName: string;
-  rating: number;
-  title: string;
-  content: string;
-  createdAt: string;
-};
+import { cn, getImageUrl, getInitials } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { usePublicReview } from "@/hooks/public/usePublicReview";
+import { REVIEW_STATUS } from "@/common";
+import { Separator } from "@/components/ui/separator";
 
 const ReviewsSection = () => {
-  const reviews = useRef<MockReview[]>([
-    {
-      id: "1",
-      patientName: "Emily Carter",
-      patientAvatar: null,
-      doctorName: "Dr. James Mitchell",
-      specialtyName: "Cardiology",
-      rating: 5,
-      title: "Incredibly attentive doctor",
-      content:
-        "Dr. Mitchell walked me through every step clearly — I felt completely at ease. The online booking system was seamless, no waiting in long queues.",
-      createdAt: "2024-11-10",
-    },
-    {
-      id: "2",
-      patientName: "Michael Thompson",
-      patientAvatar: null,
-      doctorName: "Dr. Sarah Nguyen",
-      specialtyName: "Pediatrics",
-      rating: 5,
-      title: "Wonderful experience for my child",
-      content:
-        "My son is usually terrified of doctors, but Dr. Nguyen was so gentle and patient. Online scheduling was fast, and SMS confirmation came instantly.",
-      createdAt: "2024-11-15",
-    },
-    {
-      id: "3",
-      patientName: "Laura Bennett",
-      patientAvatar: null,
-      doctorName: "Dr. Kevin Hall",
-      specialtyName: "Dermatology",
-      rating: 4,
-      title: "Great experience, will return",
-      content:
-        "Clean clinic, friendly staff. The doctor took his time consulting — never felt rushed. Waited a little, but it was absolutely worth it.",
-      createdAt: "2024-11-20",
-    },
-    {
-      id: "4",
-      patientName: "David Wilson",
-      patientAvatar: null,
-      doctorName: "Dr. Amanda Lee",
-      specialtyName: "General Internal Medicine",
-      rating: 5,
-      title: "Convenient app, excellent doctor",
-      content:
-        "First time using online booking and it was so easy. I picked my exact time slot, the doctor was punctual, and I even received an email summary after the visit.",
-      createdAt: "2024-12-01",
-    },
-    {
-      id: "5",
-      patientName: "Rachel Adams",
-      patientAvatar: null,
-      doctorName: "Dr. Brian Foster",
-      specialtyName: "Orthopedics",
-      rating: 5,
-      title: "Highly skilled, great bedside manner",
-      content:
-        "Dr. Foster has exceptional expertise and explained my condition in plain language. The 1-day appointment reminder was a lifesaver — I never miss a visit now.",
-      createdAt: "2024-12-05",
-    },
-  ]);
-
+  const { data } = usePublicReview();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
 
+  const reviews = data?.body?.data || [];
   useEffect(() => {
     if (!api) return;
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
   }, [api]);
-
-  const avgRating = (
-    reviews.current.reduce((sum, r) => sum + r.rating, 0) / reviews.current.length
-  ).toFixed(1);
 
   return (
     <section className="py-16 bg-gray-50">
@@ -124,37 +45,61 @@ const ReviewsSection = () => {
           className="w-full"
         >
           <CarouselContent className="-ml-3">
-            {reviews.current.map((review) => (
+            {reviews.map((review) => (
               <CarouselItem key={review.id} className="pl-3 basis-full sm:basis-1/2 md:basis-1/3">
-                <Card className="h-full border border-gray-100 hover:border-yellow-200 shadow-sm hover:shadow-md transition-all duration-200 rounded-2xl">
+                <Card className="h-full border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 rounded-2xl">
                   <CardContent className="p-5 flex flex-col gap-4 h-full">
-                    <Quote className="w-6 h-6 text-blue-200 fill-blue-100" />
-
-                    <div className="flex flex-col gap-1">
+                    {/* Rating + Status */}
+                    <div className="flex items-start justify-between gap-2">
                       <StarRating rating={review.rating} />
-                      <p className="font-semibold text-gray-900 text-sm">{review.title}</p>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-xs shrink-0",
+                          review.status === REVIEW_STATUS.APPROVED &&
+                            "border-green-200 bg-green-50 text-green-700",
+                          review.status === REVIEW_STATUS.PENDING &&
+                            "border-yellow-200 bg-yellow-50 text-yellow-700",
+                          review.status === REVIEW_STATUS.REJECTED &&
+                            "border-red-200 bg-red-50 text-red-700"
+                        )}
+                      >
+                        {review.status}
+                      </Badge>
                     </div>
 
+                    {/* Title */}
+                    <p className="font-semibold text-gray-900 text-sm leading-snug">
+                      {review.title}
+                    </p>
+
+                    {/* Content */}
                     <p className="text-sm text-gray-500 leading-relaxed line-clamp-4 flex-1">
                       {review.content}
                     </p>
 
-                    <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-                      <Avatar className="w-9 h-9">
+                    <Separator />
+
+                    {/* Patient info */}
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-9 h-9 shrink-0">
                         <AvatarImage
-                          src={review.patientAvatar ? getImageUrl(review.patientAvatar) : undefined}
+                          src={
+                            review.patientPathAvatar
+                              ? getImageUrl(review.patientPathAvatar)
+                              : undefined
+                          }
+                          alt={review.patientPathAvatar}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-400 to-teal-400 text-white text-xs font-semibold">
-                          {review.patientName.charAt(0)}
+                        <AvatarFallback className="bg-blue-100 text-blue-700 text-xs font-semibold">
+                          {getInitials(review.patientName)}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-gray-800">
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-semibold text-gray-800 truncate">
                           {review.patientName}
                         </span>
-                        <span className="text-xs text-gray-400">
-                          {review.specialtyName} · {review.doctorName}
-                        </span>
+                        <span className="text-xs text-gray-400">{review.patientName}</span>
                       </div>
                     </div>
                   </CardContent>

@@ -58,7 +58,7 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-function DoctorCard({
+export function DoctorCard({
   doctor,
   onBook,
 }: {
