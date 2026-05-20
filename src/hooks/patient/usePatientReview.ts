@@ -16,7 +16,7 @@ export const usePatientReviewDetailByAptId = (aptId: string | null) => {
   );
 };
 
-export const usePatientReview = () => {
+export const usePatientReview = (reviewId?: string) => {
   const createMutation = useMutation<unknown>("/api/v1/patient/review", {
     url: "/api/v1/patient/review",
     method: METHOD.POST,
@@ -27,7 +27,7 @@ export const usePatientReview = () => {
   });
 
   const updateMutation = useMutation<unknown>("/api/v1/patient/review", {
-    url: "/api/v1/patient/review",
+    url: `/api/v1/patient/review/${reviewId}`,
     method: METHOD.PATCH,
     notification: {
       message: "You have created your appointment successfully!",
@@ -36,13 +36,11 @@ export const usePatientReview = () => {
   });
 
   const createReview = (formValues: ReviewFormValues) => {
-    const payload = formValues;
-    return createMutation.trigger(payload);
+    return createMutation.trigger(formValues);
   };
 
   const updateReview = (formValues: ReviewFormValues) => {
-    const payload = formValues;
-    return updateMutation.trigger(payload);
+    return updateMutation.trigger(formValues);
   };
 
   return {
