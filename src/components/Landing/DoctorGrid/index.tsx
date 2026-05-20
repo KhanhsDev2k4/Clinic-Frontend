@@ -118,7 +118,7 @@ const DoctorGrid = ({ filter, onTotalChange }: DoctorGridProps) => {
     <div
       ref={scrollRef}
       onScroll={onScroll}
-      className="flex flex-col h-full flex-1 overflow-hidden px-4 sm:px-6 pb-8"
+      className="flex flex-col h-full flex-1 overflow-hidden pb-8"
     >
       <div
         ref={gridRef}
