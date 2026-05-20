@@ -53,7 +53,6 @@ export function StaffInfoForm() {
   }, [isUpdateMode]);
 
   const initialValues = useRef<StaffInfoFormValues>({
-    staffCode: "",
     position: "",
     department: "",
     hireDate: "",
@@ -79,7 +78,6 @@ export function StaffInfoForm() {
   useEffect(() => {
     if (staff) {
       const next: StaffInfoFormValues = {
-        staffCode: staff.staffCode ?? "",
         position: staff.position ?? "",
         department: staff.department ?? "",
         hireDate: staff.hireDate ?? "",
