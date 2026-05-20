@@ -158,7 +158,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
             : "Share your experience with "}
           {!isUpdateMode && (
             <span className="font-medium text-foreground">
-              {appointmentDetail.data?.body?.doctorName ?? review?.user?.fullName}
+              {appointmentDetail.data?.body?.doctorName ?? review?.doctorName}
             </span>
           )}
         </AlertDialogDescription>
