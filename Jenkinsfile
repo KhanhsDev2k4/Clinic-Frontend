@@ -14,7 +14,7 @@ pipeline {
         TELEGRAM_CREDS     = 'telegram-bot-token'
         TELEGRAM_CHAT_ID   = 'telegram-chat-id'
         ENV_FILE           = 'fe-clinic-env'
-        JENKINS_API_CREDS = 'jenkins-api-credentials'
+        JENKINS_API_CREDS  = 'jenkins-api-credentials'
 
         VPS_HOST           = '159.223.41.100'
         VPS_USER           = 'root'
@@ -216,6 +216,7 @@ pipeline {
                     "🌿 *Branch:* `${env.GIT_BRANCH}`\n" +
                     "⏱️ *Thời gian:* ${currentBuild.durationString}"
                 )
+                saveAndSendLog("📋 Log build *#${env.BUILD_NUMBER}*")
             }
         }
 
@@ -228,6 +229,7 @@ pipeline {
                     "🌿 *Branch:* `${env.GIT_BRANCH}`\n" +
                     "⏱️ *Thời gian:* ${currentBuild.durationString}"
                 )
+                saveAndSendLog("📋 Log build *#${env.BUILD_NUMBER}*")
             }
         }
 
@@ -248,7 +250,6 @@ def sendTelegram(String message) {
         string(credentialsId: "${TELEGRAM_CREDS}",   variable: 'BOT_TOKEN'),
         string(credentialsId: "${TELEGRAM_CHAT_ID}", variable: 'CHAT_ID')
     ]) {
-        // Ghi message ra file tạm để tránh vấn đề escape trên command line
         def tmpFile = "/tmp/tg_msg_${env.BUILD_NUMBER}.txt"
         writeFile file: tmpFile, text: message
         sh """
@@ -261,4 +262,48 @@ def sendTelegram(String message) {
             rm -f ${tmpFile}
         """
     }
+}
+
+def sendTelegramFile(String filePath, String caption = "") {
+    withCredentials([
+        string(credentialsId: "${TELEGRAM_CREDS}",   variable: 'BOT_TOKEN'),
+        string(credentialsId: "${TELEGRAM_CHAT_ID}", variable: 'CHAT_ID')
+    ]) {
+        def tmpCaption = "/tmp/tg_caption_${env.BUILD_NUMBER}.txt"
+        writeFile file: tmpCaption, text: caption
+        sh """
+            CAPTION=\$(cat ${tmpCaption})
+            curl -s -X POST "https://api.telegram.org/bot\${BOT_TOKEN}/sendDocument" \\
+                -F chat_id="\${CHAT_ID}" \\
+                -F parse_mode="Markdown" \\
+                -F caption="\${CAPTION}" \\
+                -F document=@"${filePath}"
+            rm -f ${tmpCaption}
+        """
+    }
+}
+
+def getLogContent() {
+    withCredentials([
+        usernamePassword(
+            credentialsId: "${JENKINS_API_CREDS}",
+            usernameVariable: 'JENKINS_USER',
+            passwordVariable: 'JENKINS_TOKEN'
+        )
+    ]) {
+        return sh(
+            script: """
+                curl -s -u "\${JENKINS_USER}:\${JENKINS_TOKEN}" \\
+                    "${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/consoleText"
+            """,
+            returnStdout: true
+        ).trim()
+    }
+}
+
+def saveAndSendLog(String caption = "") {
+    def logFile = "/tmp/build_log_${env.BUILD_NUMBER}.txt"
+    writeFile file: logFile, text: getLogContent()
+    sendTelegramFile(logFile, caption)
+    sh "rm -f ${logFile}"
 }

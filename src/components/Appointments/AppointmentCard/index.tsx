@@ -20,9 +20,11 @@ import {
   Clock,
   Eye,
   ListOrdered,
+  MessageSquarePlus,
   Stethoscope,
   XCircle,
 } from "lucide-react";
+import { ReviewDialog } from "@/components/ReviewDialog";
 
 interface AppointmentCardProps {
   apt: AppointmentResponse;
@@ -40,16 +42,15 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
 
   const canReschedule = [APPOINTMENT_STATUS.PENDING].includes(apt.status);
   const canReactivate = apt.status === APPOINTMENT_STATUS.CANCELLED;
+  const canReview = apt.status === APPOINTMENT_STATUS.COMPLETED;
 
   const firstService = apt.clinicServices?.[0];
 
   const sheetDetail = usePopup<{ appointmentId: string }>();
-
   const sheetReschedule = usePopup<{ appointmentId: string }>();
-
   const dialogCancel = usePopup<{ appointmentId: string }>();
-
   const dialogReactivate = usePopup<{ appointmentId: string }>();
+  const dialogReview = usePopup<{ appointmentId: string; doctorName: string }>();
 
   return (
     <Card className="transition-colors hover:border-border/80">
@@ -104,6 +105,23 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
               >
                 <Eye className="h-3.5 w-3.5" /> View details
               </Button>
+
+              {canReview && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs gap-1"
+                  onClick={() =>
+                    dialogReview.openPopup({
+                      appointmentId: apt.id,
+                      doctorName: apt.doctorName,
+                    })
+                  }
+                >
+                  <MessageSquarePlus className="h-3.5 w-3.5" /> Review
+                </Button>
+              )}
+
               {(canCancel || canReschedule || canReactivate) && (
                 <>
                   {canReschedule && (
@@ -147,6 +165,7 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
           </div>
         </div>
       </CardContent>
+
       <Sheet open={sheetDetail.open} onOpenChange={sheetDetail.onOpenChange}>
         <DetailDrawer
           appointmentId={sheetDetail.data?.appointmentId!}
@@ -179,6 +198,13 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
             dialogReactivate?.closePopup();
             sheetReschedule.openPopup({ appointmentId: dialogReactivate?.data?.appointmentId! });
           }}
+        />
+      </AlertDialog>
+
+      <AlertDialog open={dialogReview?.open} onOpenChange={dialogReview?.onOpenChange}>
+        <ReviewDialog
+          appointmentId={dialogReview?.data?.appointmentId!}
+          onClose={dialogReview?.closePopup}
         />
       </AlertDialog>
     </Card>
