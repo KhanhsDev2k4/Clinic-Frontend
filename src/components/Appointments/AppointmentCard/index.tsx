@@ -15,6 +15,7 @@ import usePopup from "@/hooks/useDialog";
 import { AppointmentResponse } from "@/interface/response";
 import { formatCurrency, formatDate, formatTime, getInitials, parseDate } from "@/lib/utils";
 import {
+  BadgeCheck,
   Calendar,
   CalendarClock,
   Clock,
@@ -25,6 +26,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { ReviewDialog } from "@/components/ReviewDialog";
+import { Badge } from "@/components/ui/badge";
 
 interface AppointmentCardProps {
   apt: AppointmentResponse;
@@ -45,12 +47,12 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
   const canReview = apt.status === APPOINTMENT_STATUS.COMPLETED;
 
   const firstService = apt.clinicServices?.[0];
-
+  const hasReviewed = apt.reviewed;
   const sheetDetail = usePopup<{ appointmentId: string }>();
   const sheetReschedule = usePopup<{ appointmentId: string }>();
   const dialogCancel = usePopup<{ appointmentId: string }>();
   const dialogReactivate = usePopup<{ appointmentId: string }>();
-  const dialogReview = usePopup<{ appointmentId: string; doctorName: string }>();
+  const dialogReview = usePopup<{ appointmentId: string }>();
 
   return (
     <Card className="transition-colors hover:border-border/80">
@@ -107,19 +109,34 @@ function AppointmentCard({ apt }: AppointmentCardProps) {
               </Button>
 
               {canReview && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs gap-1"
-                  onClick={() =>
-                    dialogReview.openPopup({
-                      appointmentId: apt.id,
-                      doctorName: apt.doctorName,
-                    })
-                  }
-                >
-                  <MessageSquarePlus className="h-3.5 w-3.5" /> Review
-                </Button>
+                <>
+                  {hasReviewed ? (
+                    <Badge
+                      variant="outline"
+                      className="h-7 text-xs gap-1 px-2 text-emerald-600 border-emerald-200 bg-emerald-50 font-normal cursor-pointer hover:bg-emerald-100 transition-colors"
+                      onClick={() =>
+                        dialogReview.openPopup({
+                          appointmentId: apt.id,
+                        })
+                      }
+                    >
+                      <BadgeCheck className="h-3.5 w-3.5" /> Reviewed
+                    </Badge>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs gap-1"
+                      onClick={() =>
+                        dialogReview.openPopup({
+                          appointmentId: apt.id,
+                        })
+                      }
+                    >
+                      <MessageSquarePlus className="h-3.5 w-3.5" /> Review
+                    </Button>
+                  )}
+                </>
               )}
 
               {(canCancel || canReschedule || canReactivate) && (

@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Loader2 } from "lucide-react";
+import { BadgeCheck, Loader2 } from "lucide-react";
 import { ReviewFormValues, reviewInitialValues, reviewSchema } from "./config";
 import { StarRating } from "@/components/ReviewDialog/StarRating";
 import { usePatientReview, usePatientReviewDetailByAptId } from "@/hooks/patient/usePatientReview";
@@ -38,7 +38,7 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
 
   const review = data?.body;
 
-  const isUpdateMode = Boolean(review);
+  const isUpdateMode = Boolean(appointmentDetail?.data?.body?.reviewed);
 
   const onSubmit = async (values: ReviewFormValues, helpers: FormikHelpers<ReviewFormValues>) => {
     try {
@@ -140,12 +140,25 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
   return (
     <AlertDialogContent className="max-w-md">
       <AlertDialogHeader>
-        <AlertDialogTitle>{isUpdateMode ? "Edit your review" : "Leave a review"}</AlertDialogTitle>
+        <AlertDialogTitle className="flex items-center gap-2">
+          {isUpdateMode ? (
+            <>
+              <BadgeCheck className="h-5 w-5 text-emerald-500" />
+              Edit your review
+            </>
+          ) : (
+            "Leave a review"
+          )}
+        </AlertDialogTitle>
         <AlertDialogDescription>
-          Share your experience with{" "}
-          <span className="font-medium text-foreground">
-            {review?.doctorProfile?.user?.fullName}
-          </span>
+          {isUpdateMode
+            ? "You've already reviewed this appointment. Update your feedback below."
+            : "Share your experience with "}
+          {!isUpdateMode && (
+            <span className="font-medium text-foreground">
+              {appointmentDetail.data?.body?.doctorName ?? review?.doctorProfile?.user?.fullName}
+            </span>
+          )}
         </AlertDialogDescription>
       </AlertDialogHeader>
 

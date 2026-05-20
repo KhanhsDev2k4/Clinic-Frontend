@@ -93,6 +93,8 @@ export type PatientProfileResponse = BaseEntityResponse & {
 export type AppointmentResponse = BaseEntityResponse & {
   appointmentCode: string;
 
+  reviewed: boolean;
+
   // format: "16:00:00 15/05/2026"
   appointmentDate: string;
 
