@@ -18,6 +18,9 @@ import { Loader2 } from "lucide-react";
 import { ReviewFormValues, reviewInitialValues, reviewSchema } from "./config";
 import { StarRating } from "@/components/ReviewDialog/StarRating";
 import { usePatientReview, usePatientReviewDetailByAptId } from "@/hooks/patient/usePatientReview";
+import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+import { usePatientAppointmentDetail } from "@/hooks/patient/usePatientAppointment";
+import _ from "lodash";
 
 interface ReviewDialogProps {
   appointmentId: string;
@@ -27,6 +30,10 @@ interface ReviewDialogProps {
 export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
   const { data, isLoading } = usePatientReviewDetailByAptId(appointmentId);
 
+  const appointmentDetail = usePatientAppointmentDetail(appointmentId);
+
+  const currentProfile = useCurrentProfile();
+
   const { updateReview, createReview } = usePatientReview();
 
   const review = data?.body;
@@ -35,7 +42,15 @@ export function ReviewDialog({ appointmentId, onClose }: ReviewDialogProps) {
 
   const onSubmit = async (values: ReviewFormValues, helpers: FormikHelpers<ReviewFormValues>) => {
     try {
-      isUpdateMode ? await updateReview(values) : await createReview(values);
+      const createPayload = _.merge(
+        {
+          patientProfileId: currentProfile.data?.body?.patient?.id,
+          doctorProfileId: appointmentDetail.data?.body?.doctorProfileId,
+          appointmentId: appointmentId,
+        },
+        values
+      );
+      isUpdateMode ? await updateReview(values) : await createReview(createPayload);
       onClose();
     } catch {
       // error handled by isError from hook
