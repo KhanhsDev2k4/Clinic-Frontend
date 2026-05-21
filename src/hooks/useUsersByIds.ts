@@ -13,11 +13,11 @@ export const useUsersByProfileIds = (
   const query = buildQueryParams(filters);
   const { accessToken } = useSession();
 
-  return useSWRWrapper<(DoctorProfileResponse | PatientProfileResponse)[]>(
-    `/api/v1/public/profile?${query}&accessToken=${accessToken}`,
-    {
-      url: `/api/v1/public/profile?${query}`,
-      method: METHOD.GET,
-    }
-  );
+  return useSWRWrapper<{
+    doctorProfiles: DoctorProfileResponse[];
+    patientProfiles: PatientProfileResponse[];
+  }>(`/api/v1/public/profile?${query}&accessToken=${accessToken}`, {
+    url: `/api/v1/public/profile?${query}`,
+    method: METHOD.GET,
+  });
 };

@@ -35,10 +35,7 @@ function ConversationList({}: ConversationListProps) {
 
   const { data } = useUsersByProfileIds({ ids: userIds });
 
-  useEffect(() => {
-    if (data?.body?.length) {
-    }
-  }, []);
+  useEffect(() => {}, []);
 
   const fetchList = usePatientConversation();
 
