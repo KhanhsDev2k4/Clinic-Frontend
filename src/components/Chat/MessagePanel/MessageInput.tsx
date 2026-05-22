@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { MESSAGE_INPUT_MAX_LENGTH } from "@/components/Chat/config";
 import { MessageFormValues, messageSchema } from "@/components/Chat/MessagePanel/config";
-import { usePatientMessageCreate } from "@/hooks/patient/usePatientMessageList";
 import { useDataConversation } from "@/components/Chat/hook";
 import { MESSAGE_TYPE } from "@/common";
 import { useChatActions } from "@/hooks/useChatActions";
@@ -28,7 +27,6 @@ function MessageInput({ disabled }: MessageInputProps) {
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isTypingRef = useRef(false); // tránh gửi duplicate
 
-  const patientMessageCreate = usePatientMessageCreate();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { sendTyping, sendMessage } = useChatActions();
 
@@ -57,14 +55,8 @@ function MessageInput({ disabled }: MessageInputProps) {
 
   const onSubmit = async (values: MessageFormValues, helpers: FormikHelpers<MessageFormValues>) => {
     stopTyping();
-    // await patientMessageCreate.trigger({
-    //   conversationId,
-    //   content: values.content.trim(),
-    //   type: MESSAGE_TYPE.TEXT,
-    //   replyTo: null,
-    // });
     const payload = {
-      senderId: data?.body?.patient?.id ?? data?.body?.doctor?.id,
+      senderId: data?.body?.id,
       conversationId,
       content: values.content.trim(),
       type: MESSAGE_TYPE.TEXT,
@@ -110,7 +102,7 @@ function MessageInput({ disabled }: MessageInputProps) {
           className={cn("resize-none text-sm min-h-10 max-h-32 flex-1 py-2.5", "scrollbar-thin")}
           rows={1}
           value={formik.values.content}
-          onChange={handleChange} // ← dùng handleChange mới
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           disabled={disabled || formik.isSubmitting}
           maxLength={MESSAGE_INPUT_MAX_LENGTH}

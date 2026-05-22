@@ -89,10 +89,10 @@ function NewChatDialog({ onOpenChange, onSuccess }: NewChatDialogProps) {
 
   const handleSelect = async (contact: DoctorProfileResponse) => {
     try {
-      setLoading(contact.id);
+      setLoading(contact.user?.id);
       const response = await conversationCreate.trigger({
         type: CONVERSATION_TYPE.DIRECT,
-        participants: [contact.id],
+        participants: [contact.user?.id],
         name: null,
         avatar: null,
       });
@@ -133,7 +133,7 @@ function NewChatDialog({ onOpenChange, onSuccess }: NewChatDialogProps) {
           return (
             <button
               key={contact.id}
-              disabled={loading === contact.id}
+              disabled={loading === contact.user?.id}
               onClick={() => handleSelect(contact)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-colors text-left disabled:opacity-60"
             >

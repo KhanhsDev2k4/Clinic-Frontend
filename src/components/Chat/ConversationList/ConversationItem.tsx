@@ -68,18 +68,18 @@ function ConversationItem({
 
   const getAvatar = () => {
     if (conversation.type === CONVERSATION_TYPE.DIRECT) {
-      const targetId = data?.body?.patient?.id ?? data?.body?.doctor?.id;
+      const targetId = data?.body?.id;
       const participant = conversation.participants.find((p) => p !== targetId);
-      return usersMap?.[participant!]?.user?.pathAvatar;
+      return usersMap?.[participant!]?.pathAvatar;
     }
     return conversation?.avatar;
   };
 
   const conversationName = useMemo(() => {
     if (conversation.type === CONVERSATION_TYPE.DIRECT) {
-      const targetId = data?.body?.patient?.id ?? data?.body?.doctor?.id;
+      const targetId = data?.body?.id;
       const participant = conversation.participants.find((p) => p !== targetId);
-      return usersMap?.[participant!]?.user?.fullName;
+      return usersMap?.[participant!]?.fullName;
     }
     return conversation.name;
   }, [conversation, usersMap]);

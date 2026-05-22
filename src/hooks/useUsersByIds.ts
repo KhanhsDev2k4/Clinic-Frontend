@@ -1,4 +1,4 @@
-import { BaseFilter, DoctorProfileResponse, PatientProfileResponse } from "@/interface/response";
+import { BaseFilter, UserResponse } from "@/interface/response";
 import { buildQueryParams } from "@/lib/utils";
 import { useSession } from "@/hooks/useSession";
 import { useSWRWrapper } from "@/hooks/swr";
@@ -13,12 +13,12 @@ export const useUsersByProfileIds = (
   const query = buildQueryParams(filters);
   const { accessToken } = useSession();
 
-  return useSWRWrapper<{
-    doctorProfiles: DoctorProfileResponse[];
-    patientProfiles: PatientProfileResponse[];
-  }>(`/api/v1/public/profile?${query}&accessToken=${accessToken}`, {
-    url: `/api/v1/public/profile?${query}`,
-    method: METHOD.GET,
-    enable: !!filters?.ids?.length,
-  });
+  return useSWRWrapper<UserResponse[]>(
+    `/api/v1/public/profile?${query}&accessToken=${accessToken}`,
+    {
+      url: `/api/v1/public/profile?${query}`,
+      method: METHOD.GET,
+      enable: !!filters?.ids?.length,
+    }
+  );
 };

@@ -22,18 +22,18 @@ function MessagePanel() {
 
   const getAvatar = () => {
     if (activeConversation?.type === CONVERSATION_TYPE.DIRECT) {
-      const targetId = data?.body?.patient?.id ?? data?.body?.doctor?.id;
+      const targetId = data?.body?.id;
       const participant = activeConversation?.participants.find((p) => p !== targetId);
-      return usersMap?.[participant!]?.user?.pathAvatar;
+      return usersMap?.[participant!]?.pathAvatar;
     }
     return activeConversation?.avatar;
   };
 
   const conversationName = useMemo(() => {
     if (activeConversation?.type === CONVERSATION_TYPE.DIRECT) {
-      const targetId = data?.body?.patient?.id ?? data?.body?.doctor?.id;
+      const targetId = data?.body?.id;
       const participant = activeConversation?.participants.find((p) => p !== targetId);
-      return usersMap?.[participant!]?.user?.fullName;
+      return usersMap?.[participant!]?.fullName;
     }
     return activeConversation?.name;
   }, [activeConversation, usersMap]);

@@ -45,7 +45,7 @@ export function useTypingIndicator(conversationId: string) {
   const { accessToken } = useSession();
   const { stompClient } = useSocket();
   const { data } = useCurrentProfile();
-  const existId = data?.body?.patient?.id ?? data?.body?.doctor?.id;
+  const existId = data?.body?.id;
 
   return useSWRSubscription(
     [`/topic/typing/conversation/${conversationId}`, accessToken],

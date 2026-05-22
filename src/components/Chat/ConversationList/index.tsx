@@ -11,7 +11,7 @@ import useDialog from "@/hooks/useDialog";
 import { useDataConversation } from "@/components/Chat/hook";
 import { Dialog } from "@/components/ui/dialog";
 import ConversationSkeleton from "@/components/Chat/ConversationList/ConversationSkeleton";
-import { ConversationResponse, DoctorProfileResponse, PatientProfileResponse, } from "@/interface/response";
+import { ConversationResponse, UserResponse } from "@/interface/response";
 import ConversationItem from "@/components/Chat/ConversationList/ConversationItem";
 import _ from "lodash";
 import { useUsersByProfileIds } from "@/hooks/useUsersByIds";
@@ -36,14 +36,10 @@ function ConversationList({}: ConversationListProps) {
   const { data } = useUsersByProfileIds({ ids: userIds });
 
   const userMap = useMemo(() => {
-    const newMap: Record<string, DoctorProfileResponse | PatientProfileResponse> = {};
+    const newMap: Record<string, UserResponse> = {};
 
-    data?.body?.doctorProfiles?.forEach((doctor) => {
-      newMap[doctor.id] = doctor;
-    });
-
-    data?.body?.patientProfiles?.forEach((patient) => {
-      newMap[patient.id] = patient;
+    data?.body?.forEach((user) => {
+      newMap[user.id] = user;
     });
 
     return newMap;

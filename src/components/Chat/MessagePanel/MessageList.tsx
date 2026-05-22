@@ -31,10 +31,7 @@ function MessageList({ isTyping }: MessageListProps) {
   }, [data]);
 
   const currentProfile = useCurrentProfile();
-  const currentProfileId = useMemo(
-    () => currentProfile?.data?.body?.doctor?.id ?? currentProfile?.data?.body?.patient?.id,
-    [currentProfile?.data]
-  );
+  const currentProfileId = useMemo(() => currentProfile?.data?.body?.id, [currentProfile?.data]);
   const [initialLoading, setInitialLoading] = useState(false);
 
   const fetchList = usePatientMessageList();

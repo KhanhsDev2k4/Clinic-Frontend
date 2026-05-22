@@ -32,7 +32,7 @@ export function useChatActions() {
     (conversationId: string, typing: boolean) => {
       const destination = `/app/typing/conversation/${conversationId}`;
       const body: TypingPayloadDto = {
-        userId: data?.body?.doctor?.id ?? data?.body?.patient?.id ?? "",
+        userId: data?.body?.id ?? "",
         typing,
       };
 
