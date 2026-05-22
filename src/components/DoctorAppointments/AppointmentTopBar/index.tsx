@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 
 const filterOptions: { label: string; value: APPOINTMENT_STATUS | TYPE_OF_FILTER_ALL_VALUE }[] = [
   { label: "All", value: FILTER_ALL_VALUE },
