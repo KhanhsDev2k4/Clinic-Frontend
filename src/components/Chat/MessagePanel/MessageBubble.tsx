@@ -21,7 +21,7 @@ function StatusIcon({ status }: { status: MESSAGE_STATUS }) {
 }
 
 function MessageBubble({ message, isMine, sender, showAvatar }: MessageBubbleProps) {
-  const isOptimistic = message.id.startsWith("temp-");
+  const isOptimistic = message?.tempId?.startsWith("temp-");
   const parsedDate = parseDate(message.createdAt, "HH:mm:ss dd/MM/yyyy");
   const initials = getInitials(sender?.fullName ?? "?");
 
@@ -62,24 +62,25 @@ function MessageBubble({ message, isMine, sender, showAvatar }: MessageBubblePro
         )}
 
         {/* Timestamp + status */}
-        <div
-          className={cn("flex items-center gap-1 px-1", isMine ? "flex-row-reverse" : "flex-row")}
-        >
-          {/* Status icon — shown only for mine; optimistic shows spinner */}
-          {isMine && (
-            <span className="flex items-center">
-              {isOptimistic ? (
-                <Clock className="h-3 w-3 text-muted-foreground animate-pulse" />
-              ) : (
-                <StatusIcon status={message.status} />
-              )}
+        {showAvatar && (
+          <div
+            className={cn("flex items-center gap-1 px-1", isMine ? "flex-row-reverse" : "flex-row")}
+          >
+            {/* Status icon — shown only for mine; optimistic shows spinner */}
+            {isMine && (
+              <span className="flex items-center">
+                {isOptimistic ? (
+                  <Clock className="h-3 w-3 text-muted-foreground animate-pulse" />
+                ) : (
+                  <StatusIcon status={message.status} />
+                )}
+              </span>
+            )}
+            <span className="text-[10px] text-muted-foreground tabular-nums">
+              {parsedDate ? formatTime(parsedDate) : "—"}
             </span>
-          )}
-
-          <span className="text-[10px] text-muted-foreground tabular-nums">
-            {parsedDate ? formatTime(parsedDate) : "—"}
-          </span>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

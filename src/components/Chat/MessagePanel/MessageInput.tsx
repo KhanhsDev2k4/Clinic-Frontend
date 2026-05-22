@@ -10,9 +10,11 @@ import { cn } from "@/lib/utils";
 import { MESSAGE_INPUT_MAX_LENGTH } from "@/components/Chat/config";
 import { MessageFormValues, messageSchema } from "@/components/Chat/MessagePanel/config";
 import { useDataConversation } from "@/components/Chat/hook";
-import { MESSAGE_TYPE } from "@/common";
+import { MESSAGE_STATUS, MESSAGE_TYPE } from "@/common";
 import { useChatActions } from "@/hooks/useChatActions";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+import { MessageResponse } from "@/interface/response";
+import { formatDate } from "date-fns";
 
 const TYPING_STOP_DELAY = 2000;
 
@@ -21,7 +23,7 @@ interface MessageInputProps {
 }
 
 function MessageInput({ disabled }: MessageInputProps) {
-  const { activeConversation } = useDataConversation();
+  const { activeConversation, setItems } = useDataConversation();
   const conversationId = activeConversation?.id ?? "";
 
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -55,19 +57,33 @@ function MessageInput({ disabled }: MessageInputProps) {
 
   const onSubmit = async (values: MessageFormValues, helpers: FormikHelpers<MessageFormValues>) => {
     stopTyping();
-    const payload = {
-      senderId: data?.body?.id,
+
+    const tempId = `temp-${Date.now()}`;
+
+    // Hiện ngay với icon clock (optimistic)
+    setItems((prev) => [
+      ...prev,
+      {
+        tempId,
+        senderId: data?.body?.id,
+        conversationId,
+        content: values.content.trim(),
+        type: MESSAGE_TYPE.TEXT,
+        status: MESSAGE_STATUS.SENT,
+        createdAt: formatDate(new Date(), "HH:mm:ss dd/MM/yyyy"),
+      } as MessageResponse,
+    ]);
+
+    sendMessage(conversationId, {
       conversationId,
       content: values.content.trim(),
       type: MESSAGE_TYPE.TEXT,
-    };
-
-    sendMessage(conversationId, payload);
+      tempId,
+    });
 
     helpers.resetForm();
-    textareaRef.current?.focus();
+    setTimeout(() => textareaRef.current?.focus(), 100);
   };
-
   const formik = useFormik<MessageFormValues>({
     initialValues: initialValues.current,
     validationSchema: messageSchema,

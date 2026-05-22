@@ -7,33 +7,59 @@ import { MESSAGE_ESTIMATED_HEIGHT } from "@/components/Chat/config";
 import { useDataConversation } from "@/components/Chat/hook";
 import { MessageResponse } from "@/interface/response";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
-import { usePatientMessageList } from "../../../hooks/patient/usePatientMessageList";
 import TypingIndicator from "@/components/Chat/MessagePanel/TypingIndicator";
 import { differenceInMinutes } from "date-fns";
 import { parseDate } from "@/lib/utils";
 import MessageBubble from "@/components/Chat/MessagePanel/MessageBubble";
 import { useConversationMessages } from "@/hooks/useChatMessages";
+import { MESSAGE_STATUS } from "@/common";
+import { usePatientMessageList } from "@/hooks/patient/usePatientMessageList";
 
 interface MessageListProps {
   isTyping?: boolean;
 }
 
 function MessageList({ isTyping }: MessageListProps) {
-  const { activeConversation, usersMap } = useDataConversation();
-  const [items, setItems] = useState<MessageResponse[]>([]);
-
+  const { activeConversation, usersMap, setItems, items } = useDataConversation();
   const { data } = useConversationMessages(activeConversation?.id!);
 
+  // ─── Xử lý real-time message từ WebSocket ───────────────────────────────
   useEffect(() => {
-    if (data?.length) {
-      setItems((prev) => [...prev, ...data.filter((d) => !prev.some((p) => p.id === d.id))]);
-    }
+    if (!data?.length) return;
+
+    const latest = data[data.length - 1];
+
+    setItems((prev) => {
+      // Tin của mình → server confirm → replace optimistic item (clock → ✓)
+      if (latest.tempId) {
+        return prev.map((item) => {
+          if (item.tempId === latest.tempId) {
+            return { ...latest, status: MESSAGE_STATUS.DELIVERED, tempId: undefined };
+          }
+          return item;
+        });
+      }
+
+      const alreadyExists = prev.some((p) => p.id === latest.id);
+      if (alreadyExists) return prev;
+      return [...prev, latest];
+    });
   }, [data]);
+
+  useEffect(() => {
+    if (!data?.length) return;
+    // Chỉ auto-scroll nếu đang ở gần cuối
+    const el = parentRef.current;
+    if (!el) return;
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+    if (isNearBottom) {
+      virtualizer.scrollToIndex(items.length - 1, { align: "end", behavior: "smooth" });
+    }
+  }, [items.length]);
 
   const currentProfile = useCurrentProfile();
   const currentProfileId = useMemo(() => currentProfile?.data?.body?.id, [currentProfile?.data]);
   const [initialLoading, setInitialLoading] = useState(false);
-
   const fetchList = usePatientMessageList();
 
   const hasMore = useRef(true);
@@ -47,12 +73,11 @@ function MessageList({ isTyping }: MessageListProps) {
     querying.current = true;
 
     try {
-      const payload = {
+      const result = await fetchList.trigger({
         conversationId: activeConversation?.id,
         page: pageRef.current,
-      };
+      });
 
-      const result = await fetchList.trigger(payload);
       if (abortRef.current) return;
 
       const newItems: MessageResponse[] = result?.body?.data ?? [];
@@ -65,7 +90,8 @@ function MessageList({ isTyping }: MessageListProps) {
       setItems((prev) => {
         const existingIds = new Set(prev.map((m) => m.id));
         const unique = newItems.filter((m) => !existingIds.has(m.id));
-        return [...prev, ...unique];
+        // Tin cũ prepend lên đầu, tin mới đang ở cuối
+        return [...unique, ...prev];
       });
 
       pageRef.current += 1;
@@ -76,7 +102,6 @@ function MessageList({ isTyping }: MessageListProps) {
 
   useEffect(() => {
     abortRef.current = true;
-
     setItems([]);
     setInitialLoading(true);
     hasMore.current = true;
@@ -96,6 +121,7 @@ function MessageList({ isTyping }: MessageListProps) {
     };
   }, [activeConversation?.id]);
 
+  // ─── Virtualizer ─────────────────────────────────────────────────────────
   const parentRef = useRef<HTMLDivElement>(null);
 
   const virtualizer = useVirtualizer({
@@ -105,6 +131,7 @@ function MessageList({ isTyping }: MessageListProps) {
     overscan: 5,
   });
 
+  // Scroll xuống cuối lần đầu load xong
   useEffect(() => {
     if (items.length > 0 && isFirstLoad.current) {
       isFirstLoad.current = false;
@@ -112,21 +139,23 @@ function MessageList({ isTyping }: MessageListProps) {
     }
   }, [items.length]);
 
+  // Scroll đến typing indicator khi có người đang gõ
   useEffect(() => {
     if (isTyping) {
-      const total = isTyping ? items.length + 1 : items.length;
+      const total = items.length + 1;
       virtualizer.scrollToIndex(total - 1, { align: "end", behavior: "smooth" });
     }
   }, [isTyping]);
 
+  // ─── Scroll lên load thêm tin cũ, giữ nguyên scroll position ────────────
   const handleScroll = useCallback(() => {
     const el = parentRef.current;
     if (!el) return;
     if (el.scrollTop < 80 && hasMore.current && !querying.current) {
-      const prevHeight = el.scrollHeight;
+      const prevScrollHeight = el.scrollHeight;
       requestData().then(() => {
         requestAnimationFrame(() => {
-          el.scrollTop += el.scrollHeight - prevHeight;
+          el.scrollTop += el.scrollHeight - prevScrollHeight;
         });
       });
     }
@@ -137,8 +166,9 @@ function MessageList({ isTyping }: MessageListProps) {
     if (!el) return;
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]); // ← thêm handleScroll vào deps
 
+  // ─── Render ──────────────────────────────────────────────────────────────
   if (initialLoading) {
     return (
       <div className="flex flex-col gap-3 p-4">
@@ -171,7 +201,6 @@ function MessageList({ isTyping }: MessageListProps) {
     >
       <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
         {virtualItems.map((virtualRow) => {
-          // Last virtual row = typing indicator
           const isTypingRow = isTyping && virtualRow.index === items.length;
 
           if (isTypingRow) {
@@ -191,16 +220,16 @@ function MessageList({ isTyping }: MessageListProps) {
           const message = items[virtualRow.index];
           const isMine = message.senderId === currentProfileId;
           const sender = usersMap?.[message.senderId] ?? null;
-
           const nextMessage = items[virtualRow.index + 1];
 
           const showAvatar =
             !nextMessage ||
             nextMessage.senderId !== message.senderId ||
             differenceInMinutes(
-              parseDate(nextMessage.createdAt, "HH:mm:ss dd/MM/yyyy") || new Date().getTime(),
-              parseDate(message.createdAt, "HH:mm:ss dd/MM/yyyy") || new Date().getTime()
+              parseDate(nextMessage.createdAt, "HH:mm:ss dd/MM/yyyy") || new Date(),
+              parseDate(message.createdAt, "HH:mm:ss dd/MM/yyyy") || new Date()
             ) > 5;
+
           return (
             <div
               key={virtualRow.key}

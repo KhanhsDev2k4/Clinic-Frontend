@@ -267,4 +267,6 @@ export type MessageResponse = BaseEntityResponse & {
   status: MESSAGE_STATUS;
   readBy: string[];
   replyTo?: string;
+
+  tempId?: string;
 };

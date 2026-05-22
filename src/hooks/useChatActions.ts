@@ -11,6 +11,7 @@ export interface CreateMessageDto {
   conversationId: string;
   content: string;
   type?: MESSAGE_TYPE;
+  tempId: string;
 }
 
 export function useChatActions() {
