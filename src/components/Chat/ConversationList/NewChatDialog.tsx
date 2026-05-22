@@ -40,7 +40,7 @@ function NewChatDialog({ onOpenChange, onSuccess }: NewChatDialogProps) {
 
     try {
       const filter = {
-        keyword: debouncedKeyword,
+        fullName: debouncedKeyword,
       };
       const payload = _.merge({}, filter, { page: pageRef.current });
       const pageNewItems = await fetchList.trigger(payload);
