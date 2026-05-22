@@ -45,7 +45,6 @@ const DoctorGrid = ({ filter, onTotalChange }: DoctorGridProps) => {
 
     try {
       const payload = _.merge({}, filter, { page: pageRef.current });
-      console.log({ payload });
       const pageNewItems = await fetchList.trigger(payload);
       const newItems = pageNewItems?.body?.data;
 

@@ -1,3 +1,4 @@
+// components/Chat/MessagePanel/MessageInput.tsx
 "use client";
 
 import React, { useRef } from "react";
@@ -8,28 +9,87 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { MESSAGE_INPUT_MAX_LENGTH } from "@/components/Chat/config";
 import { MessageFormValues, messageSchema } from "@/components/Chat/MessagePanel/config";
+import { usePatientMessageCreate } from "@/hooks/patient/usePatientMessageList";
+import { useDataConversation } from "@/components/Chat/hook";
+import { MESSAGE_TYPE } from "@/common";
+import { useChatActions } from "@/hooks/useChatActions";
+import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
+
+const TYPING_STOP_DELAY = 2000;
 
 interface MessageInputProps {
-  onSend: (content: string) => Promise<void>;
   disabled?: boolean;
 }
 
-function MessageInput({ onSend, disabled }: MessageInputProps) {
+function MessageInput({ disabled }: MessageInputProps) {
+  const { activeConversation } = useDataConversation();
+  const conversationId = activeConversation?.id ?? "";
+
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isTypingRef = useRef(false); // tránh gửi duplicate
+
+  const patientMessageCreate = usePatientMessageCreate();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { sendTyping, sendMessage } = useChatActions();
+
+  const startTyping = () => {
+    if (!isTypingRef.current) {
+      isTypingRef.current = true;
+      sendTyping(conversationId, true);
+    }
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(stopTyping, TYPING_STOP_DELAY);
+  };
+
+  const stopTyping = () => {
+    if (!isTypingRef.current) return;
+    isTypingRef.current = false;
+    sendTyping(conversationId, false);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+  };
+
+  const { data } = useCurrentProfile();
+
+  const initialValues = useRef<MessageFormValues>({ content: "" });
 
   const onSubmit = async (values: MessageFormValues, helpers: FormikHelpers<MessageFormValues>) => {
-    await onSend(values.content.trim());
+    stopTyping();
+    // await patientMessageCreate.trigger({
+    //   conversationId,
+    //   content: values.content.trim(),
+    //   type: MESSAGE_TYPE.TEXT,
+    //   replyTo: null,
+    // });
+    const payload = {
+      senderId: data?.body?.patient?.id ?? data?.body?.doctor?.id,
+      conversationId,
+      content: values.content.trim(),
+      type: MESSAGE_TYPE.TEXT,
+    };
+
+    sendMessage(conversationId, payload);
+
     helpers.resetForm();
     textareaRef.current?.focus();
   };
-
-  const initialValues = useRef<MessageFormValues>({ content: "" });
 
   const formik = useFormik<MessageFormValues>({
     initialValues: initialValues.current,
     validationSchema: messageSchema,
     onSubmit,
   });
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    formik.handleChange(e);
+    if (e.target.value.trim()) {
+      startTyping();
+    } else {
+      stopTyping();
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -50,7 +110,7 @@ function MessageInput({ onSend, disabled }: MessageInputProps) {
           className={cn("resize-none text-sm min-h-10 max-h-32 flex-1 py-2.5", "scrollbar-thin")}
           rows={1}
           value={formik.values.content}
-          onChange={formik.handleChange}
+          onChange={handleChange} // ← dùng handleChange mới
           onKeyDown={handleKeyDown}
           disabled={disabled || formik.isSubmitting}
           maxLength={MESSAGE_INPUT_MAX_LENGTH}

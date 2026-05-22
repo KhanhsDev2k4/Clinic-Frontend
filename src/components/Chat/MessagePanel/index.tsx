@@ -9,12 +9,16 @@ import { getImageUrl, getInitials } from "@/lib/utils";
 import { CONVERSATION_TYPE } from "@/common";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { useMemo } from "react";
+import { useTypingIndicator } from "@/hooks/useChatMessages";
 
 function MessagePanel() {
   const { activeConversation, usersMap } = useDataConversation();
 
-  const handleSend = async (content: string) => {};
   const { data } = useCurrentProfile();
+
+  const typingIndicatorData = useTypingIndicator(activeConversation?.id!);
+
+  const typingCount = typingIndicatorData?.data?.size ?? 0;
 
   const getAvatar = () => {
     if (activeConversation?.type === CONVERSATION_TYPE.DIRECT) {
@@ -66,11 +70,11 @@ function MessagePanel() {
 
       {/* Messages */}
       <div className="flex-1 overflow-hidden flex flex-col h-full">
-        <MessageList isTyping={true} />
+        <MessageList isTyping={Boolean(typingCount)} />
       </div>
 
       {/* Input */}
-      <MessageInput onSend={handleSend} />
+      <MessageInput />
     </div>
   );
 }

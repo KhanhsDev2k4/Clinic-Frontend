@@ -1,15 +1,15 @@
 "use client";
 
-import { cn, formatTime, getInitials, parseDate } from "@/lib/utils";
+import { cn, formatTime, getImageUrl, getInitials, parseDate } from "@/lib/utils";
 import { Check, CheckCheck, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageResponse, UserResponse } from "@/interface/response";
+import { DoctorProfileResponse, MessageResponse, PatientProfileResponse, } from "@/interface/response";
 import { MESSAGE_STATUS, MESSAGE_TYPE } from "@/common";
 
 interface MessageBubbleProps {
   message: MessageResponse;
   isMine: boolean;
-  sender: UserResponse | null;
+  sender: DoctorProfileResponse | PatientProfileResponse | null;
   showAvatar: boolean;
 }
 
@@ -21,9 +21,9 @@ function StatusIcon({ status }: { status: MESSAGE_STATUS }) {
 }
 
 function MessageBubble({ message, isMine, sender, showAvatar }: MessageBubbleProps) {
-  const initials = getInitials(sender?.fullName ?? "?");
   const isOptimistic = message.id.startsWith("temp-");
   const parsedDate = parseDate(message.createdAt, "HH:mm:ss dd/MM/yyyy");
+  const initials = getInitials(sender?.user?.fullName ?? "?");
 
   return (
     <div className={cn("flex items-end gap-2", isMine ? "flex-row-reverse" : "flex-row")}>
@@ -32,7 +32,9 @@ function MessageBubble({ message, isMine, sender, showAvatar }: MessageBubblePro
         <div className="w-7 shrink-0 self-end mb-4">
           {showAvatar && (
             <Avatar className="h-7 w-7">
-              <AvatarImage src={sender?.pathAvatar ?? undefined} alt={sender?.fullName ?? "User"} />
+              <AvatarImage
+                src={sender?.user?.pathAvatar ? getImageUrl(sender?.user?.pathAvatar) : undefined}
+              />
               <AvatarFallback className="text-xs font-medium bg-muted">{initials}</AvatarFallback>
             </Avatar>
           )}

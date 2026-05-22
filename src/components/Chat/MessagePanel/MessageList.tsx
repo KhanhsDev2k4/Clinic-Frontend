@@ -7,11 +7,12 @@ import { MESSAGE_ESTIMATED_HEIGHT } from "@/components/Chat/config";
 import { useDataConversation } from "@/components/Chat/hook";
 import { MessageResponse } from "@/interface/response";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
-import { usePatientMessage } from "@/hooks/patient/usePatientMessage";
+import { usePatientMessageList } from "../../../hooks/patient/usePatientMessageList";
 import TypingIndicator from "@/components/Chat/MessagePanel/TypingIndicator";
 import { differenceInMinutes } from "date-fns";
 import { parseDate } from "@/lib/utils";
 import MessageBubble from "@/components/Chat/MessagePanel/MessageBubble";
+import { useConversationMessages } from "@/hooks/useChatMessages";
 
 interface MessageListProps {
   isTyping?: boolean;
@@ -19,16 +20,24 @@ interface MessageListProps {
 
 function MessageList({ isTyping }: MessageListProps) {
   const { activeConversation, usersMap } = useDataConversation();
+  const [items, setItems] = useState<MessageResponse[]>([]);
+
+  const { data } = useConversationMessages(activeConversation?.id!);
+
+  useEffect(() => {
+    if (data?.length) {
+      setItems((prev) => [...prev, ...data.filter((d) => !prev.some((p) => p.id === d.id))]);
+    }
+  }, [data]);
 
   const currentProfile = useCurrentProfile();
   const currentProfileId = useMemo(
     () => currentProfile?.data?.body?.doctor?.id ?? currentProfile?.data?.body?.patient?.id,
     [currentProfile?.data]
   );
-  const [items, setItems] = useState<MessageResponse[]>([]);
   const [initialLoading, setInitialLoading] = useState(false);
 
-  const fetchList = usePatientMessage();
+  const fetchList = usePatientMessageList();
 
   const hasMore = useRef(true);
   const querying = useRef(false);
@@ -42,7 +51,7 @@ function MessageList({ isTyping }: MessageListProps) {
 
     try {
       const payload = {
-        conservationId: activeConversation?.id,
+        conversationId: activeConversation?.id,
         page: pageRef.current,
       };
 

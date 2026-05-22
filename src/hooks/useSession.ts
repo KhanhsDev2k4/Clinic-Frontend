@@ -28,8 +28,10 @@ export function useSession() {
     fallbackData: AUTH_INITIAL_STATE,
   });
 
+  const accessToken = data?.accessToken;
+
   return {
-    accessToken: data.accessToken,
+    accessToken,
     refreshToken: data.refreshToken,
     isAuthenticated: !!data.accessToken,
   };
