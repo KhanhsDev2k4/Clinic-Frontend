@@ -270,3 +270,30 @@ export type MessageResponse = BaseEntityResponse & {
 
   tempId?: string;
 };
+
+export type AppointmentDoctorStatisticsResponse = BaseEntityResponse & {
+  totalAppointments: {
+    value: number;
+    lastMonth: number;
+    delta: number;
+    deltaPercent: number;
+  };
+  completed: {
+    value: number;
+    lastMonth: number;
+    delta: number;
+    deltaPercent: number;
+  };
+  cancelled: {
+    value: number;
+    lastMonth: number;
+    delta: number;
+    deltaPercent: number;
+  };
+  pending: {
+    value: number;
+    lastMonth: number;
+    delta: number;
+    deltaPercent: number;
+  };
+};
