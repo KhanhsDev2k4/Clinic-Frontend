@@ -9,6 +9,7 @@ import { CONVERSATION_TYPE, MESSAGE_TYPE } from "@/common";
 import { useDataConversation } from "@/components/Chat/hook";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { useMemo } from "react";
+import { useTypingIndicator } from "@/hooks/useChatMessages";
 
 interface ConversationItemProps {
   conversation: ConversationResponse;
@@ -48,6 +49,10 @@ function ConversationItem({
   unreadCount = 0,
   onClick,
 }: ConversationItemProps) {
+  const typingIndicatorData = useTypingIndicator(conversation?.id!);
+
+  const typingCount = typingIndicatorData?.data?.length ?? 0;
+
   const { usersMap } = useDataConversation();
   const { data } = useCurrentProfile();
   const hasUnread = unreadCount > 0;
@@ -141,17 +146,36 @@ function ConversationItem({
         </div>
 
         <div className="flex items-center justify-between gap-2 mt-0.5">
-          {preview ? (
-            <p
-              className={cn(
-                "text-xs truncate flex items-center gap-1",
-                hasUnread ? "text-foreground font-medium" : "text-muted-foreground"
-              )}
-            >
-              {preview}
-            </p>
+          {Boolean(typingCount) ? (
+            <div className="flex items-center gap-1 bg-muted rounded-2xl px-2.5 py-1.25">
+              <span
+                className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <span
+                className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <span
+                className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
+            </div>
           ) : (
-            <span />
+            <>
+              {preview ? (
+                <p
+                  className={cn(
+                    "text-xs truncate flex items-center gap-1",
+                    hasUnread ? "text-foreground font-medium" : "text-muted-foreground"
+                  )}
+                >
+                  {preview}
+                </p>
+              ) : (
+                <span />
+              )}
+            </>
           )}
 
           {hasUnread && (
