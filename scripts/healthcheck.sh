@@ -38,7 +38,7 @@ rollback() {
         --name "${NAME}" \
         --restart unless-stopped \
         --env-file "${APP_DIR}/.env" \
-        -p "${PORT}:8080" \
+        -p "${PORT}:3000" \
         "${PREV_IMAGE}"
 
     echo "⏳ Chờ rollback container khởi động (30s)..."

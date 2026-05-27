@@ -45,7 +45,7 @@ docker run -d \
     --name "${NAME}" \
     --restart unless-stopped \
     --env-file "${ENV_FILE}" \
-    -p "${PORT}:8080" \
+    -p "${PORT}:3000" \
     "${IMAGE_TAG}"
 
 # ── 5. Dọn image cũ (giữ lại KEEP gần nhất) ─────────────────

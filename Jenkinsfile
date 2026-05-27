@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_REPO = 'davidnguyendev/fe-clinic'
         APP_CONTAINER_NAME = 'fe-clinic'
-        APP_PORT = '8080'
+        APP_PORT = '3000'
         KEEP_IMAGES = '3'
 
         DOCKERHUB_CREDS = 'dockerhub-credentials'
