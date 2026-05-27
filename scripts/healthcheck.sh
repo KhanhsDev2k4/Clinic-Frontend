@@ -7,7 +7,7 @@ REPO="__DOCKERHUB_REPO__"
 CURRENT_TAG="__IMAGE_TAG__"
 APP_DIR="__APP_DIR__"             # inject từ Jenkinsfile, không hardcode
 
-HEALTH_URL="http://localhost:${PORT}/actuator/health"
+HEALTH_URL="http://localhost:${PORT}/api/health"
 MAX_RETRY=18
 RETRY_INTERVAL=5
 
