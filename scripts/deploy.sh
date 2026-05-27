@@ -1,19 +1,25 @@
 #!/bin/bash
 set -euo pipefail
 
-IMAGE_TAG="${IMAGE_TAG}"
-REPO="${DOCKERHUB_REPO}"
-NAME="${APP_NAME}"
-PORT="${APP_PORT}"
-KEEP="${KEEP_IMAGES}"
-ENV_FILE="/opt/fe-clinic/.env"
+IMAGE_TAG="__IMAGE_TAG__"
+REPO="__DOCKERHUB_REPO__"
+NAME="__APP_NAME__"
+PORT="__APP_PORT__"
+KEEP="__KEEP_IMAGES__"
+ENV_FILE="__APP_DIR__/.env"       # inject từ Jenkinsfile, không hardcode
 
+# ── Cleanup file tạm khi exit/abort ──────────────────────────
+trap 'rm -f "${BASH_SOURCE[0]}"' EXIT INT TERM
+
+# ── 1. Login DockerHub ────────────────────────────────────────
 echo "=== [1/5] Login DockerHub ==="
 echo "${DOCKER_PASS_ARG}" | docker login -u "${DOCKER_USER_ARG}" --password-stdin
 
+# ── 2. Pull image mới ────────────────────────────────────────
 echo "=== [2/5] Pull image: ${IMAGE_TAG} ==="
 docker pull "${IMAGE_TAG}"
 
+# ── 3. Dừng & xóa container cũ ───────────────────────────────
 echo "=== [3/5] Dừng container cũ (nếu có) ==="
 docker kill  "${NAME}" 2>/dev/null || true
 docker stop  "${NAME}" 2>/dev/null || true
@@ -33,6 +39,7 @@ for i in $(seq 1 15); do
     sleep 1
 done
 
+# ── 4. Chạy container mới ────────────────────────────────────
 echo "=== [4/5] Chạy container mới ==="
 docker run -d \
     --name "${NAME}" \
@@ -41,6 +48,7 @@ docker run -d \
     -p "${PORT}:8080" \
     "${IMAGE_TAG}"
 
+# ── 5. Dọn image cũ (giữ lại KEEP gần nhất) ─────────────────
 echo "=== [5/5] Dọn image cũ — giữ lại ${KEEP} gần nhất ==="
 docker images "${REPO}" --format '{{.Tag}} {{.ID}}' \
     | grep -v latest \
