@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DoctorProfileResponse } from "@/interface/response";
 import { useFetchPublicDoctor } from "@/hooks/public/usePublicDoctor";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { DoctorListFilter } from "@/components/Landing/DoctorListClient/config";
+import { DoctorListFilter } from "@/components/LandingPage/Doctors/config";
 import _ from "lodash";
 
 const COLUMNS = {

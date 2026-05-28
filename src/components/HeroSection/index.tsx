@@ -49,7 +49,7 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="bg-linear-to-br from-blue-600 via-blue-700 to-teal-600 text-white overflow-hidden"
+      className="bg-linear-to-br from-blue-600 via-blue-700 to-teal-600 text-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">

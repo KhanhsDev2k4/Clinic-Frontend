@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import DoctorGrid from "@/components/Landing/DoctorGrid";
-import { DoctorListFilter } from "@/components/Landing/DoctorListClient/config";
+import { DoctorListFilter } from "@/components/LandingPage/Doctors/config";
 import DoctorFilterBar from "@/components/Landing/DoctorFilterBar";
 
 const DoctorListClient = () => {

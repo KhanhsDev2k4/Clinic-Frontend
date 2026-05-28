@@ -4,7 +4,12 @@ import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Carousel, type CarouselApi, CarouselContent, CarouselItem, } from "@/components/ui/carousel";
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn, getImageUrl, getInitials } from "@/lib/utils";
 import { useEffect, useState } from "react";
