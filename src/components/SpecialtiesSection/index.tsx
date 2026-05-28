@@ -12,15 +12,14 @@ import { Dialog } from "@/components/ui/dialog";
 import usePopup from "@/hooks/useDialog";
 import SpecialtyDialog from "@/components/SpecialtyDialog";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-
+import { useRouter } from "next/navigation";
 const SpecialtiesSection = () => {
   const publicSpecialtyList = usePublicSpecialtyList({ isActive: true });
   const popup = usePopup<{ specialtyId: string }>();
-
+  const router = useRouter();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-
   useEffect(() => {
     if (!api) return;
     setCount(api.scrollSnapList().length);
@@ -29,12 +28,13 @@ const SpecialtiesSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    popup.openPopup({ specialtyId: id });
+    console.log("check id", id);
+    router.push(`/en/specialties/${id}`);
   };
 
   return (
     <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-[100rem] mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50 mb-3">
             Specialties

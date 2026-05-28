@@ -20,9 +20,10 @@ import { usePublicDoctorList } from "@/hooks/public/usePublicDoctor";
 import usePopup from "@/hooks/useDialog";
 import { Dialog } from "@/components/ui/dialog";
 import DoctorDialog from "@/components/DoctorDialog";
-
+import { useRouter } from "next/navigation";
 const FeaturedDoctorsSection = () => {
   const popup = usePopup<{ doctorId: string }>();
+  const router = useRouter();
 
   const publicDoctorList = usePublicDoctorList({ isFeatured: true });
 
@@ -40,12 +41,12 @@ const FeaturedDoctorsSection = () => {
   }, [api]);
 
   const handleCardClick = (id: string) => {
-    popup.openPopup({ doctorId: id });
+    router.push(`/en/doctors/${id}`);
   };
 
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-[100rem] mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
           <div>

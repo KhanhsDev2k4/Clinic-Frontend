@@ -27,9 +27,9 @@ const HowItWorksSection = () => {
     {
       step: "01",
       icon: UserSearch,
-      title: "Find a Doctor",
+      title: "Tìm kiếm Bác sĩ",
       description:
-        "Search by specialty, browse profiles and patient reviews, then pick the best match for your needs.",
+        "Tìm kiếm theo chuyên khoa, xem hồ sơ và đánh giá của bệnh nhân, sau đó chọn bác sĩ phù hợp nhất với nhu cầu của bạn.",
       color: "bg-blue-50 text-blue-400",
       activeColor: "bg-blue-100 text-blue-600",
       border: "border-blue-100",
@@ -38,9 +38,9 @@ const HowItWorksSection = () => {
     {
       step: "02",
       icon: CalendarCheck,
-      title: "Book an Appointment",
+      title: "Đặt Lịch Khám",
       description:
-        "Pick a date and time that fits the doctor's available slots — confirmed in just a few seconds.",
+        "Chọn ngày và giờ phù hợp với thời gian rảnh của bác sĩ — được xác nhận chỉ trong vài giây.",
       color: "bg-teal-50 text-teal-400",
       activeColor: "bg-teal-100 text-teal-600",
       border: "border-teal-100",
@@ -49,9 +49,9 @@ const HowItWorksSection = () => {
     {
       step: "03",
       icon: Bell,
-      title: "Get Confirmation",
+      title: "Nhận Xác Nhận",
       description:
-        "Receive instant confirmation via Email or SMS, plus automatic reminders before your visit.",
+        "Nhận xác nhận ngay lập tức qua Email hoặc SMS, cùng với lời nhắc tự động trước buổi khám của bạn.",
       color: "bg-violet-50 text-violet-400",
       activeColor: "bg-violet-100 text-violet-600",
       border: "border-violet-100",
@@ -60,9 +60,9 @@ const HowItWorksSection = () => {
     {
       step: "04",
       icon: ClipboardList,
-      title: "Visit & Review",
+      title: "Khám & Đánh giá",
       description:
-        "Arrive on time and be seen in order. After your visit, leave a review to help the community.",
+        "Đến đúng giờ và được khám theo thứ tự. Sau buổi khám, hãy để lại đánh giá để giúp đỡ cộng đồng.",
       color: "bg-orange-50 text-orange-400",
       activeColor: "bg-orange-100 text-orange-600",
       border: "border-orange-100",
@@ -120,18 +120,20 @@ const HowItWorksSection = () => {
 
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-[100rem] mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
           <Badge variant="outline" className="text-violet-600 border-violet-200 bg-violet-50 mb-3">
-            How It Works
+            Cách thức hoạt động
           </Badge>
           <h2 className="text-3xl font-bold text-gray-900 mb-3">
-            Book an appointment in 4 easy steps
+            Đặt lịch khám trong 4 bước đơn giản
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto text-sm">
-            Just a few simple actions and you have a doctor's appointment — no waiting in line
-            required.
+            Chỉ với vài thao tác đơn giản là bạn đã có lịch hẹn với bác sĩ
+          </p>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm mt-[1rem]">
+            Không cần phải xếp hàng chờ đợi.
           </p>
         </div>
 
@@ -273,7 +275,7 @@ const HowItWorksSection = () => {
             size="lg"
             className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white rounded-xl shadow-md"
           >
-            <Link href="/patient/booking">Book Now</Link>
+            <Link href="/patient/booking">Đặt Khám Ngay</Link>
           </Button>
         </div>
       </div>

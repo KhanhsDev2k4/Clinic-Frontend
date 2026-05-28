@@ -4,12 +4,18 @@ import { useRef } from "react";
 import { Banknote, Search, SlidersHorizontal, Stethoscope, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePublicSpecialtyList } from "@/hooks/public/usePublicSpecialty";
 import { cn } from "@/lib/utils";
 import { FILTER_ALL_VALUE } from "@/hooks/global";
-import { DoctorListFilter } from "@/components/Landing/DoctorListClient/config";
+import { DoctorListFilter } from "@/components/LandingPage/Doctors/config";
 
 const SORT_OPTIONS = [
   { label: "Most Reviewed", value: "totalReviews:desc" },
