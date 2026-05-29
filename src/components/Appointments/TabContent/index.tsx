@@ -3,7 +3,13 @@ import { useCallback, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import { CalendarIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import AppointmentCard from "@/components/Appointments/AppointmentCard";
 import AppointmentSkeleton from "@/components/Appointments/AppointmentSkeleton";
 import EmptyState from "@/components/Appointments/EmptyState";
