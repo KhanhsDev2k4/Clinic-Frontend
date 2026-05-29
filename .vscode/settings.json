@@ -2,13 +2,24 @@
   "editor.formatOnSave": true,
 
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "never"
+    "source.fixAll.eslint": "always"
   },
-
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   "eslint.useFlatConfig": true,
 
-  "js/ts.preferences.importModuleSpecifier": "non-relative"
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  "[typescript react]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  "[javascript react]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  }
 }

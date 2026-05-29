@@ -4,8 +4,6 @@ import nextTs from "eslint-config-next/typescript";
 import importPlugin from "eslint-plugin-import";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
-import reactHooks from "eslint-plugin-react-hooks";
-import sonarjs from "eslint-plugin-sonarjs";
 
 export default defineConfig([
   ...nextVitals,
