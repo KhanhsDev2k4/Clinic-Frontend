@@ -3,13 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import { CalendarIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import AppointmentCard from "@/components/Appointments/AppointmentCard";
 import AppointmentSkeleton from "@/components/Appointments/AppointmentSkeleton";
 import EmptyState from "@/components/Appointments/EmptyState";
@@ -86,7 +80,11 @@ function TabContent({ tab }: TabContentProps) {
       },
 
       [APPOINTMENT_TAB.UPCOMING]: {
-        status: [APPOINTMENT_STATUS.CONFIRMED, APPOINTMENT_STATUS.IN_PROGRESS],
+        status: [
+          APPOINTMENT_STATUS.CONFIRMED,
+          APPOINTMENT_STATUS.IN_PROGRESS,
+          APPOINTMENT_STATUS.PENDING,
+        ],
         fromDate: formatDateToApi(startOfDay(formik.values.date?.from!), "HH:mm dd/MM/yyyy"),
         toDate: formatDateToApi(endOfDay(formik.values.date?.to!), "HH:mm dd/MM/yyyy"),
       },
