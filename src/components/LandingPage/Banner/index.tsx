@@ -10,7 +10,6 @@ import "keen-slider/keen-slider.min.css";
 import ModalProvider from "@/components/ModalProvider";
 
 const Banner = () => {
-  // Banner slides
   const bannerSlides = [
     {
       title: "Chăm sóc sức khỏe toàn diện",
@@ -99,30 +98,6 @@ const Banner = () => {
           </div>
         ))}
       </div>
-
-      {/* <div className="absolute bottom-[-10] left-0 right-0 transform translate-y-1/2">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="bg-blue-50 rounded-2xl p-8 z-10">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Đặt lịch khám nhanh</h3>
-            <div className="grid md:grid-cols-4 gap-4">
-              <select className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none">
-                <option>Chọn chuyên khoa</option>
-                <option>Tim mạch</option>
-                <option>Nhi khoa</option>
-                <option>Nội khoa</option>
-              </select>
-              <select className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none">
-                <option>Chọn bác sĩ</option>
-                <option>BS. Nguyễn Văn A</option>
-                <option>BS. Trần Thị B</option>
-              </select>
-              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transition">
-                Tìm lịch khám
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </section>
   );
 };

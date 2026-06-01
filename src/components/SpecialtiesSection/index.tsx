@@ -20,7 +20,6 @@ const SpecialtiesSection = () => {
   const { setApi, current, count, api } = useCarousel();
 
   const handleCardClick = (id: string) => {
-    console.log("check id", id);
     router.push(`/specialties/${id}`);
   };
 

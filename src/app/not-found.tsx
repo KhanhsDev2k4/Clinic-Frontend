@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,17 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  FileQuestion,
-  Home,
-  ArrowLeft,
-  Search,
-  FileText,
-  LayoutDashboard,
-  Users,
-} from "lucide-react";
+import { FileQuestion, Home, Search, FileText, LayoutDashboard, Users } from "lucide-react";
 
-// Danh sách trang gợi ý — tuỳ chỉnh theo app của bạn
 const suggestedPages = [
   {
     icon: LayoutDashboard,
