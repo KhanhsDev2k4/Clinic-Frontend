@@ -1,8 +1,7 @@
 import { SPECIALTY_TYPE } from "@/common";
 import { LanguageCode } from "@/i18n/config";
 import { SpecialtyOverviewContent, SpecialtyResponse, ViLaoResponse } from "@/interface/response";
-import axiosInstance from "@/lib/axiosInstance";
-import { ApiResponse } from "@/hooks/global";
+import { ApiResponse, METHOD } from "@/hooks/global";
 import { unstable_cache } from "next/cache";
 
 const SPECIALTY_LABELS: Record<SPECIALTY_TYPE, Record<LanguageCode, string>> = {
@@ -46,7 +45,7 @@ export async function _fetchSpecialtyIntro(
     }`;
 
   const res = await fetch("https://api.vilao.ai/v1/chat/completions", {
-    method: "POST",
+    method: METHOD.POST,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.VILAO_API_KEY}`,
@@ -83,9 +82,10 @@ export async function _fetchSpecialtyIntro(
 
 export async function fetchSpecialtyById(id: string): Promise<SpecialtyResponse | null> {
   if (!id) return null;
-  return await axiosInstance
-    .get<ApiResponse<SpecialtyResponse>>(`/api/v1/public/specialty/${id}`)
-    .then((res) => res.data?.body);
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/specialty/${id}`);
+  const data: ApiResponse<SpecialtyResponse> = await res.json();
+  return data?.body ?? null;
 }
 
 export const fetchSpecialtyIntro = unstable_cache(_fetchSpecialtyIntro, ["specialty-intro"], {
