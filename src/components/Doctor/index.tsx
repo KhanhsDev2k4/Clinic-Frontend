@@ -19,9 +19,6 @@ import { usePublicDoctorById } from "@/hooks/public/usePublicDoctor";
 const DetailDoctor = () => {
   const [activeTab, setActiveTab] = useState("about");
   const { doctorProfileId } = useParams<{ doctorProfileId: string }>();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [showAllReviews, setShowAllReviews] = useState(false);
-
   const { data } = usePublicDoctorById(doctorProfileId);
 
   const doctorData = data?.body;
@@ -55,77 +52,37 @@ const DetailDoctor = () => {
       <DoctorBreadcrumb items={breadcrumbItems} />
 
       {/* Hero Section */}
-      <DoctorHeroSection
-        doctor={doctorData!}
-        isBookmarked={isBookmarked}
-        onBookmarkToggle={() => setIsBookmarked(!isBookmarked)}
-        onBookAppointment={handleBookAppointment}
-        onVideoCall={handleVideoCall}
-        onMessage={handleMessage}
-        onShare={handleShare}
-      />
+      <DoctorHeroSection onBookAppointment={handleBookAppointment} onMessage={handleMessage} />
 
       {/* Main Content */}
-      <div className="max-w-[100rem] mx-auto px-4 py-8">
+      <div className="max-w-400 mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Tabs Content */}
           <div className="lg:col-span-2">
             <DoctorTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
             <div className="bg-white rounded-b-2xl shadow-lg">
-              {activeTab === "about" && (
-                <AboutTab
-                  treatmentApproach={doctorData.treatmentApproach}
-                  languages={doctorData.languages}
-                  awards={doctorData.awards}
-                  publications={doctorData.publications}
-                  doctorName={doctorData.name}
-                />
-              )}
-
-              {activeTab === "expertise" && (
-                <ExpertiseTab
-                  expertise={doctorData.expertise}
-                  certificates={doctorData.certificates}
-                  doctorName={doctorData.name}
-                />
-              )}
-
-              {activeTab === "education" && (
-                <EducationTab
-                  education={doctorData.education}
-                  workHistory={doctorData.workHistory}
-                />
-              )}
-
-              {activeTab === "reviews" && (
-                <ReviewsTab
-                  rating={doctorData.stats.rating}
-                  totalReviews={doctorData.stats.totalReviews}
-                  reviews={reviewsData}
-                  showAll={showAllReviews}
-                  onToggleShowAll={() => setShowAllReviews(!showAllReviews)}
-                />
-              )}
+              {activeTab === "about" && <AboutTab />}
+              {activeTab === "reviews" && <ReviewsTab />}
             </div>
           </div>
 
           {/* Right: Sidebar */}
           <div className="space-y-6">
-            <BookingCard
-              pricing={doctorData.pricing}
-              workingDays={doctorData.workingDays}
-              workingHours={doctorData.workingHours}
-              timeSlots={doctorData.timeSlots}
-              location={doctorData.location}
-              hotline="1900-xxxx"
-              onBookAppointment={handleBookAppointment}
-              onVideoCall={handleVideoCall}
-            />
+            {/*<BookingCard*/}
+            {/*  pricing={doctorData.pricing}*/}
+            {/*  workingDays={doctorData.workingDays}*/}
+            {/*  workingHours={doctorData.workingHours}*/}
+            {/*  timeSlots={doctorData.timeSlots}*/}
+            {/*  location={doctorData.location}*/}
+            {/*  hotline="1900-xxxx"*/}
+            {/*  onBookAppointment={handleBookAppointment}*/}
+            {/*  onVideoCall={handleVideoCall}*/}
+            {/*/>*/}
           </div>
         </div>
-        <div className="mt-[1rem]">
-          <RelatedDoctors doctors={relatedDoctorsData} />
+        <div className="mt-4">
+          <RelatedDoctors />
         </div>
       </div>
     </div>

@@ -65,6 +65,10 @@ export type SpecialtyResponse = {
   isActive: boolean;
 };
 
+export type ResponseDoctorProfileDetailDto = DoctorProfileResponse & {
+  availableToday: boolean;
+};
+
 export type DoctorProfileResponse = BaseEntityResponse & {
   user: UserResponse;
   doctorCode: string;

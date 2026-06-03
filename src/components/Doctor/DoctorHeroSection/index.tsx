@@ -7,7 +7,6 @@ import {
   Share2,
   Calendar,
   Bookmark,
-  TrendingUp,
   BadgeCheck,
   Stethoscope,
   MessageCircle,
@@ -18,46 +17,37 @@ import StatCard from "../StatCard";
 import ActionButton from "../ActionButton";
 import { DoctorProfileResponse } from "@/interface/response";
 import { getImageUrl } from "@/lib/utils";
-
-interface DoctorStats {
-  rating: number;
-  totalReviews: number;
-  totalPatients: number;
-  successRate: number;
-  responseTime: string;
-}
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { usePublicDoctorById } from "@/hooks/public/usePublicDoctor";
 
 interface DoctorHeroProps {
-  doctor: DoctorProfileResponse;
-  isBookmarked: boolean;
-  onBookmarkToggle: () => void;
   onBookAppointment: () => void;
-  onVideoCall: () => void;
   onMessage: () => void;
-  onShare: () => void;
 }
 
-const DoctorHeroSection: React.FC<DoctorHeroProps> = ({
-  doctor,
-  isBookmarked,
-  onBookmarkToggle,
-  onBookAppointment,
-  onVideoCall,
-  onMessage,
-  onShare,
-}) => {
+const DoctorHeroSection: React.FC<DoctorHeroProps> = ({ onBookAppointment, onMessage }) => {
+  const { doctorProfileId } = useParams<{ doctorProfileId: string }>();
+
+  const { data } = usePublicDoctorById(doctorProfileId);
+
+  const doctorData = data?.body;
+
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-12">
-      <div className="max-w-[100rem] mx-auto px-4">
+    <section className="bg-linear-to-r from-blue-600 to-indigo-600 text-white py-12">
+      <div className="max-w-400 mx-auto px-4">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Avatar */}
           <div className="relative">
-            <img
-              src={getImageUrl(doctor?.user?.pathAvatar)}
-              alt={doctor.user?.fullName}
-              className="w-48 h-48 rounded-2xl object-cover border-4 border-white shadow-2xl"
-            />
-            {doctor.availableToday && (
+            <div className="relative w-48 h-48 rounded-2xl object-cover shadow-2xl">
+              <Image
+                src={getImageUrl(doctorData?.user?.pathAvatar)}
+                alt={doctorData?.user?.fullName ?? ""}
+                fill
+                className="object-cover"
+              />
+            </div>
+            {doctorData?.availableToday && (
               <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                 Có lịch hôm nay
@@ -71,18 +61,14 @@ const DoctorHeroSection: React.FC<DoctorHeroProps> = ({
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="bg-white/20 backdrop-blur px-4 py-1 rounded-full text-sm font-semibold">
-                    {doctor.degree}
-                  </span>
-                  <span className="bg-white/20 backdrop-blur px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-2">
-                    <BadgeCheck className="w-4 h-4" />
-                    Đã xác thực
+                    {doctorData?.degree}
                   </span>
                 </div>
-                <h1 className="text-4xl font-bold mb-2">{doctor.user?.fullName}</h1>
+                <h1 className="text-4xl font-bold mb-2">{doctorData?.user?.fullName}</h1>
                 <div className="flex items-center gap-4 text-blue-100 mb-4">
                   <div className="flex items-center gap-2">
                     <Stethoscope className="w-5 h-5" />
-                    <span className="text-lg font-semibold">{doctor.specialty?.name}</span>
+                    <span className="text-lg font-semibold">{doctorData?.specialty?.name}</span>
                   </div>
                   {/*{doctor.subSpecialty && (*/}
                   {/*  <>*/}
@@ -92,46 +78,27 @@ const DoctorHeroSection: React.FC<DoctorHeroProps> = ({
                   {/*)}*/}
                 </div>
               </div>
-
-              <button
-                onClick={onBookmarkToggle}
-                className="p-3 bg-white/20 backdrop-blur rounded-full hover:bg-white/30 transition"
-              >
-                {isBookmarked ? (
-                  <BookmarkCheck className="w-6 h-6" />
-                ) : (
-                  <Bookmark className="w-6 h-6" />
-                )}
-              </button>
             </div>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
               <StatCard
                 icon={<Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />}
-                value={doctor.averageRating}
-                label={`${doctor.totalReviews} đánh giá`}
+                value={doctorData?.averageRating!}
+                format={{ notation: "standard", maximumFractionDigits: 1 }}
+                label={`${doctorData?.totalReviews} đánh giá`}
               />
               <StatCard
                 icon={<Users className="w-5 h-5" />}
-                value={doctor.totalPatients}
+                value={doctorData?.totalPatients!}
+                format={{ notation: "compact" }}
                 label="Bệnh nhân"
               />
               <StatCard
                 icon={<Award className="w-5 h-5" />}
-                value={doctor.experienceYears}
+                value={doctorData?.experienceYears!}
                 label="Năm kinh nghiệm"
               />
-              {/*<StatCard*/}
-              {/*  icon={<TrendingUp className="w-5 h-5" />}*/}
-              {/*  value={`${doctor.stats.successRate}%`}*/}
-              {/*  label="Thành công"*/}
-              {/*/>*/}
-              {/*<StatCard*/}
-              {/*  icon={<MessageCircle className="w-5 h-5" />}*/}
-              {/*  value={doctor.stats.responseTime}*/}
-              {/*  label="Phản hồi"*/}
-              {/*/>*/}
             </div>
 
             {/* Quick actions */}
@@ -143,18 +110,10 @@ const DoctorHeroSection: React.FC<DoctorHeroProps> = ({
               >
                 Đặt lịch khám
               </ActionButton>
-              <ActionButton onClick={onVideoCall} icon={<Video className="w-5 h-5" />}>
-                Tư vấn video
-              </ActionButton>
+
               <ActionButton onClick={onMessage} icon={<MessageCircle className="w-5 h-5" />}>
                 Nhắn tin
               </ActionButton>
-              <button
-                onClick={onShare}
-                className="p-3 bg-white/20 backdrop-blur text-white rounded-full hover:bg-white/30 transition"
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
             </div>
           </div>
         </div>

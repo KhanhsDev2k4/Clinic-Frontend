@@ -1,5 +1,10 @@
 import { buildQueryParams } from "@/lib/utils";
-import { BaseFilter, DoctorProfileResponse, UserResponse } from "@/interface/response";
+import {
+  BaseFilter,
+  DoctorProfileResponse,
+  ResponseDoctorProfileDetailDto,
+  UserResponse,
+} from "@/interface/response";
 import { ApiPagedResponse, METHOD } from "@/hooks/global";
 import { useMutation, useSWRWrapper } from "@/hooks/swr";
 
@@ -8,7 +13,9 @@ export const usePublicDoctorList = (
     isFeatured?: boolean;
     fullName?: string;
     specialtyId?: string;
-  }
+    excludeIds?: string[];
+  },
+  enable: boolean = true
 ) => {
   const query = buildQueryParams(filter);
 
@@ -17,6 +24,7 @@ export const usePublicDoctorList = (
     {
       url: `/api/v1/public/doctor-profile?${query}`,
       method: METHOD.GET,
+      enable,
     }
   );
 };
@@ -29,7 +37,7 @@ export const useFetchPublicDoctor = () => {
 };
 
 export const usePublicDoctorById = (id: string) => {
-  return useSWRWrapper<DoctorProfileResponse>(`/api/v1/public/doctor-profile/${id}`, {
+  return useSWRWrapper<ResponseDoctorProfileDetailDto>(`/api/v1/public/doctor-profile/${id}`, {
     url: `/api/v1/public/doctor-profile/${id}`,
     method: METHOD.GET,
   });
