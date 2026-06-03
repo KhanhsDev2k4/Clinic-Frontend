@@ -168,7 +168,32 @@ export type ReviewResponse = BaseEntityResponse & {
   patientPathAvatar?: string;
 };
 
-export type ReviewDetailsResponse = BaseEntityResponse & {};
+export interface ViLaoMessage {
+  role: "assistant" | "user" | "system";
+  content: string;
+}
+
+export interface ViLaoChoice {
+  index: number;
+  message: ViLaoMessage;
+  finish_reason: string;
+}
+
+export interface ViLaoResponse {
+  id: string;
+  model: string;
+  choices: ViLaoChoice[];
+}
+
+export interface SpecialtyOverviewContent {
+  intro: string;
+  treatments: string[];
+  symptoms: Array<{
+    text: string;
+    severity: "high" | "medium" | "low";
+  }>;
+  riskFactors: string[];
+}
 
 export type DoctorScheduleExceptionResponse = BaseEntityResponse & {
   doctorProfile: DoctorProfileResponse;
