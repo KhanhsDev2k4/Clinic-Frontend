@@ -1,3 +1,61 @@
 {
-  "greeting": "Xin chào, tôi là một ứng dụng Next.js với hỗ trợ đa ngôn ngữ!"
+  "greeting": "Xin chào, tôi là một ứng dụng Next.js với hỗ trợ đa ngôn ngữ!",
+  "admin": {
+    "dashboard": {
+      "totalUsers": "Tổng người dùng",
+      "totalAppointments": "Tổng lịch hẹn",
+      "totalReports": "Tổng báo cáo",
+      "activeToday": "Hoạt động hôm nay",
+      "fromLastMonth": "so với tháng trước",
+      "recentActivity": "Hoạt động gần đây",
+      "activityType": "Loại",
+      "activityTitle": "Tiêu đề",
+      "activityDesc": "Mô tả",
+      "activityTime": "Thời gian",
+      "activityStatus": "Trạng thái"
+    },
+    "users": {
+      "title": "Quản lý người dùng",
+      "subtitle": "Quản lý người dùng hệ thống và vai trò",
+      "addUser": "Thêm người dùng",
+      "searchPlaceholder": "Tìm kiếm người dùng...",
+      "filterRole": "Lọc theo vai trò",
+      "filterStatus": "Lọc theo trạng thái",
+      "allRoles": "Tất cả vai trò",
+      "allStatuses": "Tất cả trạng thái",
+      "name": "Tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "role": "Vai trò",
+      "status": "Trạng thái",
+      "createdAt": "Ngày tạo",
+      "actions": "Thao tác",
+      "noResults": "Không tìm thấy người dùng phù hợp",
+      "editUser": "Sửa người dùng",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "create": "Tạo mới",
+      "deleteConfirmTitle": "Xóa người dùng",
+      "deleteConfirmDesc": "Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác.",
+      "delete": "Xóa"
+    },
+    "reports": {
+      "title": "Báo cáo",
+      "subtitle": "Xem và quản lý báo cáo hệ thống",
+      "searchPlaceholder": "Tìm kiếm báo cáo...",
+      "filterType": "Lọc theo loại",
+      "filterStatus": "Lọc theo trạng thái",
+      "allTypes": "Tất cả loại",
+      "allStatuses": "Tất cả trạng thái",
+      "title_col": "Tiêu đề báo cáo",
+      "type": "Loại",
+      "status": "Trạng thái",
+      "generatedAt": "Ngày tạo",
+      "generatedBy": "Người tạo",
+      "actions": "Thao tác",
+      "noResults": "Không tìm thấy báo cáo phù hợp",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày"
+    }
+  }
 }

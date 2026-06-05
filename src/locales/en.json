@@ -1,3 +1,61 @@
 {
-  "greeting": "Hello, I'm a Next.js app with multilingual support!"
+  "greeting": "Hello, I'm a Next.js app with multilingual support!",
+  "admin": {
+    "dashboard": {
+      "totalUsers": "Total Users",
+      "totalAppointments": "Total Appointments",
+      "totalReports": "Total Reports",
+      "activeToday": "Active Today",
+      "fromLastMonth": "from last month",
+      "recentActivity": "Recent Activity",
+      "activityType": "Type",
+      "activityTitle": "Title",
+      "activityDesc": "Description",
+      "activityTime": "Time",
+      "activityStatus": "Status"
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage system users and their roles",
+      "addUser": "Add User",
+      "searchPlaceholder": "Search users...",
+      "filterRole": "Filter by role",
+      "filterStatus": "Filter by status",
+      "allRoles": "All Roles",
+      "allStatuses": "All Statuses",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created",
+      "actions": "Actions",
+      "noResults": "No users found matching your criteria",
+      "editUser": "Edit User",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "deleteConfirmTitle": "Delete User",
+      "deleteConfirmDesc": "Are you sure you want to delete this user? This action cannot be undone.",
+      "delete": "Delete"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "View and manage system reports",
+      "searchPlaceholder": "Search reports...",
+      "filterType": "Filter by type",
+      "filterStatus": "Filter by status",
+      "allTypes": "All Types",
+      "allStatuses": "All Statuses",
+      "title_col": "Report Title",
+      "type": "Type",
+      "status": "Status",
+      "generatedAt": "Generated",
+      "generatedBy": "By",
+      "actions": "Actions",
+      "noResults": "No reports found matching your criteria",
+      "fromDate": "From date",
+      "toDate": "To date"
+    }
+  }
 }
