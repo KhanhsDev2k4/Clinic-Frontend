@@ -209,12 +209,8 @@ export default function AdminUsers() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-heading font-semibold text-gray-900">
-            {t("users.title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {t("users.subtitle")}
-          </p>
+          <h1 className="text-2xl font-heading font-semibold text-gray-900">{t("users.title")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("users.subtitle")}</p>
         </div>
         <Button onClick={openAdd} size="sm">
           <Plus className="w-4 h-4" />
@@ -282,9 +278,7 @@ export default function AdminUsers() {
               <TableHead>{t("users.role")}</TableHead>
               <TableHead>{t("users.status")}</TableHead>
               <TableHead>{t("users.createdAt")}</TableHead>
-              <TableHead className="text-right w-28 pr-4">
-                {t("users.actions")}
-              </TableHead>
+              <TableHead className="text-right w-28 pr-4">{t("users.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -314,16 +308,10 @@ export default function AdminUsers() {
                     {user.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-muted-foreground text-xs">
-                  {user.createdAt}
-                </TableCell>
+                <TableCell className="text-muted-foreground text-xs">{user.createdAt}</TableCell>
                 <TableCell className="text-right pr-4">
                   <div className="flex items-center justify-end gap-0.5">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={() => openEdit(user)}
-                    >
+                    <Button variant="ghost" size="icon-sm" onClick={() => openEdit(user)}>
                       <Pencil className="w-3.5 h-3.5" />
                     </Button>
                     <Button
@@ -339,10 +327,7 @@ export default function AdminUsers() {
             ))}
             {pageData.length === 0 && (
               <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="h-24 text-center text-muted-foreground"
-                >
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   {t("users.noResults")}
                 </TableCell>
               </TableRow>
@@ -357,9 +342,7 @@ export default function AdminUsers() {
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className={
-                  page <= 1 ? "pointer-events-none opacity-50" : undefined
-                }
+                className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -372,11 +355,7 @@ export default function AdminUsers() {
             <PaginationItem>
               <PaginationNext
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className={
-                  page >= totalPages
-                    ? "pointer-events-none opacity-50"
-                    : undefined
-                }
+                className={page >= totalPages ? "pointer-events-none opacity-50" : undefined}
               />
             </PaginationItem>
           </PaginationContent>
@@ -386,9 +365,7 @@ export default function AdminUsers() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {editingUser ? t("users.editUser") : t("users.addUser")}
-            </DialogTitle>
+            <DialogTitle>{editingUser ? t("users.editUser") : t("users.addUser")}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-3">
             <div>
@@ -423,7 +400,7 @@ export default function AdminUsers() {
               <label className="text-sm font-medium">{t("users.role")}</label>
               <Select
                 value={form.role}
-                onValueChange={(v) => setForm({ ...form, role: v })}
+                onValueChange={(v: ROLE_NAME) => setForm({ ...form, role: v })}
               >
                 <SelectTrigger className="mt-1 h-8">
                   <SelectValue />
@@ -440,7 +417,7 @@ export default function AdminUsers() {
               <label className="text-sm font-medium">{t("users.status")}</label>
               <Select
                 value={form.status}
-                onValueChange={(v) => setForm({ ...form, status: v })}
+                onValueChange={(v: USER_STATUS) => setForm({ ...form, status: v })}
               >
                 <SelectTrigger className="mt-1 h-8">
                   <SelectValue />
@@ -464,20 +441,12 @@ export default function AdminUsers() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={!!deleteConfirm}
-        onOpenChange={(open) => !open && setDeleteConfirm(null)}
-      >
-        <DialogContent
-          className="sm:max-w-sm"
-          showCloseButton={false}
-        >
+      <Dialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+        <DialogContent className="sm:max-w-sm" showCloseButton={false}>
           <DialogHeader>
             <DialogTitle>{t("users.deleteConfirmTitle")}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            {t("users.deleteConfirmDesc")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("users.deleteConfirmDesc")}</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteConfirm(null)}>
               {t("users.cancel")}
