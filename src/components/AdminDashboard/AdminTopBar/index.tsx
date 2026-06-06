@@ -1,14 +1,19 @@
+"use client";
+
 import { Bell } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function AdminTopBar() {
+  const t = useTranslations("admin");
+
   return (
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-2xl font-heading font-semibold text-gray-900">
-          Admin Dashboard
+          {t("dashboard.title")}
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Overview and quick actions
+          {t("dashboard.subtitle")}
         </p>
       </div>
       <div className="flex items-center gap-3">

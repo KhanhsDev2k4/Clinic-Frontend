@@ -2,6 +2,8 @@
   "greeting": "Hello, I'm a Next.js app with multilingual support!",
   "admin": {
     "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Overview and quick actions",
       "totalUsers": "Total Users",
       "totalAppointments": "Total Appointments",
       "totalReports": "Total Reports",
@@ -12,7 +14,8 @@
       "activityTitle": "Title",
       "activityDesc": "Description",
       "activityTime": "Time",
-      "activityStatus": "Status"
+      "activityStatus": "Status",
+      "noActivity": "No recent activity"
     },
     "users": {
       "title": "User Management",

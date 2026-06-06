@@ -149,7 +149,7 @@ export function AdminRecentActivity() {
                   colSpan={5}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  No recent activity
+                  {t("dashboard.noActivity")}
                 </TableCell>
               </TableRow>
             )}

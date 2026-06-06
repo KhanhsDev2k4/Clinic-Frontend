@@ -2,6 +2,8 @@
   "greeting": "Xin chào, tôi là một ứng dụng Next.js với hỗ trợ đa ngôn ngữ!",
   "admin": {
     "dashboard": {
+      "title": "Bảng điều khiển",
+      "subtitle": "Tổng quan và thao tác nhanh",
       "totalUsers": "Tổng người dùng",
       "totalAppointments": "Tổng lịch hẹn",
       "totalReports": "Tổng báo cáo",
@@ -12,7 +14,8 @@
       "activityTitle": "Tiêu đề",
       "activityDesc": "Mô tả",
       "activityTime": "Thời gian",
-      "activityStatus": "Trạng thái"
+      "activityStatus": "Trạng thái",
+      "noActivity": "Không có hoạt động gần đây"
     },
     "users": {
       "title": "Quản lý người dùng",
