@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_REPO        = 'davidnguyendev/frontend'
         APP_CONTAINER_NAME    = 'frontend'
         APP_PORT              = '3000'
-        BACKEND_PORT          = '8000'
+        BACKEND_PORT          = '8080'
         KEEP_IMAGES           = '3'
 
         // Credential IDs in Jenkins
