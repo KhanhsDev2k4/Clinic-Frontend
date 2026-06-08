@@ -1,4 +1,14 @@
 {
+  "header": {
+    "notifications": {
+      "title": "Notifications",
+      "unreadCount": "{count, plural, =0 {No unread notifications} =1 {# unread notification} other {# unread notifications}}",
+      "markAllAsRead": "Mark all as read",
+      "viewAll": "View all notifications",
+      "emptyTitle": "No notifications",
+      "emptyDescription": "New appointment, message, and clinic updates will appear here."
+    }
+  },
   "greeting": "Hello, I'm a Next.js app with multilingual support!",
   "admin": {
     "dashboard": {
@@ -59,6 +69,122 @@
       "noResults": "No reports found matching your criteria",
       "fromDate": "From date",
       "toDate": "To date"
+    },
+    "services": {
+      "title": "Service Management",
+      "subtitle": "Manage clinic services, pricing, promotions, and visibility",
+      "createButton": "Create service",
+      "searchPlaceholder": "Search services...",
+      "filterPlaceholder": "Filter services",
+      "allServices": "All services",
+      "active": "Active",
+      "inactive": "Inactive",
+      "featured": "Featured",
+      "none": "None",
+      "total": "{count} services",
+      "previous": "Previous",
+      "next": "Next",
+      "durationValue": "{count} min",
+      "toggleActive": "Toggle active status",
+      "toggleFeatured": "Toggle featured status",
+      "noResults": "No services found matching your criteria",
+      "createService": "Create Service",
+      "editService": "Edit Service",
+      "deleteTitle": "Delete Service",
+      "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "thisService": "this service",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "delete": "Delete",
+      "columns": {
+        "image": "Image",
+        "name": "Name",
+        "duration": "Duration",
+        "price": "Price",
+        "promotionalPrice": "Promo price",
+        "featured": "Featured",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "fields": {
+        "name": "Name",
+        "slug": "Slug",
+        "description": "Description",
+        "duration": "Duration",
+        "price": "Price",
+        "promotionalPrice": "Promotional price",
+        "image": "Image URL",
+        "isFeatured": "Featured",
+        "isActive": "Active"
+      },
+      "validation": {
+        "required": "This field is required",
+        "url": "Enter a valid image URL",
+        "minDuration": "Duration must be at least 1 minute",
+        "minPrice": "Price cannot be negative"
+      }
+    },
+    "specialties": {
+      "title": "Specialty Management",
+      "subtitle": "Manage medical specialties, display order, type, and public visibility",
+      "createButton": "Create specialty",
+      "searchPlaceholder": "Search specialties...",
+      "statusFilterPlaceholder": "Filter by status",
+      "typeFilterPlaceholder": "Filter by type",
+      "allStatuses": "All statuses",
+      "allTypes": "All specialty types",
+      "active": "Active",
+      "inactive": "Inactive",
+      "total": "{count} specialties",
+      "previous": "Previous",
+      "next": "Next",
+      "toggleActive": "Toggle active status",
+      "noResults": "No specialties found matching your criteria",
+      "createSpecialty": "Create Specialty",
+      "editSpecialty": "Edit Specialty",
+      "deleteTitle": "Delete Specialty",
+      "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "thisSpecialty": "this specialty",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "delete": "Delete",
+      "columns": {
+        "image": "Image",
+        "name": "Name",
+        "slug": "Slug",
+        "specialtyType": "Type",
+        "displayOrder": "Order",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "fields": {
+        "name": "Name",
+        "slug": "Slug",
+        "description": "Description",
+        "image": "Image URL",
+        "specialtyType": "Specialty type",
+        "displayOrder": "Display order",
+        "isActive": "Active"
+      },
+      "validation": {
+        "required": "This field is required",
+        "url": "Enter a valid image URL",
+        "minDisplayOrder": "Display order cannot be negative"
+      },
+      "types": {
+        "GENERAL": "General",
+        "SURGERY": "Surgery",
+        "PEDIATRICS": "Pediatrics",
+        "DERMATOLOGY": "Dermatology",
+        "CARDIOLOGY": "Cardiology",
+        "ORTHOPEDICS": "Orthopedics",
+        "NEUROLOGY": "Neurology",
+        "PSYCHIATRY": "Psychiatry",
+        "GYNECOLOGY": "Gynecology",
+        "ENDOCRINOLOGY": "Endocrinology"
+      }
     },
     "staff": {
       "dashboard": {
@@ -121,6 +247,48 @@
           "toDate": "To date"
         }
       }
+    }
+  },
+  "services": {
+    "heroBadge": "Medical services",
+    "heroTitle": "Find the right care package for your next appointment",
+    "heroDescription": "Browse active clinic services, compare duration and pricing, then book directly with the care team.",
+    "heroCalloutTitle": "Easy online booking",
+    "heroCalloutDescription": "Choose a service first so the booking flow can prepare the right appointment details.",
+    "allServices": "Available services",
+    "searchPlaceholder": "Search by service name...",
+    "resultCount": "{count} services available",
+    "featured": "Featured",
+    "durationValue": "{count} min",
+    "bookNow": "Book appointment",
+    "emptyTitle": "No services found",
+    "emptyDescription": "Try another service name or clear your search to view all available services."
+  },
+  "specialties": {
+    "heroBadge": "Medical specialties",
+    "heroTitle": "Find the right specialty for your care needs",
+    "heroDescription": "Browse active specialties, compare care focus areas, and connect with doctors who match your symptoms or treatment plan.",
+    "heroCalloutTitle": "Specialized care paths",
+    "heroCalloutDescription": "Choose a specialty first to narrow doctor results and speed up appointment booking.",
+    "allSpecialties": "Available specialties",
+    "searchPlaceholder": "Search by specialty name...",
+    "typeFilterPlaceholder": "Filter by type",
+    "allTypes": "All specialty types",
+    "resultCount": "{count} specialties available",
+    "viewDoctors": "View doctors",
+    "emptyTitle": "No specialties found",
+    "emptyDescription": "Try another specialty name or select a different type to view available specialties.",
+    "types": {
+      "GENERAL": "General",
+      "SURGERY": "Surgery",
+      "PEDIATRICS": "Pediatrics",
+      "DERMATOLOGY": "Dermatology",
+      "CARDIOLOGY": "Cardiology",
+      "ORTHOPEDICS": "Orthopedics",
+      "NEUROLOGY": "Neurology",
+      "PSYCHIATRY": "Psychiatry",
+      "GYNECOLOGY": "Gynecology",
+      "ENDOCRINOLOGY": "Endocrinology"
     }
   }
 }

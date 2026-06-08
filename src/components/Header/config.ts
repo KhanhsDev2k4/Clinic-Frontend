@@ -48,7 +48,8 @@ export const NAV_LINKS: Record<ROLE_NAME, NavLink[]> = {
   [ROLE_NAME.GUEST]: [
     { label: "Home", path: "/", icon: "Home" },
     { label: "Doctors", path: "/doctors", icon: "Stethoscope" },
-    { label: "Services", path: "/services/general", icon: "LayoutGrid" },
+    { label: "Specialties", path: "/specialties", icon: "Layers3" },
+    { label: "Services", path: "/services", icon: "LayoutGrid" },
     { label: "FAQ", path: "/faq", icon: "CircleHelp" },
   ],
   [ROLE_NAME.PATIENT]: [
@@ -64,10 +65,31 @@ export const NAV_LINKS: Record<ROLE_NAME, NavLink[]> = {
     { label: "Schedule", path: "/doctor/schedule", icon: "ClipboardList" },
   ],
   [ROLE_NAME.ADMIN]: [
-    { label: "Dashboard", path: "/admin", icon: "LayoutDashboard" },
-    { label: "Users", path: "/admin/users", icon: "Users" },
-    { label: "Services", path: "/admin/services", icon: "Wrench" },
-    { label: "Reports", path: "/admin/reports", icon: "BarChart2" },
+    {
+      label: "Dashboard",
+      path: "/admin",
+      icon: "LayoutDashboard",
+    },
+    {
+      label: "Users",
+      path: "/admin/users",
+      icon: "Users",
+    },
+    {
+      label: "Services",
+      path: "/admin/services",
+      icon: "Stethoscope",
+    },
+    {
+      label: "Specialties",
+      path: "/admin/specialties",
+      icon: "Layers3",
+    },
+    {
+      label: "Reports",
+      path: "/admin/reports",
+      icon: "BarChart3",
+    },
   ],
   [ROLE_NAME.STAFF]: [
     { label: "Dashboard", path: "/staff", icon: "LayoutDashboard" },

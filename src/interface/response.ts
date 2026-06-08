@@ -300,6 +300,16 @@ export type MessageResponse = BaseEntityResponse & {
   tempId?: string;
 };
 
+export interface NotificationResponse {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  isRead: boolean;
+  type: string;
+  href?: string;
+}
+
 export type AppointmentDoctorStatisticsResponse = BaseEntityResponse & {
   totalAppointments: {
     value: number;

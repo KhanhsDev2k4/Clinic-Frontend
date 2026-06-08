@@ -1,15 +1,18 @@
 import News from "@/components/News";
 import { ArticlesResponse, NewsResponse } from "@/interface/response";
 import { LanguageCode } from "@/i18n/config";
-import { getLocale } from "next-intl/server";
 
-export async function fetchNews(lang: string): Promise<NewsResponse> {
+interface NewsSectionProps {
+  locale: LanguageCode;
+}
+
+export async function fetchNews(locale: LanguageCode): Promise<NewsResponse> {
   const res = await fetch(
-    `https://gnews.io/api/v4/top-headlines?category=health&lang=${lang}&max=10&apikey=${process.env.GNEWS_API_KEY}`,
+    `https://gnews.io/api/v4/top-headlines?category=health&lang=${locale}&max=10&apikey=${process.env.GNEWS_API_KEY}`,
     {
       next: {
         revalidate: false,
-        tags: [`news-${lang}`],
+        tags: [`news-${locale}`],
       },
     }
   );
@@ -22,9 +25,7 @@ export async function fetchNews(lang: string): Promise<NewsResponse> {
   return res.json();
 }
 
-async function NewsSection() {
-  const locale = (await getLocale()) as LanguageCode;
-
+async function NewsSection({ locale }: NewsSectionProps) {
   let articles: ArticlesResponse[] = [];
   try {
     const data = await fetchNews(locale);

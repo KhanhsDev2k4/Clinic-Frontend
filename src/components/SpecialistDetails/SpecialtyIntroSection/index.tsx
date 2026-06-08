@@ -1,7 +1,6 @@
 import { SpecialtyOverviewContent, SpecialtyResponse, ViLaoResponse } from "@/interface/response";
 import { getLocale } from "next-intl/server";
 import { LanguageCode } from "@/i18n/config";
-import { SPECIALTY_TYPE } from "@/common";
 import Overview from "@/components/SpecialistDetails/Overview";
 import {
   fetchSpecialtyById,

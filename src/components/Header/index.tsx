@@ -1,8 +1,7 @@
 "use client";
-import { Bell, ChevronDown, LogOut, Stethoscope, User } from "lucide-react";
+import { ChevronDown, LogOut, Stethoscope, User } from "lucide-react";
 import { NAV_LINKS, PROFILE_PATH } from "./config";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +16,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { useLogoutDialog } from "@/hooks/useLogoutDialog";
 import { NavLinkItem } from "@/components/NavLinkItem";
+import { NotificationBell } from "./NotificationBell";
 
 const Header = () => {
   const { data } = useCurrentProfile();
@@ -27,7 +27,7 @@ const Header = () => {
   const navLinks = NAV_LINKS[user?.role!] ?? [
     { label: "Home", path: "/", icon: "Home" },
     { label: "Doctors", path: "/doctors", icon: "Stethoscope" },
-    { label: "Services", path: "/services/general", icon: "LayoutGrid" },
+    { label: "Services", path: "/services", icon: "LayoutGrid" },
     { label: "FAQ", path: "/faq", icon: "CircleHelp" },
   ];
 
@@ -74,17 +74,7 @@ const Header = () => {
             {user ? (
               <>
                 {/* Notification Bell */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-full"
-                  asChild={false}
-                >
-                  <Bell className="w-5 h-5 text-gray-600" />
-                  <Badge className="absolute -top-0.5 -right-0.5 w-4 h-4 p-0 flex items-center justify-center text-[10px] bg-red-500 hover:bg-red-500">
-                    3
-                  </Badge>
-                </Button>
+                <NotificationBell />
 
                 {/* Avatar Dropdown */}
                 <DropdownMenu>

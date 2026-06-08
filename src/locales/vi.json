@@ -1,4 +1,14 @@
 {
+  "header": {
+    "notifications": {
+      "title": "Thong bao",
+      "unreadCount": "{count, plural, =0 {Khong co thong bao chua doc} =1 {# thong bao chua doc} other {# thong bao chua doc}}",
+      "markAllAsRead": "Danh dau da doc",
+      "viewAll": "Xem tat ca thong bao",
+      "emptyTitle": "Chua co thong bao",
+      "emptyDescription": "Cap nhat lich hen, tin nhan va phong kham se hien thi tai day."
+    }
+  },
   "greeting": "Xin chào, tôi là một ứng dụng Next.js với hỗ trợ đa ngôn ngữ!",
   "admin": {
     "dashboard": {
@@ -59,6 +69,61 @@
       "noResults": "Không tìm thấy báo cáo phù hợp",
       "fromDate": "Từ ngày",
       "toDate": "Đến ngày"
+    },
+    "services": {
+      "title": "Quản lý dịch vụ",
+      "subtitle": "Quản lý dịch vụ phòng khám, giá, ưu đãi và trạng thái hiển thị",
+      "createButton": "Tạo dịch vụ",
+      "searchPlaceholder": "Tìm kiếm dịch vụ...",
+      "filterPlaceholder": "Lọc dịch vụ",
+      "allServices": "Tất cả dịch vụ",
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động",
+      "featured": "Nổi bật",
+      "none": "Không có",
+      "total": "{count} dịch vụ",
+      "previous": "Trước",
+      "next": "Sau",
+      "durationValue": "{count} phút",
+      "toggleActive": "Bật tắt trạng thái hoạt động",
+      "toggleFeatured": "Bật tắt trạng thái nổi bật",
+      "noResults": "Không tìm thấy dịch vụ phù hợp",
+      "createService": "Tạo dịch vụ",
+      "editService": "Sửa dịch vụ",
+      "deleteTitle": "Xóa dịch vụ",
+      "deleteDescription": "Bạn có chắc chắn muốn xóa {name}? Hành động này không thể hoàn tác.",
+      "thisService": "dịch vụ này",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "create": "Tạo mới",
+      "delete": "Xóa",
+      "columns": {
+        "image": "Ảnh",
+        "name": "Tên",
+        "duration": "Thời lượng",
+        "price": "Giá",
+        "promotionalPrice": "Giá ưu đãi",
+        "featured": "Nổi bật",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "fields": {
+        "name": "Tên",
+        "slug": "Slug",
+        "description": "Mô tả",
+        "duration": "Thời lượng",
+        "price": "Giá",
+        "promotionalPrice": "Giá ưu đãi",
+        "image": "URL ảnh",
+        "isFeatured": "Nổi bật",
+        "isActive": "Đang hoạt động"
+      },
+      "validation": {
+        "required": "Trường này là bắt buộc",
+        "url": "Nhập URL ảnh hợp lệ",
+        "minDuration": "Thời lượng tối thiểu là 1 phút",
+        "minPrice": "Giá không được âm"
+      }
     },
     "staff": {
       "dashboard": {
@@ -121,6 +186,109 @@
           "toDate": "Đến ngày"
         }
       }
+    },
+    "specialties": {
+      "title": "Quan ly chuyen khoa",
+      "subtitle": "Quan ly chuyen khoa y te, thu tu hien thi, loai va trang thai cong khai",
+      "createButton": "Tao chuyen khoa",
+      "searchPlaceholder": "Tim kiem chuyen khoa...",
+      "statusFilterPlaceholder": "Loc theo trang thai",
+      "typeFilterPlaceholder": "Loc theo loai",
+      "allStatuses": "Tat ca trang thai",
+      "allTypes": "Tat ca loai chuyen khoa",
+      "active": "Dang hoat dong",
+      "inactive": "Ngung hoat dong",
+      "total": "{count} chuyen khoa",
+      "previous": "Truoc",
+      "next": "Sau",
+      "toggleActive": "Bat tat trang thai hoat dong",
+      "noResults": "Khong tim thay chuyen khoa phu hop",
+      "createSpecialty": "Tao chuyen khoa",
+      "editSpecialty": "Sua chuyen khoa",
+      "deleteTitle": "Xoa chuyen khoa",
+      "deleteDescription": "Ban co chac chan muon xoa {name}? Hanh dong nay khong the hoan tac.",
+      "thisSpecialty": "chuyen khoa nay",
+      "cancel": "Huy",
+      "save": "Luu",
+      "create": "Tao moi",
+      "delete": "Xoa",
+      "columns": {
+        "image": "Anh",
+        "name": "Ten",
+        "slug": "Slug",
+        "specialtyType": "Loai",
+        "displayOrder": "Thu tu",
+        "status": "Trang thai",
+        "actions": "Thao tac"
+      },
+      "fields": {
+        "name": "Ten",
+        "slug": "Slug",
+        "description": "Mo ta",
+        "image": "URL anh",
+        "specialtyType": "Loai chuyen khoa",
+        "displayOrder": "Thu tu hien thi",
+        "isActive": "Dang hoat dong"
+      },
+      "validation": {
+        "required": "Truong nay la bat buoc",
+        "url": "Nhap URL anh hop le",
+        "minDisplayOrder": "Thu tu hien thi khong duoc am"
+      },
+      "types": {
+        "GENERAL": "Tong quat",
+        "SURGERY": "Ngoai khoa",
+        "PEDIATRICS": "Nhi khoa",
+        "DERMATOLOGY": "Da lieu",
+        "CARDIOLOGY": "Tim mach",
+        "ORTHOPEDICS": "Co xuong khop",
+        "NEUROLOGY": "Than kinh",
+        "PSYCHIATRY": "Tam than",
+        "GYNECOLOGY": "Phu khoa",
+        "ENDOCRINOLOGY": "Noi tiet"
+      }
+    }
+  },
+  "services": {
+    "heroBadge": "Dịch vụ y tế",
+    "heroTitle": "Tìm gói chăm sóc phù hợp cho lịch hẹn tiếp theo",
+    "heroDescription": "Xem các dịch vụ đang hoạt động, so sánh thời lượng và chi phí, sau đó đặt lịch trực tiếp với đội ngũ chăm sóc.",
+    "heroCalloutTitle": "Đặt lịch trực tuyến dễ dàng",
+    "heroCalloutDescription": "Chọn dịch vụ trước để luồng đặt lịch chuẩn bị đúng thông tin cần thiết.",
+    "allServices": "Dịch vụ hiện có",
+    "searchPlaceholder": "Tìm theo tên dịch vụ...",
+    "resultCount": "{count} dịch vụ hiện có",
+    "featured": "Nổi bật",
+    "durationValue": "{count} phút",
+    "bookNow": "Đặt lịch",
+    "emptyTitle": "Không tìm thấy dịch vụ",
+    "emptyDescription": "Thử tên dịch vụ khác hoặc xóa tìm kiếm để xem tất cả dịch vụ hiện có."
+  },
+  "specialties": {
+    "heroBadge": "Chuyen khoa y te",
+    "heroTitle": "Tim chuyen khoa phu hop voi nhu cau cham soc",
+    "heroDescription": "Xem cac chuyen khoa dang hoat dong, so sanh linh vuc cham soc va ket noi voi bac si phu hop voi trieu chung hoac ke hoach dieu tri.",
+    "heroCalloutTitle": "Lo trinh cham soc chuyen sau",
+    "heroCalloutDescription": "Chon chuyen khoa truoc de thu hep ket qua bac si va dat lich nhanh hon.",
+    "allSpecialties": "Chuyen khoa hien co",
+    "searchPlaceholder": "Tim theo ten chuyen khoa...",
+    "typeFilterPlaceholder": "Loc theo loai",
+    "allTypes": "Tat ca loai chuyen khoa",
+    "resultCount": "{count} chuyen khoa hien co",
+    "viewDoctors": "Xem bac si",
+    "emptyTitle": "Khong tim thay chuyen khoa",
+    "emptyDescription": "Thu ten chuyen khoa khac hoac chon loai khac de xem cac chuyen khoa hien co.",
+    "types": {
+      "GENERAL": "Tong quat",
+      "SURGERY": "Ngoai khoa",
+      "PEDIATRICS": "Nhi khoa",
+      "DERMATOLOGY": "Da lieu",
+      "CARDIOLOGY": "Tim mach",
+      "ORTHOPEDICS": "Co xuong khop",
+      "NEUROLOGY": "Than kinh",
+      "PSYCHIATRY": "Tam than",
+      "GYNECOLOGY": "Phu khoa",
+      "ENDOCRINOLOGY": "Noi tiet"
     }
   }
 }

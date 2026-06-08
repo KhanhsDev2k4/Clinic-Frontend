@@ -7,8 +7,13 @@ import FeaturedDoctorsSection from "@/components/FeaturedDoctorsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import SpecialtiesSection from "@/components/SpecialtiesSection";
 import NewsSection from "@/components/NewsSection";
+import { LanguageCode } from "@/i18n/config";
 
-const LandingPage = () => {
+interface LandingPageProps {
+  locale: LanguageCode;
+}
+
+const LandingPage = ({ locale }: LandingPageProps) => {
   return (
     <div className="flex flex-col">
       <Banner />
@@ -18,7 +23,7 @@ const LandingPage = () => {
       <Services />
       <HowItWorksSection />
       <Testimonials />
-      <NewsSection />
+      <NewsSection locale={locale} />
       <Footer />
     </div>
   );
