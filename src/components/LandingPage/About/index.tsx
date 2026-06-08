@@ -5,10 +5,10 @@ const About = () => {
   const t = useTranslations("landingPage.about");
 
   return (
-    <div className="py-[4rem] ">
-      <div className="max-w-[100rem] mx-auto px-4">
+    <div className="py-16 ">
+      <div className="max-w-400 mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-[2.4rem] font-700 text-gray-900 mb-[2rem]">{t("title")}</h2>
+          <h2 className="text-[2.4rem] font-700 text-gray-900 mb-8">{t("title")}</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("description")}</p>
         </div>
 
@@ -37,7 +37,7 @@ const About = () => {
           ].map((stat, index) => (
             <div
               key={index}
-              className="text-center p-[2.4rem] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[1.6rem] transition shadow-base-1"
+              className="text-center p-[2.4rem] bg-linear-to-br from-blue-50 to-indigo-50 rounded-[1.6rem] transition shadow-base-1"
             >
               <div className="text-blue-600 flex justify-center mb-4">{stat.icon}</div>
               <div className="text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>

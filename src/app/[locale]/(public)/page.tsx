@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const dynamic = "force-static";
-export const revalidate = false;
+export const revalidate = 1800;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

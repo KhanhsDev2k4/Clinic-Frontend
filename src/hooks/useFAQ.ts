@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export interface FAQItem {
   id: number;
@@ -18,8 +18,6 @@ interface UseFAQOptions {
 interface UseFAQReturn {
   faqs: FAQItem[];
   categories: string[];
-  isLoading: boolean;
-  error: string | null;
   openId: number | null;
   toggle: (id: number) => void;
 }
@@ -99,8 +97,6 @@ export const useFAQ = ({
   searchQuery = "",
   activeCategory = "Tất cả",
 }: UseFAQOptions = {}): UseFAQReturn => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
 
   const categories = useMemo(
@@ -120,5 +116,5 @@ export const useFAQ = ({
 
   const toggle = (id: number) => setOpenId((prev) => (prev === id ? null : id));
 
-  return { faqs, categories, isLoading, error, openId, toggle };
+  return { faqs, categories, openId, toggle };
 };
