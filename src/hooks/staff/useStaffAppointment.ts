@@ -5,7 +5,12 @@ import { ApiPagedResponse, METHOD } from "@/hooks/global";
 import { buildQueryParams } from "@/lib/utils";
 import { AppointmentFilterFormValues } from "@/components/Appointments/TabContent";
 
-export const useStaffAppointment = (filter?: AppointmentFilterFormValues) => {
+export const useStaffAppointment = (
+  filter?: AppointmentFilterFormValues & {
+    fromDate?: string;
+    toDate?: string;
+  }
+) => {
   const query = buildQueryParams(filter);
   const { accessToken } = useSession();
 
