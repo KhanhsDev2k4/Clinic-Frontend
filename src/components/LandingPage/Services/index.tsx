@@ -56,14 +56,14 @@ const Services = () => {
                   <ul className="space-y-3 mb-8">
                     {isPromotionsLoading
                       ? Array.from({ length: 3 }).map((_, index) => (
-                          <li key={index} className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 shrink-0" />
+                          <li key={index} className="flex items-start gap-2 h-[4.8rem]">
+                            <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
                             <span className="h-5 w-3/4 animate-pulse rounded bg-white/20" />
                           </li>
                         ))
                       : (promotions[service.id] ?? [service.description]).map((feature) => (
-                          <li key={feature} className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 shrink-0" />
+                          <li key={feature} className="flex items-start gap-2 h-[4.8rem]">
+                            <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
                             <span>{feature}</span>
                           </li>
                         ))}

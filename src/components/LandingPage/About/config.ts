@@ -16,7 +16,7 @@ function isApiResponse(value: unknown): value is ApiResponse<LandingStaticsApiBo
 
 export async function fetchLandingStatics(): Promise<StaticsTicsLandingResponse | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/landing/statics`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/landing`, {
       next: {
         revalidate: 1800,
         tags: ["landing-statics"],
@@ -34,7 +34,8 @@ export async function fetchLandingStatics(): Promise<StaticsTicsLandingResponse 
       specialistDoctors: body.specialistDoctors,
       satisfaction: body.satisfaction ?? body.satisfactionRate ?? 0,
     };
-  } catch {
+  } catch (error) {
+    console.error("Error fetching landing statics:", error);
     return null;
   }
 }
