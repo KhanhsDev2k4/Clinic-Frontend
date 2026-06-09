@@ -186,7 +186,6 @@ Tất cả step components trong `components/Booking/`. `StepBar` hiển thị p
 
 - ❌ Sửa file trong `components/ui/` của shadcn
 - ❌ Dùng `pages/` directory
-- ❌ Dùng `getServerSideProps` / `getStaticProps`
 - ❌ Hardcode string nếu có trong locales
 - ❌ Tạo component ở sai folder (xem "Đặt component ở đâu?" ở trên)
 - ❌ Bỏ qua i18n — mọi text hiển thị đều phải qua translation
