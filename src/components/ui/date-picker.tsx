@@ -14,6 +14,7 @@ interface DatePickerProps {
   className?: string;
   value?: Date;
   onChange?: (date: Date) => void;
+  disabled?: (date: Date) => boolean;
 }
 
 export function DatePicker(props: DatePickerProps) {
@@ -38,7 +39,17 @@ export function DatePicker(props: DatePickerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={date} onSelect={setDate} required />
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(d) => {
+            if (!d) return;
+            setDate(d);
+            props.onChange?.(d);
+          }}
+          disabled={props.disabled}
+          required
+        />
       </PopoverContent>
     </Popover>
   );

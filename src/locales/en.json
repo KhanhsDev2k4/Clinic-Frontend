@@ -157,6 +157,99 @@
     }
   },
   "greeting": "Hello, I'm a Next.js app with multilingual support!",
+  "doctorScheduleExceptions": {
+    "title": "Schedule exceptions",
+    "subtitle": "Manage leave days and weekend extra clinic sessions.",
+    "types": {
+      "all": "All",
+      "leave": "Leave",
+      "extra": "Extra"
+    },
+    "filters": {
+      "type": "Type",
+      "month": "Month",
+      "year": "Year"
+    },
+    "months": {
+      "0": "January",
+      "1": "February",
+      "2": "March",
+      "3": "April",
+      "4": "May",
+      "5": "June",
+      "6": "July",
+      "7": "August",
+      "8": "September",
+      "9": "October",
+      "10": "November",
+      "11": "December"
+    },
+    "weekdays": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "calendar": {
+      "title": "Monthly calendar",
+      "description": "Exception dates are color-coded by type."
+    },
+    "table": {
+      "title": "Exception list",
+      "description": "{count, plural, =0 {No exceptions} =1 {# exception} other {# exceptions}} in this period.",
+      "loading": "Loading exceptions...",
+      "empty": "No schedule exceptions match the selected filters.",
+      "columns": {
+        "exceptionDate": "Date",
+        "type": "Type",
+        "reason": "Reason",
+        "actions": "Actions"
+      }
+    },
+    "form": {
+      "createTitle": "Create exception",
+      "editTitle": "Edit exception",
+      "description": "Leave applies to weekdays. Extra clinic sessions apply to weekends.",
+      "typeHint": "The type is suggested automatically from the selected day of week.",
+      "fields": {
+        "exceptionDate": "Exception date",
+        "type": "Type",
+        "reason": "Reason"
+      },
+      "placeholders": {
+        "reason": "Enter a short reason"
+      },
+      "validation": {
+        "dateRequired": "Please select an exception date.",
+        "pastDate": "Past dates are not allowed.",
+        "duplicateDate": "An exception already exists for this date.",
+        "typeRequired": "Please select an exception type.",
+        "dayType": "Leave must be Monday-Friday, and extra sessions must be Saturday-Sunday.",
+        "reasonRequired": "Please enter a reason."
+      }
+    },
+    "actions": {
+      "create": "Create exception",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "deleteDialog": {
+      "title": "Delete exception",
+      "description": "Delete the schedule exception for {date}? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {totalPages}"
+    }
+  },
   "admin": {
     "dashboard": {
       "title": "Admin Dashboard",

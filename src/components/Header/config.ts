@@ -62,7 +62,7 @@ export const NAV_LINKS: Record<ROLE_NAME, NavLink[]> = {
     { label: "Dashboard", path: "/doctor", icon: "LayoutDashboard" },
     { label: "Appointments", path: "/doctor/appointments", icon: "Calendar" },
     { label: "Patients", path: "/doctor/patients", icon: "User" },
-    { label: "Schedule", path: "/doctor/schedule", icon: "ClipboardList" },
+    { label: "Schedule", path: "/doctor/schedule-exceptions", icon: "ClipboardList" },
   ],
   [ROLE_NAME.ADMIN]: [
     {

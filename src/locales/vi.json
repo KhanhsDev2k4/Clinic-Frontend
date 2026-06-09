@@ -157,6 +157,99 @@
     }
   },
   "greeting": "Xin chào, tôi là một ứng dụng Next.js với hỗ trợ đa ngôn ngữ!",
+  "doctorScheduleExceptions": {
+    "title": "Ngoại lệ lịch làm việc",
+    "subtitle": "Quản lý ngày nghỉ phép và lịch làm thêm cuối tuần.",
+    "types": {
+      "all": "Tất cả",
+      "leave": "Nghỉ phép",
+      "extra": "Làm thêm"
+    },
+    "filters": {
+      "type": "Loại",
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "months": {
+      "0": "Tháng 1",
+      "1": "Tháng 2",
+      "2": "Tháng 3",
+      "3": "Tháng 4",
+      "4": "Tháng 5",
+      "5": "Tháng 6",
+      "6": "Tháng 7",
+      "7": "Tháng 8",
+      "8": "Tháng 9",
+      "9": "Tháng 10",
+      "10": "Tháng 11",
+      "11": "Tháng 12"
+    },
+    "weekdays": {
+      "sun": "CN",
+      "mon": "T2",
+      "tue": "T3",
+      "wed": "T4",
+      "thu": "T5",
+      "fri": "T6",
+      "sat": "T7"
+    },
+    "calendar": {
+      "title": "Lịch theo tháng",
+      "description": "Ngày ngoại lệ được tô màu theo loại."
+    },
+    "table": {
+      "title": "Danh sách ngoại lệ",
+      "description": "Có {count} ngoại lệ trong khoảng thời gian này.",
+      "loading": "Đang tải ngoại lệ...",
+      "empty": "Không có ngoại lệ lịch làm việc phù hợp bộ lọc.",
+      "columns": {
+        "exceptionDate": "Ngày",
+        "type": "Loại",
+        "reason": "Lý do",
+        "actions": "Thao tác"
+      }
+    },
+    "form": {
+      "createTitle": "Tạo ngoại lệ",
+      "editTitle": "Chỉnh sửa ngoại lệ",
+      "description": "Nghỉ phép áp dụng cho ngày trong tuần. Làm thêm áp dụng cho cuối tuần.",
+      "typeHint": "Loại được gợi ý tự động theo thứ của ngày đã chọn.",
+      "fields": {
+        "exceptionDate": "Ngày ngoại lệ",
+        "type": "Loại",
+        "reason": "Lý do"
+      },
+      "placeholders": {
+        "reason": "Nhập lý do ngắn gọn"
+      },
+      "validation": {
+        "dateRequired": "Vui lòng chọn ngày ngoại lệ.",
+        "pastDate": "Không được chọn ngày trong quá khứ.",
+        "duplicateDate": "Ngày này đã có ngoại lệ.",
+        "typeRequired": "Vui lòng chọn loại ngoại lệ.",
+        "dayType": "Nghỉ phép phải là Thứ 2-Thứ 6, làm thêm phải là Thứ 7-Chủ nhật.",
+        "reasonRequired": "Vui lòng nhập lý do."
+      }
+    },
+    "actions": {
+      "create": "Tạo ngoại lệ",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "cancel": "Hủy",
+      "save": "Lưu"
+    },
+    "deleteDialog": {
+      "title": "Xóa ngoại lệ",
+      "description": "Xóa ngoại lệ lịch làm việc ngày {date}? Thao tác này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "confirm": "Xóa"
+    },
+    "pagination": {
+      "previous": "Trước",
+      "next": "Sau",
+      "page": "Trang {page} / {totalPages}"
+    }
+  },
   "admin": {
     "dashboard": {
       "title": "Bảng điều khiển",
