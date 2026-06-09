@@ -1,96 +1,135 @@
-import React from 'react';
-import { Star, ThumbsUp, CheckCircle } from 'lucide-react';
+import Image from "next/image";
+import { getLocale } from "next-intl/server";
+import { CheckCircle, Star, ThumbsUp } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
+import type { LanguageCode } from "@/i18n/config";
+import type { SpecialtyReviewsContent } from "@/interface/response";
+import { fetchSpecialtyById } from "@/components/SpecialistDetails/SpecialtyIntroSection/config";
+import { fetchSpecialtyReviews } from "@/components/SpecialistDetails/Reviews/config";
 
-const Reviews = () => {
-  const reviews = [
-    {
-      name: 'Anh Nguyễn Văn Minh',
-      rating: 5,
-      date: '15/01/2024',
-      avatar: 'https://i.pravatar.cc/150?img=12',
-      verified: true,
-      comment:
-        'Bác sĩ rất tận tâm, khám kỹ và giải thích rất dễ hiểu. Phòng khám sạch sẽ, hiện đại. Tôi rất hài lòng với dịch vụ tại đây.',
-      doctor: 'TS.BS Nguyễn Văn Minh',
-      service: 'Khám Tim mạch tổng quát',
-      helpful: 45,
-    },
-    {
-      name: 'Chị Trần Thị Hương',
-      rating: 5,
-      date: '12/01/2024',
-      avatar: 'https://i.pravatar.cc/150?img=5',
-      verified: true,
-      comment:
-        'Siêu âm tim rất chi tiết, máy móc hiện đại. Bác sĩ giải thích kết quả rất kỹ, tư vấn chế độ ăn uống cụ thể.',
-      doctor: 'ThS.BS Trần Thị Hương',
-      service: 'Siêu âm tim Doppler',
-      helpful: 32,
-    },
-    {
-      name: 'Anh Lê Văn Tuấn',
-      rating: 5,
-      date: '10/01/2024',
-      avatar: 'https://i.pravatar.cc/150?img=8',
-      verified: true,
-      comment: 'Quy trình khám chuyên nghiệp, không phải chờ lâu. Nhân viên thân thiện, nhiệt tình hỗ trợ.',
-      doctor: 'PGS.TS Lê Văn Hùng',
-      service: 'Gói khám toàn diện',
-      helpful: 28,
-    },
-  ];
+interface Props {
+  specialtyId: string;
+}
+
+type SupportedLocale = "en" | "vi";
+
+const LABELS: Record<SupportedLocale, Record<string, string>> = {
+  vi: {
+    title: "Benh nhan noi gi ve chung toi",
+    reviews: "danh gia",
+    doctor: "Bac si",
+    service: "Dich vu",
+    helpful: "Huu ich",
+    empty: "Chua co danh gia nao cho chuyen khoa nay.",
+  },
+  en: {
+    title: "What patients say about us",
+    reviews: "reviews",
+    doctor: "Doctor",
+    service: "Service",
+    helpful: "Helpful",
+    empty: "No reviews are available for this specialty yet.",
+  },
+};
+
+const DEFAULT_CONTENT: SpecialtyReviewsContent = {
+  averageRating: 0,
+  totalReviews: 0,
+  reviews: [],
+};
+
+const Reviews = async ({ specialtyId }: Props) => {
+  const currentLocale = (await getLocale()) as LanguageCode;
+  const locale: SupportedLocale = currentLocale === "vi" ? "vi" : "en";
+  const labels = LABELS[locale];
+  const specialty = await fetchSpecialtyById(specialtyId);
+  if (!specialty) {
+    return null;
+  }
+
+  let content = DEFAULT_CONTENT;
+
+  try {
+    content = await fetchSpecialtyReviews(specialty.specialtyType, locale);
+    console.log("Got specialty reviews", content);
+  } catch (err) {
+    console.error("[Reviews] fetch failed:", err);
+  }
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-[100rem] mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Bệnh nhân nói gì về chúng tôi</h2>
+          <h2 className="text-4xl font-bold mb-4">{labels.title}</h2>
           <div className="flex items-center justify-center gap-4 mb-2">
             <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map(i => (
-                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+              {[1, 2, 3, 4, 5].map((item) => (
+                <Star key={item} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <span className="text-2xl font-bold">4.9</span>
-            <span className="text-gray-600">(1,245 đánh giá)</span>
+            <span className="text-2xl font-bold">{content.averageRating.toFixed(1)}</span>
+            <span className="text-gray-600">
+              ({content.totalReviews.toLocaleString(locale)} {labels.reviews})
+            </span>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {reviews.map((review, index) => (
-            <div key={index} className="bg-white rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center gap-4 mb-4">
-                <img src={review.avatar} alt={review.name} className="w-12 h-12 rounded-full" />
-                <div>
-                  <div className="font-bold text-gray-900 flex items-center gap-2">
-                    {review.name}
-                    {review.verified && <CheckCircle className="w-5 h-5 text-green-500" />}
+        {content.reviews.length === 0 ? (
+          <p className="text-center text-gray-600">{labels.empty}</p>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8">
+            {content.reviews.map((review) => (
+              <div
+                key={`${review.name}-${review.date}`}
+                className="bg-white rounded-2xl p-6 shadow-lg"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <Image
+                    src={getImageUrl(null)}
+                    alt={review.name}
+                    width={48}
+                    height={48}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <div className="font-bold text-gray-900 flex items-center gap-2">
+                      {review.name}
+                      {review.verified && <CheckCircle className="w-5 h-5 text-green-500" />}
+                    </div>
+                    <div className="text-sm text-gray-500">{review.date}</div>
                   </div>
-                  <div className="text-sm text-gray-500">{review.date}</div>
+                </div>
+
+                <div className="flex gap-1 mb-3">
+                  {Array.from({ length: review.rating }).map((_, item) => (
+                    <Star key={item} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+
+                <p className="text-gray-700 mb-4 italic">&quot;{review.comment}&quot;</p>
+
+                <div className="text-sm text-gray-600 mb-3">
+                  <div className="font-semibold">
+                    {labels.doctor}: {review.doctor}
+                  </div>
+                  <div>
+                    {labels.service}: {review.service}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <ThumbsUp className="w-4 h-4" />
+                  <span>
+                    {labels.helpful} ({review.helpful})
+                  </span>
                 </div>
               </div>
-
-              <div className="flex gap-1 mb-3">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-
-              <p className="text-gray-700 mb-4 italic">&quot;{review.comment}&quot;</p>
-
-              <div className="text-sm text-gray-600 mb-3">
-                <div className="font-semibold">Bác sĩ: {review.doctor}</div>
-                <div>Dịch vụ: {review.service}</div>
-              </div>
-
-              <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition">
-                <ThumbsUp className="w-4 h-4" />
-                <span>Hữu ích ({review.helpful})</span>
-              </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 };
+
 export default Reviews;

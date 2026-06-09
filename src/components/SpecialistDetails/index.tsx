@@ -29,6 +29,38 @@ function SpecialtyIntroSkeleton() {
   );
 }
 
+function ReviewsSkeleton() {
+  return (
+    <section className="py-16 bg-gray-50">
+      <div className="max-w-[100rem] mx-auto px-4">
+        <div className="mx-auto mb-12 flex max-w-xl flex-col items-center gap-4">
+          <div className="h-10 w-96 max-w-full animate-pulse rounded bg-gray-200" />
+          <div className="h-6 w-56 animate-pulse rounded bg-gray-200" />
+        </div>
+        <div className="grid gap-8 md:grid-cols-3">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="rounded-2xl bg-white p-6 shadow-lg">
+              <div className="mb-4 flex items-center gap-4">
+                <div className="h-12 w-12 animate-pulse rounded-full bg-gray-200" />
+                <div className="space-y-2">
+                  <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+                  <div className="h-3 w-20 animate-pulse rounded bg-gray-200" />
+                </div>
+              </div>
+              <div className="mb-4 h-5 w-28 animate-pulse rounded bg-gray-200" />
+              <div className="space-y-3">
+                <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-11/12 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-9/12 animate-pulse rounded bg-gray-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const SpecialistDetails = ({ specialtyId }: Props) => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -45,7 +77,9 @@ const SpecialistDetails = ({ specialtyId }: Props) => {
       <Process />
       <CommonDiseases />
       <FaQ />
-      <Reviews />
+      <Suspense fallback={<ReviewsSkeleton />}>
+        <Reviews specialtyId={specialtyId!} />
+      </Suspense>
       <RelatedSpecialties />
       <CTA />
     </div>

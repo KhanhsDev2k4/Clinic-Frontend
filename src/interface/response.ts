@@ -201,6 +201,23 @@ export interface SpecialtyOverviewContent {
   riskFactors: string[];
 }
 
+export interface SpecialtyReviewItem {
+  name: string;
+  rating: number;
+  date: string;
+  verified: boolean;
+  comment: string;
+  doctor: string;
+  service: string;
+  helpful: number;
+}
+
+export interface SpecialtyReviewsContent {
+  averageRating: number;
+  totalReviews: number;
+  reviews: SpecialtyReviewItem[];
+}
+
 export interface LandingServicePreviewResponse {
   id: number;
   name: string;
