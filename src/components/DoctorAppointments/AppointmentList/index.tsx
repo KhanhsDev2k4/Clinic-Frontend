@@ -97,7 +97,7 @@ export function AppointmentList() {
               >
                 <AppointmentRow
                   apt={doctorAppointment?.data?.body?.data?.[virtualRow?.index]!}
-                  refreshList={() => doctorAppointment.mutate()}
+                  refreshList={async () => await doctorAppointment.mutate()}
                 />
               </div>
             ))}

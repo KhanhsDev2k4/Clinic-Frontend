@@ -41,7 +41,7 @@ const ClientProvider = ({ children }: { children: React.ReactNode }) => {
         {initializing ? (
           <FullscreenLoader />
         ) : (
-          <main className="pr-4">
+          <main className="h-screen flex flex-col overflow-x-hidden pr-4">
             <Toaster position="bottom-right" />
             <Header />
             <AuthErrorDialog />
