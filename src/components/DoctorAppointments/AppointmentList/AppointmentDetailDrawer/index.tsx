@@ -41,9 +41,14 @@ import { useInvoiceDetailByAppointmentId } from "@/hooks/staff/useStaffInvoice";
 interface AppointmentDetailDrawerProps {
   appointmentId: string | null;
   onClose: () => void;
+  refreshList?: () => void;
 }
 
-function AppointmentDetailDrawer({ appointmentId, onClose }: AppointmentDetailDrawerProps) {
+function AppointmentDetailDrawer({
+  appointmentId,
+  onClose,
+  refreshList,
+}: AppointmentDetailDrawerProps) {
   const { data: currentProfileData } = useCurrentProfile();
 
   const role = currentProfileData?.body?.role;
@@ -385,6 +390,7 @@ function AppointmentDetailDrawer({ appointmentId, onClose }: AppointmentDetailDr
               appointmentId={apt.id}
               onSuccess={() => {
                 forceMutate();
+                refreshList?.();
                 onClose();
               }}
             />

@@ -34,9 +34,10 @@ import { ROLE_NAME } from "@/common";
 
 interface AppointmentRowProps {
   apt: AppointmentResponse;
+  refreshList?: () => void;
 }
 
-function AppointmentRow({ apt }: AppointmentRowProps) {
+function AppointmentRow({ apt, refreshList }: AppointmentRowProps) {
   const { data: currentProfileData } = useCurrentProfile();
 
   const role = currentProfileData?.body?.role;
@@ -118,7 +119,12 @@ function AppointmentRow({ apt }: AppointmentRowProps) {
 
               {/* Doctor actions theo transition */}
               {actions.map((action) => (
-                <ActionButton key={action.targetStatus} action={action} appointmentId={apt.id} />
+                <ActionButton
+                  key={action.targetStatus}
+                  action={action}
+                  appointmentId={apt.id}
+                  refreshList={refreshList}
+                />
               ))}
             </div>
           </div>
@@ -136,6 +142,7 @@ function AppointmentRow({ apt }: AppointmentRowProps) {
         <AppointmentDetailDrawer
           appointmentId={sheetDetail.data?.appointmentId!}
           onClose={sheetDetail.closePopup}
+          refreshList={refreshList}
         />
       </Sheet>
     </Card>

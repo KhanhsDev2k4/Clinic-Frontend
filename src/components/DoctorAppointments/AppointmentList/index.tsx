@@ -95,7 +95,10 @@ export function AppointmentList() {
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
-                <AppointmentRow apt={doctorAppointment?.data?.body?.data?.[virtualRow?.index]!} />
+                <AppointmentRow
+                  apt={doctorAppointment?.data?.body?.data?.[virtualRow?.index]!}
+                  refreshList={() => doctorAppointment.mutate()}
+                />
               </div>
             ))}
           </div>

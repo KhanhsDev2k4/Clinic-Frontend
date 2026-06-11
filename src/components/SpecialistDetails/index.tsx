@@ -65,7 +65,7 @@ const SpecialistDetails = ({ specialtyId }: Props) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <BannerDetailsSpecialist />
-      <Breadcrumb />
+      <Breadcrumb specialtyId={specialtyId!} />
 
       <Suspense fallback={<SpecialtyIntroSkeleton />}>
         <SpecialtyIntroSection specialtyId={specialtyId!} />

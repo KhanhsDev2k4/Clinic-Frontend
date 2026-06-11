@@ -17,8 +17,17 @@ import { useCurrentProfile } from "@/hooks/auth/useCurrentProfile";
 import { useDoctorAppointmentUpdate } from "@/hooks/doctor/useDoctorAppointment";
 import { useStaffAppointmentUpdate } from "@/hooks/staff/useStaffAppointment";
 import { useInvoiceDetailByAppointmentId } from "@/hooks/staff/useStaffInvoice";
+import { useCallback } from "react";
 
-function ActionButton({ action, appointmentId }: { action: Action; appointmentId: string }) {
+function ActionButton({
+  action,
+  appointmentId,
+  refreshList,
+}: {
+  action: Action;
+  appointmentId: string;
+  refreshList?: () => void;
+}) {
   const { data: currentProfileData } = useCurrentProfile();
   const invoice = useInvoiceDetailByAppointmentId(appointmentId!);
 
@@ -28,6 +37,14 @@ function ActionButton({ action, appointmentId }: { action: Action; appointmentId
       ? useDoctorAppointmentUpdate(appointmentId)
       : useStaffAppointmentUpdate(appointmentId);
   const { forceMutate } = useForceRefreshAppointments();
+
+  const onClick = useCallback(() => {
+    updateAppointment.trigger({
+      status: action.targetStatus,
+      invoiceId: invoice?.data?.body?.id,
+    });
+    forceMutate();
+  }, [appointmentId, action.targetStatus, invoice?.data?.body?.id]);
 
   return (
     <AlertDialog>
@@ -49,16 +66,7 @@ function ActionButton({ action, appointmentId }: { action: Action; appointmentId
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Huỷ</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={updateAppointment.isMutating}
-            onClick={() => {
-              updateAppointment.trigger({
-                status: action.targetStatus,
-                invoiceId: invoice?.data?.body?.id,
-              });
-              forceMutate();
-            }}
-          >
+          <AlertDialogAction disabled={updateAppointment.isMutating} onClick={onClick}>
             {updateAppointment.isMutating ? "Đang xử lý..." : "Xác nhận"}
           </AlertDialogAction>
         </AlertDialogFooter>

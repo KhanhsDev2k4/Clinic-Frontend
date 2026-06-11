@@ -8,12 +8,14 @@ import { APPOINTMENT_STATUS } from "@/common";
 
 function EmptyStateList({ status }: { status: APPOINTMENT_STATUS | TYPE_OF_FILTER_ALL_VALUE }) {
   const cfg = EMPTY_CONFIG[status];
-  const { Icon, title, sub, showBook } = cfg;
+  const { Icon, title, sub, showBook } = cfg ?? {};
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-      <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-        <Icon className="h-7 w-7 text-muted-foreground" />
-      </div>
+      {Icon && (
+        <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+          <Icon className="h-7 w-7 text-muted-foreground" />
+        </div>
+      )}
       <p className="text-[15px] font-medium text-foreground">{title}</p>
       <p className="text-sm text-muted-foreground max-w-55 leading-relaxed">{sub}</p>
       {showBook && (

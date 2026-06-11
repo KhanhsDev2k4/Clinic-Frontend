@@ -1,7 +1,14 @@
-import React from 'react';
-import { ChevronRight } from 'lucide-react';
+"use client";
+import { ChevronRight } from "lucide-react";
+import { usePublicSpecialtyById } from "@/hooks/public/usePublicSpecialty";
 
-const Breadcrumb = () => {
+interface Props {
+  specialtyId: string;
+}
+
+const Breadcrumb = ({ specialtyId }: Props) => {
+  const { data } = usePublicSpecialtyById(specialtyId);
+
   return (
     <div className="bg-white border-b">
       <div className="max-w-[100rem] mx-auto px-4 py-4">
@@ -14,7 +21,7 @@ const Breadcrumb = () => {
             Chuyên khoa
           </a>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900 font-semibold">Tim mạch</span>
+          <span className="text-gray-900 font-semibold">{data?.body?.slug}</span>
         </div>
       </div>
     </div>
