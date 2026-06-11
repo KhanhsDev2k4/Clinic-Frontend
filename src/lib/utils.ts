@@ -21,7 +21,7 @@ export function cn(...inputs: ClassValue[]) {
 // ─── DATE / TIME ─────────────────────────────────────────────────
 
 /**
- * Format date → "Jan 15, 2025"
+ * Format date → "Jan 15, 2026"
  */
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "—";
