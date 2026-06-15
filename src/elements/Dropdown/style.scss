@@ -6,28 +6,28 @@
   --shadow-color: transparent;
   --icon-color: var(--gray-500);
 
-  &[data-has-value='false'] [data-label-placement='inside'] span {
+  &[data-has-value="false"] [data-label-placement="inside"] span {
     color: var(--text-2) !important;
   }
 
-  label[data-label-placement='inside'] {
+  label[data-label-placement="inside"] {
     @apply text-[1.2rem] leading-[2.4rem] font-[500] text-[--text-2];
     transform: translate(0, -50%);
   }
 
-  [data-headlessui-state='open'] label[data-label-placement='inside'],
-  &[data-has-value='true'] label[data-label-placement='inside'],
-  &[data-has-value='true'] label[data-label-placement='inside'] {
+  [data-headlessui-state="open"] label[data-label-placement="inside"],
+  &[data-has-value="true"] label[data-label-placement="inside"],
+  &[data-has-value="true"] label[data-label-placement="inside"] {
     font-size: 1.2rem !important;
     transform: translate(0, -50%);
   }
 
-  [data-headlessui-state='open'] button[data-label-placement='inside'] span,
-  &[data-has-value='true'] button[data-label-placement='inside'] span {
+  [data-headlessui-state="open"] button[data-label-placement="inside"] span,
+  &[data-has-value="true"] button[data-label-placement="inside"] span {
     font-size: 2rem !important;
   }
 
-  &[data-has-value='true'] button[data-label-placement='inside'] span {
+  &[data-has-value="true"] button[data-label-placement="inside"] span {
     .dark-variables & {
       color: var(--text-7) !important;
     }
@@ -37,7 +37,7 @@
     }
   }
 
-  button[data-label-placement='inside'] span {
+  button[data-label-placement="inside"] span {
     @apply absolute bottom-[1.2rem] font-[500] leading-[2.4rem] text-[2rem];
     transition: all 0.2s;
   }
@@ -52,7 +52,7 @@
   }
 
   .dropdown-button {
-    @apply flex items-center justify-between w-full h-full p-[1.2rem] gap-[0.8rem] text-[1.6rem] font-medium rounded-[0.8rem] transition-all duration-200 shadow-base-1;
+    @apply flex items-center justify-between w-full h-full p-[1.2rem] gap-[0.8rem] text-[1.6rem] font-[500] rounded-[0.8rem] transition-all duration-200;
     background-color: var(--bg-105);
     border: 1px solid var(--border-16);
     color: var(--white-night);
@@ -87,8 +87,8 @@
 }
 // hôm sau nếu muốn label hiển thị phía trong và giá trị được chọn có màu mong muốn thì thêm class
 // custom-dropdown-no-span-color sau đó thêm color vào class là được nhé
-.custom-dropdown-no-span-color.dropdown-container[data-has-value='true']
-  button[data-label-placement='inside']
+.custom-dropdown-no-span-color.dropdown-container[data-has-value="true"]
+  button[data-label-placement="inside"]
   span {
   color: inherit !important;
 }
