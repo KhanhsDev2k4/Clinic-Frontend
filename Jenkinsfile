@@ -14,7 +14,7 @@ pipeline {
 
         // Kubernetes
         K8S_NAMESPACE  = 'staging'
-        K8S_DEPLOYMENT = 'clinic-backend-deployment'
+        K8S_DEPLOYMENT = 'clinic-frontend-deployment'
         K8S_CONTAINER  = 'frontend'
 
         // Telegram
