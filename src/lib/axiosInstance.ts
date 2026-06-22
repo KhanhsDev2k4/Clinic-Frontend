@@ -1,4 +1,3 @@
-// lib/axiosInstance.ts
 "use client";
 import { AUTH_SESSION_SWR_KEY } from "@/hooks";
 import { AUTH_INITIAL_STATE } from "@/hooks/useSession";
@@ -39,13 +38,9 @@ const sanitizeBody = (
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
 
-export const apiBaseUrl =
-  typeof window === "undefined"
-    ? process.env.API_INTERNAL_URL
-    : process.env.NEXT_PUBLIC_API_URL;
 
 const axiosInstance = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
@@ -121,7 +116,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = localStorage.getItem("refreshToken");
       if (!refreshToken) throw new Error("No refresh token");
 
-      const { data } = await axios.post(`${apiBaseUrl}/api/v1/auth/refresh`, {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`, {
         refreshToken,
       });
 

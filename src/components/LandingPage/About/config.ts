@@ -1,6 +1,7 @@
 import { ApiResponse } from "@/hooks/global";
 import type { StaticsTicsLandingResponse } from "@/interface/response";
-import { apiBaseUrl } from "@/lib/axiosInstance";
+import { getInternalApiBaseUrl } from "@/lib/server-api";
+
 
 interface LandingStaticsApiBody {
   trustedPatients: number;
@@ -17,7 +18,7 @@ function isApiResponse(value: unknown): value is ApiResponse<LandingStaticsApiBo
 
 export async function fetchLandingStatics(): Promise<StaticsTicsLandingResponse | null> {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/public/landing`, {
+    const res = await fetch(`${getInternalApiBaseUrl()}/api/v1/public/landing`, {
       cache: "no-store",
     });
 
