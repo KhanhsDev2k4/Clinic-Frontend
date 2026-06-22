@@ -39,8 +39,13 @@ const sanitizeBody = (
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
 
+export const apiBaseUrl =
+  typeof window === "undefined"
+    ? process.env.API_INTERNAL_URL
+    : process.env.NEXT_PUBLIC_API_URL;
+
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: apiBaseUrl,
   withCredentials: true,
 });
 
@@ -116,7 +121,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = localStorage.getItem("refreshToken");
       if (!refreshToken) throw new Error("No refresh token");
 
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`, {
+      const { data } = await axios.post(`${apiBaseUrl}/api/v1/auth/refresh`, {
         refreshToken,
       });
 
