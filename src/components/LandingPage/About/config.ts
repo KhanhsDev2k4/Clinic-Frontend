@@ -17,7 +17,7 @@ function isApiResponse(value: unknown): value is ApiResponse<LandingStaticsApiBo
 
 export async function fetchLandingStatics(): Promise<StaticsTicsLandingResponse | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/landing`, {
+    const res = await fetch(`${process.env.API_INTERNAL_URL}/api/v1/public/landing`, {
       cache: "no-store",
     });
 

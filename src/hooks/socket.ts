@@ -1,3 +1,4 @@
+"use client";
 import { Client, StompConfig } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
