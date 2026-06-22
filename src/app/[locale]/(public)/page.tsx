@@ -7,7 +7,6 @@ type Props = {
   params: Promise<{ locale: LanguageCode }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export function generateStaticParams() {
