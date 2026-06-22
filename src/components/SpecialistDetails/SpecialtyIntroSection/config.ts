@@ -3,7 +3,6 @@ import { LanguageCode } from "@/i18n/config";
 import { SpecialtyOverviewContent, SpecialtyResponse, ViLaoResponse } from "@/interface/response";
 import { ApiResponse, METHOD } from "@/hooks/global";
 import { unstable_cache } from "next/cache";
-import { getInternalApiBaseUrl } from "@/lib/server-api";
 
 
 const SPECIALTY_LABELS: Record<SPECIALTY_TYPE, Record<LanguageCode, string>> = {
@@ -85,7 +84,7 @@ export async function _fetchSpecialtyIntro(
 export async function fetchSpecialtyById(id: string): Promise<SpecialtyResponse | null> {
   if (!id) return null;
 
-  const res = await fetch(`${getInternalApiBaseUrl()}/api/v1/public/specialty/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/specialty/${id}`, {
     cache: "no-store",
   });
   const data: ApiResponse<SpecialtyResponse> = await res.json();

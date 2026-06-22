@@ -1,4 +1,3 @@
-import { getInternalApiBaseUrl } from "@/lib/server-api";
 import { Client, StompConfig } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
