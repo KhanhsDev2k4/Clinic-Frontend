@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
-import Back from "assets/svg/arrow-left.svg";
-import Next from "assets/svg/arrow-right2.svg";
+import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
+
 import "./style.scss";
 
 type Props = {
@@ -40,8 +40,8 @@ const Pagination = (props: Props) => {
             forcePage={currentPage}
             containerClassName={"pagination"}
             activeClassName={"active"}
-            previousLabel={<Back />}
-            nextLabel={<Next />}
+            previousLabel={<ChevronLeftIcon />}
+            nextLabel={<ChevronRightIcon />}
             previousClassName={"btn-back"}
             nextClassName={"btn-next"}
             pageClassName={"btn-page"}
