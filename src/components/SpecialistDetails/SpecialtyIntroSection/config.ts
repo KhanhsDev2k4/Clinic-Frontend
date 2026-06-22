@@ -83,7 +83,10 @@ export async function _fetchSpecialtyIntro(
 }
 
 export async function fetchSpecialtyById(id: string): Promise<SpecialtyResponse | null> {
-  if (!id) return null;
+  if (!id) {
+    console.error("[fetchSpecialtyById] Invalid ID:", id);
+    return null;
+  }
 
   const res = await fetch(`${getInternalApiBaseUrl()}/api/v1/public/specialty/${id}`, {
     cache: "no-store",

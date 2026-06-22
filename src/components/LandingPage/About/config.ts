@@ -22,7 +22,11 @@ export async function fetchLandingStatics(): Promise<StaticsTicsLandingResponse 
       cache: "no-store",
     });
 
-    if (!res.ok) return null;
+    console.log("fetchLandingStatics response:", res);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch landing statics: ${res.status} ${res.statusText}`);
+    }
 
     const data = (await res.json()) as ApiResponse<LandingStaticsApiBody> | LandingStaticsApiBody;
     const body = isApiResponse(data) ? data.body : data;
