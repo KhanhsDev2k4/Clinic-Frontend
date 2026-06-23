@@ -45,13 +45,7 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    env.GIT_BRANCH_NAME = sh(
-                        script: 'git rev-parse --abbrev-ref HEAD',
-                        returnStdout: true
-                    ).trim()
-
                     env.IMAGE_TAG = "${env.DOCKERHUB_REPO}:${env.GIT_COMMIT_SHORT}"
-
                     echo "Branch: ${env.GIT_BRANCH_NAME}"
                     echo "Image: ${env.IMAGE_TAG}"
                 }
