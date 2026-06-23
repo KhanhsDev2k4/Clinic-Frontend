@@ -33,7 +33,7 @@ pipeline {
     stages {
         stage('Checkout') {
             agent {
-                label 'docker-build'
+                label 'docker-builder'
             }
 
             steps {
@@ -60,7 +60,7 @@ pipeline {
 
         stage('Build Docker Image') {
             agent {
-                label 'docker-build'
+                label 'docker-builder'
             }
 
             steps {
@@ -77,7 +77,7 @@ pipeline {
 
         stage('Push Docker Image') {
             agent {
-                label 'docker-build'
+                label 'docker-builder'
             }
 
             steps {
@@ -110,7 +110,7 @@ pipeline {
 
         stage('Deploy Kubernetes') {
             agent {
-                label 'k3s-deploy'
+                label 'k3s-deployer'
             }
 
             steps {
