@@ -46,14 +46,16 @@ pipeline {
                     ).trim()
 
                     env.GIT_BRANCH_NAME =
-                        env.BRANCH_NAME ?: env.GIT_BRANCH?.replace('origin/', '') ?: 'master'
+                        env.BRANCH_NAME ?:
+                        env.GIT_BRANCH?.replace('origin/', '') ?:
+                        'master'
 
-                    env.DOCKER_IMAGE =
-                        "${env.DOCKER_IMAGE_REPOSITORY}:${env.GIT_COMMIT_SHORT}"
+                    env.IMAGE_TAG =
+                        "${env.DOCKERHUB_REPO}:${env.GIT_COMMIT_SHORT}"
 
                     echo "Branch: ${env.GIT_BRANCH_NAME}"
                     echo "Commit: ${env.GIT_COMMIT_SHORT}"
-                    echo "Image: ${env.DOCKER_IMAGE}"
+                    echo "Image: ${env.IMAGE_TAG}"
                 }
 
                 stash(
@@ -75,7 +77,14 @@ pipeline {
 
                 sh '''
                     set -eu
-                    docker build --pull --tag "$DOCKER_IMAGE" .
+
+                    echo "Building image: $IMAGE_TAG"
+                    test -n "$IMAGE_TAG"
+
+                    docker build \
+                        --pull \
+                        --tag "$IMAGE_TAG" \
+                        .
                 '''
             }
         }
@@ -94,7 +103,10 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        set -e
+                        set -eu
+
+                        echo "Pushing image: $IMAGE_TAG"
+                        test -n "$IMAGE_TAG"
 
                         echo "$DOCKER_PASS" |
                             docker login \
