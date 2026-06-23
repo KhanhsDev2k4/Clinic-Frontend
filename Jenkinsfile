@@ -53,9 +53,13 @@ pipeline {
                     env.IMAGE_TAG =
                         "${env.DOCKERHUB_REPO}:${env.GIT_COMMIT_SHORT}"
 
+                    env.LATEST_TAG =
+                        "${env.DOCKERHUB_REPO}:latest"
+
                     echo "Branch: ${env.GIT_BRANCH_NAME}"
                     echo "Commit: ${env.GIT_COMMIT_SHORT}"
                     echo "Image: ${env.IMAGE_TAG}"
+                    echo "Latest image: ${env.LATEST_TAG}"
                 }
 
                 stash(
@@ -79,11 +83,15 @@ pipeline {
                     set -eu
 
                     echo "Building image: $IMAGE_TAG"
+                    echo "Latest tag: $LATEST_TAG"
+
                     test -n "$IMAGE_TAG"
+                    test -n "$LATEST_TAG"
 
                     docker build \
                         --pull \
                         --tag "$IMAGE_TAG" \
+                        --tag "$LATEST_TAG" \
                         .
                 '''
             }
@@ -105,15 +113,19 @@ pipeline {
                     sh '''
                         set -eu
 
-                        echo "Pushing image: $IMAGE_TAG"
                         test -n "$IMAGE_TAG"
+                        test -n "$LATEST_TAG"
 
                         echo "$DOCKER_PASS" |
                             docker login \
                                 --username "$DOCKER_USER" \
                                 --password-stdin
 
+                        echo "Pushing commit tag: $IMAGE_TAG"
                         docker push "$IMAGE_TAG"
+
+                        echo "Pushing latest tag: $LATEST_TAG"
+                        docker push "$LATEST_TAG"
                     '''
                 }
             }
