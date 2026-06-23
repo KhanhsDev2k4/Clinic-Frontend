@@ -152,7 +152,7 @@ pipeline {
 
     post {
         success {
-            node('docker-build') {
+            node('docker-builder') {
                 script {
                     sendTelegram(
                         "✅ *BUILD SUCCEEDED*\n" +
@@ -170,7 +170,7 @@ pipeline {
         }
 
         failure {
-            node('docker-build') {
+            node('docker-builder') {
                 script {
                     sendTelegramWithFile(
                         "❌ *BUILD FAILED*\n" +
@@ -188,7 +188,7 @@ pipeline {
         }
 
         aborted {
-            node('docker-build') {
+            node('docker-builder') {
                 script {
                     sendTelegramWithFile(
                         "⚠️ *BUILD ABORTED*\n" +
@@ -203,7 +203,7 @@ pipeline {
         }
 
         cleanup {
-            node('docker-build') {
+            node('docker-builder') {
                 script {
                     sh 'docker logout 2>/dev/null || true'
 
