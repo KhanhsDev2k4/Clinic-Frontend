@@ -24,9 +24,8 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        skipDefaultCheckout(true)
         timeout(time: 30, unit: 'MINUTES')
-        disableConcurrentBuilds()
         timestamps()
     }
 
@@ -37,6 +36,7 @@ pipeline {
             }
 
             steps {
+                deleteDir()
                 checkout scm
 
                 script {
@@ -45,10 +45,22 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    env.IMAGE_TAG = "${env.DOCKERHUB_REPO}:${env.GIT_COMMIT_SHORT}"
+                    env.GIT_BRANCH_NAME =
+                        env.BRANCH_NAME ?: env.GIT_BRANCH?.replace('origin/', '') ?: 'master'
+
+                    env.DOCKER_IMAGE =
+                        "${env.DOCKER_IMAGE_REPOSITORY}:${env.GIT_COMMIT_SHORT}"
+
                     echo "Branch: ${env.GIT_BRANCH_NAME}"
-                    echo "Image: ${env.IMAGE_TAG}"
+                    echo "Commit: ${env.GIT_COMMIT_SHORT}"
+                    echo "Image: ${env.DOCKER_IMAGE}"
                 }
+
+                stash(
+                    name: 'frontend-source',
+                    includes: '**/*',
+                    useDefaultExcludes: false
+                )
             }
         }
 
@@ -58,13 +70,12 @@ pipeline {
             }
 
             steps {
-                sh '''
-                    set -e
+                deleteDir()
+                unstash 'frontend-source'
 
-                    docker build \
-                        --pull \
-                        -t "$IMAGE_TAG" \
-                        .
+                sh '''
+                    set -eu
+                    docker build --pull --tag "$DOCKER_IMAGE" .
                 '''
             }
         }
@@ -119,8 +130,18 @@ pipeline {
 
                         export KUBECONFIG="$KUBECONFIG_FILE"
 
-                        echo "Checking Kubernetes connection..."
-                        kubectl cluster-info
+                        echo "Checking Kubernetes permissions..."
+
+                        kubectl auth can-i get deployments.apps \
+                        --namespace="${K8S_NAMESPACE}" | grep -qx "yes"
+
+                        kubectl auth can-i patch deployments.apps \
+                        --namespace="${K8S_NAMESPACE}" | grep -qx "yes"
+
+                        kubectl get deployment "${K8S_DEPLOYMENT}" \
+                        --namespace="${K8S_NAMESPACE}" >/dev/null
+
+                        echo "Kubernetes connection and permissions are valid."
 
                         echo "Updating deployment image..."
                         kubectl set image \
