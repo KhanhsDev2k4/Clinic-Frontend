@@ -35,6 +35,17 @@ import {
 } from "@/components/ui/table";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { UserAdminResponse, UserItem } from "@/interface";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const roleBadge: Record<string, string> = {
   [ROLE_NAME.ADMIN]: "bg-purple-50 text-purple-700",
@@ -58,15 +69,15 @@ export default function AdminUsers() {
     modal.handleShow(user);
   };
   const handleDelete = async (data: UserItem) => {
-    if (!confirm(t("users.confirmDelete"))) {
-      return;
-    }
     try {
       await deleteUser.trigger({
         id: data.id,
       });
-      getListUsers.mutate();
-    } catch (error) {}
+
+      await getListUsers.mutate();
+    } catch (error) {
+      console.error("Delete user failed:", error);
+    }
   };
 
   const data = getListUsers.data?.body as UserAdminResponse;
@@ -144,9 +155,41 @@ export default function AdminUsers() {
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </Button>
-                    <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(user)}>
-                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label="Delete user"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Xóa người dùng?</AlertDialogTitle>
+
+                          <AlertDialogDescription>
+                            Bạn có chắc chắn muốn xóa người dùng{" "}
+                            <span className="font-semibold text-foreground">{user.fullName}</span>?
+                            Hành động này không thể hoàn tác.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Hủy</AlertDialogCancel>
+
+                          <AlertDialogAction
+                            onClick={() => handleDelete(user)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Xóa
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>

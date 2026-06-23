@@ -1,228 +1,329 @@
 "use client";
 
-import { Formik, FormikProps } from "formik";
-import { useRef } from "react";
+import { Formik } from "formik";
+import { Info, Loader2, Save } from "lucide-react";
+
 import { ROLE_NAME, USER_STATUS, GENDER } from "@/common";
 import { userFormSchema } from "./config";
-import TextInput from "@/elements/TextInput";
-import Dropdown from "@/elements/Dropdown";
 import { useUsers } from "./hooks";
-import { Info } from "lucide-react";
-import { formatDateToApi } from "@/lib/utils";
 import { UserItem } from "@/interface/response";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { formatDateToApi } from "@/lib/utils";
 
 interface UserFormProps {
   data?: UserItem;
 }
+
 interface UserFormValue {
   fullName: string;
   email: string;
   phone: string;
-  password?: string;
+  password: string;
   dateOfBirth: string;
   gender: string;
   role: string;
   status: string;
 }
+
 const UserForm = ({ data }: UserFormProps) => {
   const { createUser, updateUser } = useUsers();
-  const roleOptions = [
-    { label: "Admin", value: ROLE_NAME.ADMIN },
-    { label: "Doctor", value: ROLE_NAME.DOCTOR },
-    { label: "Patient", value: ROLE_NAME.PATIENT },
-    { label: "Staff", value: ROLE_NAME.STAFF },
-    { label: "Guest", value: ROLE_NAME.GUEST },
-  ];
 
-  const statusOptions = [
-    { label: "Active", value: USER_STATUS.ACTIVE },
-    { label: "Inactive", value: USER_STATUS.INACTIVE },
-    { label: "Banned", value: USER_STATUS.BANNED },
-  ];
-  const genderOptions = [
-    { label: "Male", value: GENDER.MALE },
-    { label: "Female", value: GENDER.FEMALE },
-    { label: "Other", value: GENDER.OTHER },
-  ];
+  const isEditMode = Boolean(data?.id);
 
   const initialValues: UserFormValue = {
-    fullName: data?.fullName || "",
-    email: data?.email || "",
-    phone: data?.phone || "",
+    fullName: data?.fullName ?? "",
+    email: data?.email ?? "",
+    phone: data?.phone ?? "",
     password: "",
-    dateOfBirth: data?.dateOfBirth || "",
-    gender: data?.gender || GENDER.MALE,
-    role: data?.role || ROLE_NAME.PATIENT,
-    status: data?.status || USER_STATUS.ACTIVE,
+    dateOfBirth: "",
+    gender: data?.gender ?? GENDER.MALE,
+    role: data?.role ?? ROLE_NAME.PATIENT,
+    status: data?.status ?? USER_STATUS.ACTIVE,
   };
 
-  const formRef = useRef<FormikProps<UserFormValue> | null>(null);
-  const handleSubmit = async (values: UserFormValue) => {
-    console.log("Submitting form with values:", values);
-
-    // Format date string from "YYYY-MM-DD" to "DD/MM/YYYY" for backend
-    let formattedDate = values.dateOfBirth;
-    if (values.dateOfBirth && values.dateOfBirth.includes("-")) {
-      const [year, month, day] = values.dateOfBirth.split("-");
-      formattedDate = `${day}/${month}/${year}`;
-    }
-
-    const payload = {
-      name: values.fullName,
-      email: values.email,
-      phone: values.phone,
-      password: values.password,
-      dateOfBirth: formattedDate,
-      gender: values.gender,
-      role: values.role,
-      status: values.status,
-    };
-    try {
-      if (data) {
-        await updateUser.trigger({ ...payload, id: data.id });
-      } else {
-        await createUser.trigger(payload);
-      }
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
-  };
   return (
-    <Formik
-      initialValues={initialValues}
-      innerRef={(instance) => {
-        formRef.current = instance!;
-      }}
-      onSubmit={(values) => {
-        handleSubmit(values);
-      }}
-      validationSchema={userFormSchema}
-      className="w-full h-full"
-    >
-      {({ values, handleChange, handleSubmit, touched, errors, handleBlur, setFieldValue }) => {
-        console.log("[ChallengeForm]", { touched, errors });
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:py-10">
+      <Formik<UserFormValue>
+        initialValues={initialValues}
+        validationSchema={userFormSchema}
+        enableReinitialize
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            const payload = {
+              name: values.fullName.trim(),
+              email: values.email.trim().toLowerCase(),
+              phone: values.phone.trim(),
+              dateOfBirth: formatDateToApi(values.dateOfBirth),
+              gender: values.gender,
+              role: values.role,
+              status: values.status,
+            };
 
-        return (
-          <form
-            className="mt-[2rem] lg:mt-[3.8rem] w-full flex flex-row justify-center flex-1 overflow-y-auto mb-[3%] hide-scrollbar"
-            onSubmit={handleSubmit}
-          >
-            <div className="flex-1  xl:px-0 max-w-full flex flex-col justify-start overflow-x-hidden">
-              <div className="flex flex-col">
-                <div className="bg-[#F5F5FF] rounded-[8px]">
-                  <div className="p-4 sm:p-[2.4rem] grid grid-cols-1 md:grid-cols-2 justify-center items-start gap-[2.4rem]">
-                    <div className="text-[2rem]  text-[#1D1E2E] leading-[130%] md:col-span-2">
-                      User Form
-                    </div>
-                    <TextInput
-                      className="w-full"
-                      type="text"
-                      label="Full Name"
-                      placeholder="Enter full name"
+            if (data?.id) {
+              await updateUser.trigger({
+                ...payload,
+                id: data.id,
+              });
+            } else {
+              await createUser.trigger(payload);
+            }
+          } catch (error) {
+            console.error(isEditMode ? "Error updating user:" : "Error creating user:", error);
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          isSubmitting,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <Card className="overflow-hidden shadow-sm">
+              <CardHeader className="border-b bg-muted/30">
+                <CardTitle className="text-2xl">
+                  {isEditMode ? "Cập nhật người dùng" : "Tạo người dùng"}
+                </CardTitle>
+
+                <CardDescription>
+                  {isEditMode
+                    ? "Chỉnh sửa thông tin và quyền của người dùng."
+                    : "Nhập thông tin để tạo tài khoản người dùng mới."}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-6 p-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Full name */}
+                  <FormField
+                    label="Họ và tên"
+                    name="fullName"
+                    error={
+                      touched.fullName && errors.fullName ? String(errors.fullName) : undefined
+                    }
+                  >
+                    <Input
+                      id="fullName"
                       name="fullName"
+                      type="text"
+                      placeholder="Nhập họ và tên"
                       value={values.fullName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      hasError={touched.fullName && !!errors.fullName}
-                      errorMessage={touched.fullName ? errors.fullName : ""}
+                      aria-invalid={touched.fullName && Boolean(errors.fullName)}
                     />
-                    <TextInput
-                      className="w-full"
-                      type="email"
-                      label="Email"
-                      placeholder="Enter email"
+                  </FormField>
+
+                  {/* Email */}
+                  <FormField
+                    label="Email"
+                    name="email"
+                    error={touched.email && errors.email ? String(errors.email) : undefined}
+                  >
+                    <Input
+                      id="email"
                       name="email"
+                      type="email"
+                      placeholder="example@gmail.com"
                       value={values.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      hasError={touched.email && !!errors.email}
-                      errorMessage={touched.email ? errors.email : ""}
+                      aria-invalid={touched.email && Boolean(errors.email)}
                     />
-                    <TextInput
-                      className="w-full"
-                      type="text"
-                      label="Phone Number"
-                      placeholder="Enter phone number"
+                  </FormField>
+
+                  {/* Phone */}
+                  <FormField
+                    label="Số điện thoại"
+                    name="phone"
+                    error={touched.phone && errors.phone ? String(errors.phone) : undefined}
+                  >
+                    <Input
+                      id="phone"
                       name="phone"
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder="Ví dụ: 0353127609"
                       value={values.phone}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      hasError={touched.phone && !!errors.phone}
-                      errorMessage={touched.phone ? errors.phone : ""}
+                      aria-invalid={touched.phone && Boolean(errors.phone)}
                     />
-                    <TextInput
-                      className="w-full"
-                      type="password"
-                      label="Password"
-                      placeholder="Enter password"
-                      name="password"
-                      value={values.password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      hasError={touched.password && !!errors.password}
-                      errorMessage={touched.password ? errors.password : ""}
-                    />
-                    <TextInput
-                      className="w-full"
-                      type="date"
-                      label="Date of Birth"
-                      placeholder="Select date of birth"
+                  </FormField>
+
+                  {/* Date of birth */}
+                  <FormField
+                    label="Ngày sinh"
+                    name="dateOfBirth"
+                    error={
+                      touched.dateOfBirth && errors.dateOfBirth
+                        ? String(errors.dateOfBirth)
+                        : undefined
+                    }
+                  >
+                    <Input
+                      id="dateOfBirth"
                       name="dateOfBirth"
+                      type="date"
                       value={values.dateOfBirth}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      hasError={touched.dateOfBirth && !!errors.dateOfBirth}
-                      errorMessage={
-                        touched.dateOfBirth && typeof errors.dateOfBirth === "string"
-                          ? errors.dateOfBirth
-                          : ""
-                      }
+                      aria-invalid={touched.dateOfBirth && Boolean(errors.dateOfBirth)}
                     />
-                    <Dropdown
-                      className="w-full"
-                      label="Gender"
-                      selected={values.gender}
-                      options={genderOptions}
-                      onChange={(val) => setFieldValue("gender", val)}
-                      hasError={touched.gender && !!errors.gender}
-                      errorMessage={
-                        touched.gender && typeof errors.gender === "string" ? errors.gender : ""
-                      }
-                    />
-                    <Dropdown
-                      className="w-full"
-                      label="Role"
-                      selected={values.role}
-                      options={roleOptions}
-                      onChange={(val) => setFieldValue("role", val)}
-                      hasError={touched.role && !!errors.role}
-                      errorMessage={touched.role ? errors.role : ""}
-                    />
-                    <Dropdown
-                      className="w-full"
-                      label="Status"
-                      selected={values.status}
-                      options={statusOptions}
-                      onChange={(val) => setFieldValue("status", val)}
-                      hasError={touched.status && !!errors.status}
-                      errorMessage={touched.status ? String(errors.status) : ""}
-                    />
-                  </div>
-                  <div className="flex flex-row w-full gap-[1.7rem] justify-end items-center mb-[8px] mr-[2.4rem]">
-                    <button
-                      type="submit"
-                      className="cursor-pointer rounded-[1.2rem] bg-[#E60028] p-[20px] text-center text-[1.8rem] text-[#FDFEFF]"
+                  </FormField>
+
+                  {/* Gender */}
+                  <FormField
+                    label="Giới tính"
+                    name="gender"
+                    error={touched.gender && errors.gender ? String(errors.gender) : undefined}
+                  >
+                    <Select
+                      value={values.gender}
+                      onValueChange={(value) => {
+                        setFieldValue("gender", value);
+                      }}
                     >
-                      Lưu
-                    </button>
-                  </div>
+                      <SelectTrigger
+                        id="gender"
+                        aria-invalid={touched.gender && Boolean(errors.gender)}
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Chọn giới tính" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value={GENDER.MALE}>Nam</SelectItem>
+                        <SelectItem value={GENDER.FEMALE}>Nữ</SelectItem>
+                        <SelectItem value={GENDER.OTHER}>Khác</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormField>
+
+                  {/* Role */}
+                  <FormField
+                    label="Vai trò"
+                    name="role"
+                    error={touched.role && errors.role ? String(errors.role) : undefined}
+                  >
+                    <Select
+                      value={values.role}
+                      onValueChange={(value) => {
+                        setFieldValue("role", value);
+                      }}
+                    >
+                      <SelectTrigger
+                        className="w-full"
+                        id="role"
+                        aria-invalid={touched.role && Boolean(errors.role)}
+                      >
+                        <SelectValue placeholder="Chọn vai trò" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value={ROLE_NAME.ADMIN}>Admin</SelectItem>
+
+                        <SelectItem value={ROLE_NAME.DOCTOR}>Doctor</SelectItem>
+
+                        <SelectItem value={ROLE_NAME.PATIENT}>Patient</SelectItem>
+
+                        <SelectItem value={ROLE_NAME.STAFF}>Staff</SelectItem>
+
+                        <SelectItem value={ROLE_NAME.GUEST}>Guest</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormField>
+
+                  {/* Status */}
+                  <FormField
+                    label="Trạng thái"
+                    name="status"
+                    error={touched.status && errors.status ? String(errors.status) : undefined}
+                  >
+                    <Select
+                      value={values.status}
+                      onValueChange={(value) => {
+                        setFieldValue("status", value);
+                      }}
+                    >
+                      <SelectTrigger
+                        className="w-full"
+                        id="status"
+                        aria-invalid={touched.status && Boolean(errors.status)}
+                      >
+                        <SelectValue placeholder="Chọn trạng thái" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value={USER_STATUS.ACTIVE}>Hoạt động</SelectItem>
+
+                        <SelectItem value={USER_STATUS.INACTIVE}>Không hoạt động</SelectItem>
+
+                        <SelectItem value={USER_STATUS.BANNED}>Đã khóa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormField>
                 </div>
-              </div>
-            </div>
+
+                <div className="flex justify-end border-t pt-6">
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Đang lưu...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        {isEditMode ? "Cập nhật" : "Tạo người dùng"}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </form>
-        );
-      }}
-    </Formik>
+        )}
+      </Formik>
+    </div>
   );
 };
+
+interface FormFieldProps {
+  label: string;
+  name: string;
+  error?: string;
+  children: React.ReactNode;
+}
+
+const FormField = ({ label, name, error, children }: FormFieldProps) => {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+
+      {children}
+
+      {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+    </div>
+  );
+};
+
 export default UserForm;
